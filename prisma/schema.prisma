@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String   @id @default(uuid())
+  clerkUserId String   @unique
+  email       String   @unique
+  name        String?
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  testimonials    Testimonial[]
+  testimonialLink TestimonialLink?
+  widgetConfig    WidgetConfig?
+
+  @@map("users")
+}
+
+model Testimonial {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  customerName      String
+  customerCompany   String?
+  customerTitle     String?
+  customerAvatarUrl String?
+
+  rating     Int?
+  text       String
+  isApproved Boolean  @default(false)
+  isFeatured Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@map("testimonials")
+}
+
+model TestimonialLink {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  // The unique slug/path for this user's collection form (e.g., /collect/mycompany)
+  slug            String  @unique
+  title           String?
+  description     String?
+  thankYouMessage String? @default("Thank you for your feedback!")
+  isActive        Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonial_links")
+}
+
+model WidgetConfig {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Customization options for the embeddable widget
+  themeColor    String  @default("#3B82F6") // e.g., Tailwind blue-500
+  displayLayout String  @default("list") // "list", "carousel", "grid"
+  displayOrder  String  @default("newest") // "newest", "highest_rating", "random"
+  showRating    Boolean @default(true)
+  showAvatar    Boolean @default(true)
+  autoPlay      Boolean @default(true) // For carousel layouts
+  speedMs       Int     @default(5000) // For carousel layouts
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("widget_configs")
+}
