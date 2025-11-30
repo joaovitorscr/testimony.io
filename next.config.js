@@ -9,4 +9,13 @@ jiti("./src/env");
 export default {
   reactCompiler: true,
   typedRoutes: true,
+  redirects: async () => {
+    return [
+      {
+        source: "/",
+        destination: "/dashboard",
+        permanent: false,
+      },
+    ];
+  },
 };
