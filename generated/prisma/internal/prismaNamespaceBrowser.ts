@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  Organization: 'Organization',
+  Project: 'Project',
   Testimonial: 'Testimonial',
   TestimonialLink: 'TestimonialLink',
   WidgetConfig: 'WidgetConfig'
@@ -86,9 +88,35 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const OrganizationScalarFieldEnum = {
+  id: 'id',
+  clerkOrgId: 'clerkOrgId',
+  name: 'name',
+  stripeCustomerId: 'stripeCustomerId',
+  plan: 'plan',
+  logoUrl: 'logoUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  organizationId: 'organizationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
 export const TestimonialScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  projectId: 'projectId',
   customerName: 'customerName',
   customerCompany: 'customerCompany',
   customerTitle: 'customerTitle',
@@ -107,6 +135,7 @@ export type TestimonialScalarFieldEnum = (typeof TestimonialScalarFieldEnum)[key
 export const TestimonialLinkScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  projectId: 'projectId',
   slug: 'slug',
   title: 'title',
   description: 'description',
@@ -122,6 +151,7 @@ export type TestimonialLinkScalarFieldEnum = (typeof TestimonialLinkScalarFieldE
 export const WidgetConfigScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  projectId: 'projectId',
   themeColor: 'themeColor',
   displayLayout: 'displayLayout',
   displayOrder: 'displayOrder',

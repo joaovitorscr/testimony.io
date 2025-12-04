@@ -30,10 +30,45 @@ model User {
   @@map("users")
 }
 
+model Organization {
+  id               String  @id @default(uuid())
+  clerkOrgId       String  @unique
+  name             String
+  stripeCustomerId String? @unique
+  plan             String? @default("free")
+  logoUrl          String?
+
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("organizations")
+}
+
+model Project {
+  id             String       @id @default(uuid())
+  name           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  testimonials     Testimonial[]
+  testimonialLinks TestimonialLink[]
+  widgetConfigs    WidgetConfig[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("projects")
+}
+
 model Testimonial {
   id     String @id @default(uuid())
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
 
   customerName      String
   customerCompany   String?
@@ -56,6 +91,9 @@ model TestimonialLink {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+
   // The unique slug/path for this user's collection form (e.g., /collect/mycompany)
   slug            String  @unique
   title           String?
@@ -73,6 +111,9 @@ model WidgetConfig {
   id     String @id @default(uuid())
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
 
   // Customization options for the embeddable widget
   themeColor    String  @default("#3B82F6") // e.g., Tailwind blue-500

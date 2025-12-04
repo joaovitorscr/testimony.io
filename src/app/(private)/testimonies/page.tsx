@@ -1,3 +1,4 @@
+import { currentUser } from "@clerk/nextjs/server";
 import {
   SearchIcon,
   SlidersHorizontalIcon,
@@ -5,6 +6,7 @@ import {
   VideoIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,45 +17,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-
-const testimonies = [
-  {
-    id: 1,
-    name: "Michael Chen",
-    role: "Product Designer at Stripe",
-    avatarInitials: "MC",
-    rating: 5,
-    date: "Oct 24",
-    quote:
-      "The implementation was incredibly smooth. We managed to collect over 50 video testimonies in just two days. The widget customization is exactly what we needed.",
-    tags: ["Video", "Product Launch"],
-    type: "Video",
-  },
-  {
-    id: 2,
-    name: "Alice Lewis",
-    role: "Founder at Bloom",
-    avatarInitials: "AL",
-    rating: 4,
-    date: "Oct 22",
-    quote:
-      "VOX has transformed how we build social proof. A few minor bugs on mobile, but the team fixed them instantly.",
-    tags: ["Text"],
-    type: "Text",
-  },
-  {
-    id: 3,
-    name: "David Ross",
-    role: "CTO at Vercel",
-    avatarInitials: "DR",
-    rating: 5,
-    date: "Oct 20",
-    quote:
-      "Simply the best tool for gathering feedback in our current stack. Love the dark mode!",
-    tags: ["Import"],
-    type: "Import",
-  },
-];
+import { Switch } from "@/components/ui/switch";
+import { db } from "@/server/db";
 
 function RatingStars({ value }: { value: number }) {
   return (
@@ -70,52 +35,47 @@ function RatingStars({ value }: { value: number }) {
   );
 }
 
-function Badge({
-  children,
-  variant = "default",
-}: {
-  children: React.ReactNode;
-  variant?: "default" | "outline";
-}) {
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-        variant === "default"
-          ? "bg-secondary/60 border-transparent text-secondary-foreground"
-          : "border-border text-muted-foreground"
-      }`}
-    >
-      {children}
-    </span>
-  );
-}
+export default async function TestimoniesPage() {
+  const user = await currentUser();
+  if (!user) return null;
 
-function FakeSwitch({ on = true }: { on?: boolean }) {
-  return (
-    <div
-      className={`inline-flex h-5 w-9 items-center rounded-full border transition-colors ${
-        on
-          ? "bg-emerald-500/80 border-emerald-500"
-          : "bg-muted border-border opacity-70"
-      }`}
-    >
-      <div
-        className={`mx-0.5 h-4 w-4 rounded-full bg-background shadow-sm transition-transform ${
-          on ? "translate-x-4" : ""
-        }`}
-      />
-    </div>
-  );
-}
+  const dbUser = await db.user.findUnique({
+    where: { clerkUserId: user.id },
+  });
 
-export default function TestimoniesPage() {
+  const rawTestimonies = dbUser
+    ? await db.testimonial.findMany({
+        where: { userId: dbUser.id },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+
+  const testimonies = rawTestimonies.map((t) => ({
+    id: t.id,
+    name: t.customerName,
+    role:
+      [t.customerTitle, t.customerCompany].filter(Boolean).join(" at ") ||
+      "Customer",
+    avatarInitials: t.customerName.slice(0, 2).toUpperCase(),
+    rating: t.rating || 0,
+    date: t.createdAt.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
+    quote: t.text,
+    tags: ["Text"],
+    type: "Text",
+    avatarUrl: t.customerAvatarUrl,
+  }));
+
   return (
     <div className="flex min-h-svh flex-1 flex-col bg-background/60">
+      {/* Page Header */}
       <header className="flex h-16 items-center justify-between border-b px-8">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-semibold tracking-tight">Testimonies</h2>
           <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-            142 Total
+            {testimonies.length} Total
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -137,59 +97,79 @@ export default function TestimoniesPage() {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="flex flex-1 gap-6 px-8 py-6">
+        {/* Testimonies List */}
         <section className="flex-1 space-y-4">
-          {testimonies.map((testimony) => (
-            <Card
-              key={testimony.id}
-              className="border-border/80 bg-card/80 shadow-sm"
-            >
-              <CardHeader className="flex flex-row items-start gap-4 px-6 pb-4">
-                <div className="flex flex-1 items-start gap-3">
-                  <Avatar className="mt-0.5 size-10">
-                    <AvatarImage alt={testimony.name} />
-                    <AvatarFallback className="text-xs font-medium">
-                      {testimony.avatarInitials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-1">
-                    <CardTitle className="text-sm font-semibold">
-                      {testimony.name}
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      {testimony.role}
-                    </CardDescription>
-                    <RatingStars value={testimony.rating} />
-                  </div>
-                </div>
-                <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
-                  <span>{testimony.date}</span>
-                  <FakeSwitch on />
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4 pb-5">
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  “{testimony.quote}”
-                </p>
+          {testimonies.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full space-y-4">
+              <p className="text-lg text-muted-foreground">
+                No testimonies found
+              </p>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  {testimony.type === "Video" && (
-                    <Badge>
-                      <VideoIcon className="mr-1 size-3" />
-                      Video
-                    </Badge>
-                  )}
-                  {testimony.tags.map((tag) => (
-                    <Badge key={tag} variant="outline">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              <Button type="button" size="sm">
+                Start Collecting Testimonies
+              </Button>
+            </div>
+          ) : (
+            <div>
+              {testimonies.map((testimony) => (
+                <Card
+                  key={testimony.id}
+                  className="border-border/80 bg-card/80 shadow-sm"
+                >
+                  <CardHeader className="flex flex-row items-start gap-4 px-6 pb-4">
+                    <div className="flex flex-1 items-start gap-3">
+                      <Avatar className="mt-0.5 size-10">
+                        <AvatarImage
+                          src={testimony.avatarUrl || undefined}
+                          alt={testimony.name}
+                        />
+                        <AvatarFallback className="text-xs font-medium">
+                          {testimony.avatarInitials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="space-y-1">
+                        <CardTitle className="text-sm font-semibold">
+                          {testimony.name}
+                        </CardTitle>
+                        <CardDescription className="text-xs">
+                          {testimony.role}
+                        </CardDescription>
+                        <RatingStars value={testimony.rating} />
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
+                      <span>{testimony.date}</span>
+                      <Switch checked={true} />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4 pb-5">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      “{testimony.quote}”
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {testimony.type === "Video" && (
+                        <Badge variant="outline">
+                          <VideoIcon className="mr-1 size-3" />
+                          Video
+                        </Badge>
+                      )}
+                      {testimony.tags.map((tag) => (
+                        <Badge key={tag} variant="outline">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </section>
 
+        {/* Right Side Widgets */}
         <aside className="flex w-[320px] flex-col gap-4">
           <Card className="border-border/80 bg-card/80">
             <CardHeader className="space-y-2 pb-4">
@@ -219,7 +199,7 @@ export default function TestimoniesPage() {
                 <span className="text-muted-foreground">
                   Accepting responses
                 </span>
-                <FakeSwitch on />
+                <Switch checked={true} />
               </div>
             </CardContent>
           </Card>
@@ -254,11 +234,11 @@ export default function TestimoniesPage() {
               <div className="space-y-3 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Dark Mode</span>
-                  <FakeSwitch on />
+                  <Switch checked={true} />
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Show Avatars</span>
-                  <FakeSwitch on />
+                  <Switch checked={true} />
                 </div>
                 <Button className="mt-1 w-full rounded-full text-xs font-medium">
                   Publish Changes

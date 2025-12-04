@@ -13,7 +13,7 @@ export default {
     return [
       {
         source: "/",
-        destination: "/dashboard",
+        destination: "/testimonies",
         permanent: false,
       },
     ];
