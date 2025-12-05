@@ -36,7 +36,6 @@ export type WidgetConfigSumAggregateOutputType = {
 
 export type WidgetConfigMinAggregateOutputType = {
   id: string | null
-  userId: string | null
   projectId: string | null
   themeColor: string | null
   displayLayout: string | null
@@ -51,7 +50,6 @@ export type WidgetConfigMinAggregateOutputType = {
 
 export type WidgetConfigMaxAggregateOutputType = {
   id: string | null
-  userId: string | null
   projectId: string | null
   themeColor: string | null
   displayLayout: string | null
@@ -66,7 +64,6 @@ export type WidgetConfigMaxAggregateOutputType = {
 
 export type WidgetConfigCountAggregateOutputType = {
   id: number
-  userId: number
   projectId: number
   themeColor: number
   displayLayout: number
@@ -91,7 +88,6 @@ export type WidgetConfigSumAggregateInputType = {
 
 export type WidgetConfigMinAggregateInputType = {
   id?: true
-  userId?: true
   projectId?: true
   themeColor?: true
   displayLayout?: true
@@ -106,7 +102,6 @@ export type WidgetConfigMinAggregateInputType = {
 
 export type WidgetConfigMaxAggregateInputType = {
   id?: true
-  userId?: true
   projectId?: true
   themeColor?: true
   displayLayout?: true
@@ -121,7 +116,6 @@ export type WidgetConfigMaxAggregateInputType = {
 
 export type WidgetConfigCountAggregateInputType = {
   id?: true
-  userId?: true
   projectId?: true
   themeColor?: true
   displayLayout?: true
@@ -223,8 +217,7 @@ export type WidgetConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type WidgetConfigGroupByOutputType = {
   id: string
-  userId: string
-  projectId: string | null
+  projectId: string
   themeColor: string
   displayLayout: string
   displayOrder: string
@@ -261,8 +254,7 @@ export type WidgetConfigWhereInput = {
   OR?: Prisma.WidgetConfigWhereInput[]
   NOT?: Prisma.WidgetConfigWhereInput | Prisma.WidgetConfigWhereInput[]
   id?: Prisma.StringFilter<"WidgetConfig"> | string
-  userId?: Prisma.StringFilter<"WidgetConfig"> | string
-  projectId?: Prisma.StringNullableFilter<"WidgetConfig"> | string | null
+  projectId?: Prisma.StringFilter<"WidgetConfig"> | string
   themeColor?: Prisma.StringFilter<"WidgetConfig"> | string
   displayLayout?: Prisma.StringFilter<"WidgetConfig"> | string
   displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
@@ -272,14 +264,12 @@ export type WidgetConfigWhereInput = {
   speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
   createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
 }
 
 export type WidgetConfigOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  projectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  projectId?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
@@ -289,17 +279,15 @@ export type WidgetConfigOrderByWithRelationInput = {
   speedMs?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   project?: Prisma.ProjectOrderByWithRelationInput
 }
 
 export type WidgetConfigWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId?: string
+  projectId?: string
   AND?: Prisma.WidgetConfigWhereInput | Prisma.WidgetConfigWhereInput[]
   OR?: Prisma.WidgetConfigWhereInput[]
   NOT?: Prisma.WidgetConfigWhereInput | Prisma.WidgetConfigWhereInput[]
-  projectId?: Prisma.StringNullableFilter<"WidgetConfig"> | string | null
   themeColor?: Prisma.StringFilter<"WidgetConfig"> | string
   displayLayout?: Prisma.StringFilter<"WidgetConfig"> | string
   displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
@@ -309,14 +297,12 @@ export type WidgetConfigWhereUniqueInput = Prisma.AtLeast<{
   speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
   createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
-}, "id" | "userId">
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
+}, "id" | "projectId">
 
 export type WidgetConfigOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  projectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  projectId?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
@@ -338,8 +324,7 @@ export type WidgetConfigScalarWhereWithAggregatesInput = {
   OR?: Prisma.WidgetConfigScalarWhereWithAggregatesInput[]
   NOT?: Prisma.WidgetConfigScalarWhereWithAggregatesInput | Prisma.WidgetConfigScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
-  projectId?: Prisma.StringNullableWithAggregatesFilter<"WidgetConfig"> | string | null
+  projectId?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   themeColor?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   displayLayout?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   displayOrder?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
@@ -362,14 +347,12 @@ export type WidgetConfigCreateInput = {
   speedMs?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutWidgetConfigInput
-  project?: Prisma.ProjectCreateNestedOneWithoutWidgetConfigsInput
+  project: Prisma.ProjectCreateNestedOneWithoutWidgetConfigInput
 }
 
 export type WidgetConfigUncheckedCreateInput = {
   id?: string
-  userId: string
-  projectId?: string | null
+  projectId: string
   themeColor?: string
   displayLayout?: string
   displayOrder?: string
@@ -392,14 +375,12 @@ export type WidgetConfigUpdateInput = {
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutWidgetConfigNestedInput
-  project?: Prisma.ProjectUpdateOneWithoutWidgetConfigsNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutWidgetConfigNestedInput
 }
 
 export type WidgetConfigUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   themeColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
@@ -413,8 +394,7 @@ export type WidgetConfigUncheckedUpdateInput = {
 
 export type WidgetConfigCreateManyInput = {
   id?: string
-  userId: string
-  projectId?: string | null
+  projectId: string
   themeColor?: string
   displayLayout?: string
   displayOrder?: string
@@ -441,8 +421,7 @@ export type WidgetConfigUpdateManyMutationInput = {
 
 export type WidgetConfigUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   themeColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
@@ -459,19 +438,8 @@ export type WidgetConfigNullableScalarRelationFilter = {
   isNot?: Prisma.WidgetConfigWhereInput | null
 }
 
-export type WidgetConfigListRelationFilter = {
-  every?: Prisma.WidgetConfigWhereInput
-  some?: Prisma.WidgetConfigWhereInput
-  none?: Prisma.WidgetConfigWhereInput
-}
-
-export type WidgetConfigOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type WidgetConfigCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
@@ -490,7 +458,6 @@ export type WidgetConfigAvgOrderByAggregateInput = {
 
 export type WidgetConfigMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
@@ -505,7 +472,6 @@ export type WidgetConfigMaxOrderByAggregateInput = {
 
 export type WidgetConfigMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
@@ -522,78 +488,36 @@ export type WidgetConfigSumOrderByAggregateInput = {
   speedMs?: Prisma.SortOrder
 }
 
-export type WidgetConfigCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutUserInput, Prisma.WidgetConfigUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutUserInput
+export type WidgetConfigCreateNestedOneWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput
   connect?: Prisma.WidgetConfigWhereUniqueInput
 }
 
-export type WidgetConfigUncheckedCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutUserInput, Prisma.WidgetConfigUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutUserInput
+export type WidgetConfigUncheckedCreateNestedOneWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput
   connect?: Prisma.WidgetConfigWhereUniqueInput
 }
 
-export type WidgetConfigUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutUserInput, Prisma.WidgetConfigUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutUserInput
-  upsert?: Prisma.WidgetConfigUpsertWithoutUserInput
+export type WidgetConfigUpdateOneWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput
+  upsert?: Prisma.WidgetConfigUpsertWithoutProjectInput
   disconnect?: Prisma.WidgetConfigWhereInput | boolean
   delete?: Prisma.WidgetConfigWhereInput | boolean
   connect?: Prisma.WidgetConfigWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.WidgetConfigUpdateToOneWithWhereWithoutUserInput, Prisma.WidgetConfigUpdateWithoutUserInput>, Prisma.WidgetConfigUncheckedUpdateWithoutUserInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WidgetConfigUpdateToOneWithWhereWithoutProjectInput, Prisma.WidgetConfigUpdateWithoutProjectInput>, Prisma.WidgetConfigUncheckedUpdateWithoutProjectInput>
 }
 
-export type WidgetConfigUncheckedUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutUserInput, Prisma.WidgetConfigUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutUserInput
-  upsert?: Prisma.WidgetConfigUpsertWithoutUserInput
+export type WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput
+  upsert?: Prisma.WidgetConfigUpsertWithoutProjectInput
   disconnect?: Prisma.WidgetConfigWhereInput | boolean
   delete?: Prisma.WidgetConfigWhereInput | boolean
   connect?: Prisma.WidgetConfigWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.WidgetConfigUpdateToOneWithWhereWithoutUserInput, Prisma.WidgetConfigUpdateWithoutUserInput>, Prisma.WidgetConfigUncheckedUpdateWithoutUserInput>
-}
-
-export type WidgetConfigCreateNestedManyWithoutProjectInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput> | Prisma.WidgetConfigCreateWithoutProjectInput[] | Prisma.WidgetConfigUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput | Prisma.WidgetConfigCreateOrConnectWithoutProjectInput[]
-  createMany?: Prisma.WidgetConfigCreateManyProjectInputEnvelope
-  connect?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-}
-
-export type WidgetConfigUncheckedCreateNestedManyWithoutProjectInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput> | Prisma.WidgetConfigCreateWithoutProjectInput[] | Prisma.WidgetConfigUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput | Prisma.WidgetConfigCreateOrConnectWithoutProjectInput[]
-  createMany?: Prisma.WidgetConfigCreateManyProjectInputEnvelope
-  connect?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-}
-
-export type WidgetConfigUpdateManyWithoutProjectNestedInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput> | Prisma.WidgetConfigCreateWithoutProjectInput[] | Prisma.WidgetConfigUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput | Prisma.WidgetConfigCreateOrConnectWithoutProjectInput[]
-  upsert?: Prisma.WidgetConfigUpsertWithWhereUniqueWithoutProjectInput | Prisma.WidgetConfigUpsertWithWhereUniqueWithoutProjectInput[]
-  createMany?: Prisma.WidgetConfigCreateManyProjectInputEnvelope
-  set?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  disconnect?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  delete?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  connect?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  update?: Prisma.WidgetConfigUpdateWithWhereUniqueWithoutProjectInput | Prisma.WidgetConfigUpdateWithWhereUniqueWithoutProjectInput[]
-  updateMany?: Prisma.WidgetConfigUpdateManyWithWhereWithoutProjectInput | Prisma.WidgetConfigUpdateManyWithWhereWithoutProjectInput[]
-  deleteMany?: Prisma.WidgetConfigScalarWhereInput | Prisma.WidgetConfigScalarWhereInput[]
-}
-
-export type WidgetConfigUncheckedUpdateManyWithoutProjectNestedInput = {
-  create?: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput> | Prisma.WidgetConfigCreateWithoutProjectInput[] | Prisma.WidgetConfigUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.WidgetConfigCreateOrConnectWithoutProjectInput | Prisma.WidgetConfigCreateOrConnectWithoutProjectInput[]
-  upsert?: Prisma.WidgetConfigUpsertWithWhereUniqueWithoutProjectInput | Prisma.WidgetConfigUpsertWithWhereUniqueWithoutProjectInput[]
-  createMany?: Prisma.WidgetConfigCreateManyProjectInputEnvelope
-  set?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  disconnect?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  delete?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  connect?: Prisma.WidgetConfigWhereUniqueInput | Prisma.WidgetConfigWhereUniqueInput[]
-  update?: Prisma.WidgetConfigUpdateWithWhereUniqueWithoutProjectInput | Prisma.WidgetConfigUpdateWithWhereUniqueWithoutProjectInput[]
-  updateMany?: Prisma.WidgetConfigUpdateManyWithWhereWithoutProjectInput | Prisma.WidgetConfigUpdateManyWithWhereWithoutProjectInput[]
-  deleteMany?: Prisma.WidgetConfigScalarWhereInput | Prisma.WidgetConfigScalarWhereInput[]
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WidgetConfigUpdateToOneWithWhereWithoutProjectInput, Prisma.WidgetConfigUpdateWithoutProjectInput>, Prisma.WidgetConfigUncheckedUpdateWithoutProjectInput>
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -602,78 +526,6 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type WidgetConfigCreateWithoutUserInput = {
-  id?: string
-  themeColor?: string
-  displayLayout?: string
-  displayOrder?: string
-  showRating?: boolean
-  showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  project?: Prisma.ProjectCreateNestedOneWithoutWidgetConfigsInput
-}
-
-export type WidgetConfigUncheckedCreateWithoutUserInput = {
-  id?: string
-  projectId?: string | null
-  themeColor?: string
-  displayLayout?: string
-  displayOrder?: string
-  showRating?: boolean
-  showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type WidgetConfigCreateOrConnectWithoutUserInput = {
-  where: Prisma.WidgetConfigWhereUniqueInput
-  create: Prisma.XOR<Prisma.WidgetConfigCreateWithoutUserInput, Prisma.WidgetConfigUncheckedCreateWithoutUserInput>
-}
-
-export type WidgetConfigUpsertWithoutUserInput = {
-  update: Prisma.XOR<Prisma.WidgetConfigUpdateWithoutUserInput, Prisma.WidgetConfigUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.WidgetConfigCreateWithoutUserInput, Prisma.WidgetConfigUncheckedCreateWithoutUserInput>
-  where?: Prisma.WidgetConfigWhereInput
-}
-
-export type WidgetConfigUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.WidgetConfigWhereInput
-  data: Prisma.XOR<Prisma.WidgetConfigUpdateWithoutUserInput, Prisma.WidgetConfigUncheckedUpdateWithoutUserInput>
-}
-
-export type WidgetConfigUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
-  displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
-  displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
-  showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  project?: Prisma.ProjectUpdateOneWithoutWidgetConfigsNestedInput
-}
-
-export type WidgetConfigUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
-  displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
-  displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
-  showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WidgetConfigCreateWithoutProjectInput = {
@@ -687,12 +539,10 @@ export type WidgetConfigCreateWithoutProjectInput = {
   speedMs?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutWidgetConfigInput
 }
 
 export type WidgetConfigUncheckedCreateWithoutProjectInput = {
   id?: string
-  userId: string
   themeColor?: string
   displayLayout?: string
   displayOrder?: string
@@ -709,57 +559,15 @@ export type WidgetConfigCreateOrConnectWithoutProjectInput = {
   create: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput>
 }
 
-export type WidgetConfigCreateManyProjectInputEnvelope = {
-  data: Prisma.WidgetConfigCreateManyProjectInput | Prisma.WidgetConfigCreateManyProjectInput[]
-  skipDuplicates?: boolean
-}
-
-export type WidgetConfigUpsertWithWhereUniqueWithoutProjectInput = {
-  where: Prisma.WidgetConfigWhereUniqueInput
+export type WidgetConfigUpsertWithoutProjectInput = {
   update: Prisma.XOR<Prisma.WidgetConfigUpdateWithoutProjectInput, Prisma.WidgetConfigUncheckedUpdateWithoutProjectInput>
   create: Prisma.XOR<Prisma.WidgetConfigCreateWithoutProjectInput, Prisma.WidgetConfigUncheckedCreateWithoutProjectInput>
+  where?: Prisma.WidgetConfigWhereInput
 }
 
-export type WidgetConfigUpdateWithWhereUniqueWithoutProjectInput = {
-  where: Prisma.WidgetConfigWhereUniqueInput
+export type WidgetConfigUpdateToOneWithWhereWithoutProjectInput = {
+  where?: Prisma.WidgetConfigWhereInput
   data: Prisma.XOR<Prisma.WidgetConfigUpdateWithoutProjectInput, Prisma.WidgetConfigUncheckedUpdateWithoutProjectInput>
-}
-
-export type WidgetConfigUpdateManyWithWhereWithoutProjectInput = {
-  where: Prisma.WidgetConfigScalarWhereInput
-  data: Prisma.XOR<Prisma.WidgetConfigUpdateManyMutationInput, Prisma.WidgetConfigUncheckedUpdateManyWithoutProjectInput>
-}
-
-export type WidgetConfigScalarWhereInput = {
-  AND?: Prisma.WidgetConfigScalarWhereInput | Prisma.WidgetConfigScalarWhereInput[]
-  OR?: Prisma.WidgetConfigScalarWhereInput[]
-  NOT?: Prisma.WidgetConfigScalarWhereInput | Prisma.WidgetConfigScalarWhereInput[]
-  id?: Prisma.StringFilter<"WidgetConfig"> | string
-  userId?: Prisma.StringFilter<"WidgetConfig"> | string
-  projectId?: Prisma.StringNullableFilter<"WidgetConfig"> | string | null
-  themeColor?: Prisma.StringFilter<"WidgetConfig"> | string
-  displayLayout?: Prisma.StringFilter<"WidgetConfig"> | string
-  displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
-  showRating?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  showAvatar?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  autoPlay?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
-  createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
-}
-
-export type WidgetConfigCreateManyProjectInput = {
-  id?: string
-  userId: string
-  themeColor?: string
-  displayLayout?: string
-  displayOrder?: string
-  showRating?: boolean
-  showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
-  createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type WidgetConfigUpdateWithoutProjectInput = {
@@ -773,26 +581,10 @@ export type WidgetConfigUpdateWithoutProjectInput = {
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutWidgetConfigNestedInput
 }
 
 export type WidgetConfigUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
-  displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
-  displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
-  showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type WidgetConfigUncheckedUpdateManyWithoutProjectInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
   themeColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
@@ -808,7 +600,6 @@ export type WidgetConfigUncheckedUpdateManyWithoutProjectInput = {
 
 export type WidgetConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   themeColor?: boolean
   displayLayout?: boolean
@@ -819,13 +610,11 @@ export type WidgetConfigSelect<ExtArgs extends runtime.Types.Extensions.Internal
   speedMs?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.WidgetConfig$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["widgetConfig"]>
 
 export type WidgetConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   themeColor?: boolean
   displayLayout?: boolean
@@ -836,13 +625,11 @@ export type WidgetConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   speedMs?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.WidgetConfig$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["widgetConfig"]>
 
 export type WidgetConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   themeColor?: boolean
   displayLayout?: boolean
@@ -853,13 +640,11 @@ export type WidgetConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   speedMs?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.WidgetConfig$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["widgetConfig"]>
 
 export type WidgetConfigSelectScalar = {
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   themeColor?: boolean
   displayLayout?: boolean
@@ -872,30 +657,25 @@ export type WidgetConfigSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WidgetConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "projectId" | "themeColor" | "displayLayout" | "displayOrder" | "showRating" | "showAvatar" | "autoPlay" | "speedMs" | "createdAt" | "updatedAt", ExtArgs["result"]["widgetConfig"]>
+export type WidgetConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "themeColor" | "displayLayout" | "displayOrder" | "showRating" | "showAvatar" | "autoPlay" | "speedMs" | "createdAt" | "updatedAt", ExtArgs["result"]["widgetConfig"]>
 export type WidgetConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.WidgetConfig$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 export type WidgetConfigIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.WidgetConfig$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 export type WidgetConfigIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.WidgetConfig$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 
 export type $WidgetConfigPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "WidgetConfig"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
-    project: Prisma.$ProjectPayload<ExtArgs> | null
+    project: Prisma.$ProjectPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    userId: string
-    projectId: string | null
+    projectId: string
     themeColor: string
     displayLayout: string
     displayOrder: string
@@ -1299,8 +1079,7 @@ readonly fields: WidgetConfigFieldRefs;
  */
 export interface Prisma__WidgetConfigClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  project<T extends Prisma.WidgetConfig$projectArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WidgetConfig$projectArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1331,7 +1110,6 @@ export interface Prisma__WidgetConfigClient<T, Null = never, ExtArgs extends run
  */
 export interface WidgetConfigFieldRefs {
   readonly id: Prisma.FieldRef<"WidgetConfig", 'String'>
-  readonly userId: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly projectId: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly themeColor: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly displayLayout: Prisma.FieldRef<"WidgetConfig", 'String'>
@@ -1735,25 +1513,6 @@ export type WidgetConfigDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many WidgetConfigs to delete.
    */
   limit?: number
-}
-
-/**
- * WidgetConfig.project
- */
-export type WidgetConfig$projectArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Project
-   */
-  select?: Prisma.ProjectSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Project
-   */
-  omit?: Prisma.ProjectOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProjectInclude<ExtArgs> | null
-  where?: Prisma.ProjectWhereInput
 }
 
 /**

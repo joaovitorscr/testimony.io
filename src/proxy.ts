@@ -1,16 +1,31 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/server/auth";
 
-const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/api/webhooks(.*)",
-]);
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const publicRoutes = ["/sign-in", "/sign-up", "/api/auth"];
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect();
+  if (
+    pathname === "/" ||
+    publicRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    return NextResponse.next();
   }
-});
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  // THIS IS NOT SECURE!
+  // This is the recommended approach to optimistically redirect users
+  // We recommend handling auth checks in each page/route
+  if (!session) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [

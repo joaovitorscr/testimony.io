@@ -27,6 +27,8 @@ export type AggregateProject = {
 export type ProjectMinAggregateOutputType = {
   id: string | null
   name: string | null
+  slug: string | null
+  userId: string | null
   organizationId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -35,6 +37,8 @@ export type ProjectMinAggregateOutputType = {
 export type ProjectMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  slug: string | null
+  userId: string | null
   organizationId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +47,8 @@ export type ProjectMaxAggregateOutputType = {
 export type ProjectCountAggregateOutputType = {
   id: number
   name: number
+  slug: number
+  userId: number
   organizationId: number
   createdAt: number
   updatedAt: number
@@ -53,6 +59,8 @@ export type ProjectCountAggregateOutputType = {
 export type ProjectMinAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
+  userId?: true
   organizationId?: true
   createdAt?: true
   updatedAt?: true
@@ -61,6 +69,8 @@ export type ProjectMinAggregateInputType = {
 export type ProjectMaxAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
+  userId?: true
   organizationId?: true
   createdAt?: true
   updatedAt?: true
@@ -69,6 +79,8 @@ export type ProjectMaxAggregateInputType = {
 export type ProjectCountAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
+  userId?: true
   organizationId?: true
   createdAt?: true
   updatedAt?: true
@@ -150,7 +162,9 @@ export type ProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type ProjectGroupByOutputType = {
   id: string
   name: string
-  organizationId: string
+  slug: string
+  userId: string | null
+  organizationId: string | null
   createdAt: Date
   updatedAt: Date
   _count: ProjectCountAggregateOutputType | null
@@ -179,46 +193,57 @@ export type ProjectWhereInput = {
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   id?: Prisma.StringFilter<"Project"> | string
   name?: Prisma.StringFilter<"Project"> | string
-  organizationId?: Prisma.StringFilter<"Project"> | string
+  slug?: Prisma.StringFilter<"Project"> | string
+  userId?: Prisma.StringNullableFilter<"Project"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"Project"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-  organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   testimonials?: Prisma.TestimonialListRelationFilter
-  testimonialLinks?: Prisma.TestimonialLinkListRelationFilter
-  widgetConfigs?: Prisma.WidgetConfigListRelationFilter
+  testimonialLink?: Prisma.XOR<Prisma.TestimonialLinkNullableScalarRelationFilter, Prisma.TestimonialLinkWhereInput> | null
+  widgetConfig?: Prisma.XOR<Prisma.WidgetConfigNullableScalarRelationFilter, Prisma.WidgetConfigWhereInput> | null
 }
 
 export type ProjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  organizationId?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
   organization?: Prisma.OrganizationOrderByWithRelationInput
   testimonials?: Prisma.TestimonialOrderByRelationAggregateInput
-  testimonialLinks?: Prisma.TestimonialLinkOrderByRelationAggregateInput
-  widgetConfigs?: Prisma.WidgetConfigOrderByRelationAggregateInput
+  testimonialLink?: Prisma.TestimonialLinkOrderByWithRelationInput
+  widgetConfig?: Prisma.WidgetConfigOrderByWithRelationInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   name?: Prisma.StringFilter<"Project"> | string
-  organizationId?: Prisma.StringFilter<"Project"> | string
+  userId?: Prisma.StringNullableFilter<"Project"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"Project"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-  organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   testimonials?: Prisma.TestimonialListRelationFilter
-  testimonialLinks?: Prisma.TestimonialLinkListRelationFilter
-  widgetConfigs?: Prisma.WidgetConfigListRelationFilter
-}, "id">
+  testimonialLink?: Prisma.XOR<Prisma.TestimonialLinkNullableScalarRelationFilter, Prisma.TestimonialLinkWhereInput> | null
+  widgetConfig?: Prisma.XOR<Prisma.WidgetConfigNullableScalarRelationFilter, Prisma.WidgetConfigWhereInput> | null
+}, "id" | "slug">
 
 export type ProjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  organizationId?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
@@ -232,7 +257,9 @@ export type ProjectScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ProjectScalarWhereWithAggregatesInput | Prisma.ProjectScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Project"> | string
   name?: Prisma.StringWithAggregatesFilter<"Project"> | string
-  organizationId?: Prisma.StringWithAggregatesFilter<"Project"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"Project"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
 }
@@ -240,51 +267,61 @@ export type ProjectScalarWhereWithAggregatesInput = {
 export type ProjectCreateInput = {
   id?: string
   name: string
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  organization: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
+  user?: Prisma.UserCreateNestedOneWithoutProjectsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLinks?: Prisma.TestimonialLinkCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
   id?: string
   name: string
-  organizationId: string
+  slug: string
+  userId?: string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutProjectsNestedInput
+  user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutProjectsNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
   id?: string
   name: string
-  organizationId: string
+  slug: string
+  userId?: string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -292,6 +329,7 @@ export type ProjectCreateManyInput = {
 export type ProjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -299,7 +337,9 @@ export type ProjectUpdateManyMutationInput = {
 export type ProjectUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +357,8 @@ export type ProjectOrderByRelationAggregateInput = {
 export type ProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -325,6 +367,8 @@ export type ProjectCountOrderByAggregateInput = {
 export type ProjectMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -333,14 +377,58 @@ export type ProjectMaxOrderByAggregateInput = {
 export type ProjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type ProjectNullableScalarRelationFilter = {
-  is?: Prisma.ProjectWhereInput | null
-  isNot?: Prisma.ProjectWhereInput | null
+export type ProjectScalarRelationFilter = {
+  is?: Prisma.ProjectWhereInput
+  isNot?: Prisma.ProjectWhereInput
+}
+
+export type ProjectCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutUserInput, Prisma.ProjectUncheckedCreateWithoutUserInput> | Prisma.ProjectCreateWithoutUserInput[] | Prisma.ProjectUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutUserInput | Prisma.ProjectCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ProjectCreateManyUserInputEnvelope
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+}
+
+export type ProjectUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutUserInput, Prisma.ProjectUncheckedCreateWithoutUserInput> | Prisma.ProjectCreateWithoutUserInput[] | Prisma.ProjectUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutUserInput | Prisma.ProjectCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ProjectCreateManyUserInputEnvelope
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+}
+
+export type ProjectUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutUserInput, Prisma.ProjectUncheckedCreateWithoutUserInput> | Prisma.ProjectCreateWithoutUserInput[] | Prisma.ProjectUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutUserInput | Prisma.ProjectCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ProjectUpsertWithWhereUniqueWithoutUserInput | Prisma.ProjectUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ProjectCreateManyUserInputEnvelope
+  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  disconnect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  update?: Prisma.ProjectUpdateWithWhereUniqueWithoutUserInput | Prisma.ProjectUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ProjectUpdateManyWithWhereWithoutUserInput | Prisma.ProjectUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+}
+
+export type ProjectUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutUserInput, Prisma.ProjectUncheckedCreateWithoutUserInput> | Prisma.ProjectCreateWithoutUserInput[] | Prisma.ProjectUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutUserInput | Prisma.ProjectCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ProjectUpsertWithWhereUniqueWithoutUserInput | Prisma.ProjectUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ProjectCreateManyUserInputEnvelope
+  set?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  disconnect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  delete?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  connect?: Prisma.ProjectWhereUniqueInput | Prisma.ProjectWhereUniqueInput[]
+  update?: Prisma.ProjectUpdateWithWhereUniqueWithoutUserInput | Prisma.ProjectUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ProjectUpdateManyWithWhereWithoutUserInput | Prisma.ProjectUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
 export type ProjectCreateNestedManyWithoutOrganizationInput = {
@@ -391,66 +479,127 @@ export type ProjectCreateNestedOneWithoutTestimonialsInput = {
   connect?: Prisma.ProjectWhereUniqueInput
 }
 
-export type ProjectUpdateOneWithoutTestimonialsNestedInput = {
+export type ProjectUpdateOneRequiredWithoutTestimonialsNestedInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialsInput, Prisma.ProjectUncheckedCreateWithoutTestimonialsInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialsInput
   upsert?: Prisma.ProjectUpsertWithoutTestimonialsInput
-  disconnect?: Prisma.ProjectWhereInput | boolean
-  delete?: Prisma.ProjectWhereInput | boolean
   connect?: Prisma.ProjectWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTestimonialsInput, Prisma.ProjectUpdateWithoutTestimonialsInput>, Prisma.ProjectUncheckedUpdateWithoutTestimonialsInput>
 }
 
-export type ProjectCreateNestedOneWithoutTestimonialLinksInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinksInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinksInput>
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialLinksInput
+export type ProjectCreateNestedOneWithoutTestimonialLinkInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialLinkInput
   connect?: Prisma.ProjectWhereUniqueInput
 }
 
-export type ProjectUpdateOneWithoutTestimonialLinksNestedInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinksInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinksInput>
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialLinksInput
-  upsert?: Prisma.ProjectUpsertWithoutTestimonialLinksInput
-  disconnect?: Prisma.ProjectWhereInput | boolean
-  delete?: Prisma.ProjectWhereInput | boolean
+export type ProjectUpdateOneRequiredWithoutTestimonialLinkNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialLinkInput
+  upsert?: Prisma.ProjectUpsertWithoutTestimonialLinkInput
   connect?: Prisma.ProjectWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTestimonialLinksInput, Prisma.ProjectUpdateWithoutTestimonialLinksInput>, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinksInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTestimonialLinkInput, Prisma.ProjectUpdateWithoutTestimonialLinkInput>, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinkInput>
 }
 
-export type ProjectCreateNestedOneWithoutWidgetConfigsInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigsInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigsInput>
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWidgetConfigsInput
+export type ProjectCreateNestedOneWithoutWidgetConfigInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWidgetConfigInput
   connect?: Prisma.ProjectWhereUniqueInput
 }
 
-export type ProjectUpdateOneWithoutWidgetConfigsNestedInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigsInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigsInput>
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWidgetConfigsInput
-  upsert?: Prisma.ProjectUpsertWithoutWidgetConfigsInput
-  disconnect?: Prisma.ProjectWhereInput | boolean
-  delete?: Prisma.ProjectWhereInput | boolean
+export type ProjectUpdateOneRequiredWithoutWidgetConfigNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutWidgetConfigInput
+  upsert?: Prisma.ProjectUpsertWithoutWidgetConfigInput
   connect?: Prisma.ProjectWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutWidgetConfigsInput, Prisma.ProjectUpdateWithoutWidgetConfigsInput>, Prisma.ProjectUncheckedUpdateWithoutWidgetConfigsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutWidgetConfigInput, Prisma.ProjectUpdateWithoutWidgetConfigInput>, Prisma.ProjectUncheckedUpdateWithoutWidgetConfigInput>
+}
+
+export type ProjectCreateWithoutUserInput = {
+  id?: string
+  name: string
+  slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
+  testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutUserInput = {
+  id?: string
+  name: string
+  slug: string
+  organizationId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutUserInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutUserInput, Prisma.ProjectUncheckedCreateWithoutUserInput>
+}
+
+export type ProjectCreateManyUserInputEnvelope = {
+  data: Prisma.ProjectCreateManyUserInput | Prisma.ProjectCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProjectUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutUserInput, Prisma.ProjectUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutUserInput, Prisma.ProjectUncheckedCreateWithoutUserInput>
+}
+
+export type ProjectUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutUserInput, Prisma.ProjectUncheckedUpdateWithoutUserInput>
+}
+
+export type ProjectUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.ProjectScalarWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateManyMutationInput, Prisma.ProjectUncheckedUpdateManyWithoutUserInput>
+}
+
+export type ProjectScalarWhereInput = {
+  AND?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+  OR?: Prisma.ProjectScalarWhereInput[]
+  NOT?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
+  id?: Prisma.StringFilter<"Project"> | string
+  name?: Prisma.StringFilter<"Project"> | string
+  slug?: Prisma.StringFilter<"Project"> | string
+  userId?: Prisma.StringNullableFilter<"Project"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"Project"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }
 
 export type ProjectCreateWithoutOrganizationInput = {
   id?: string
   name: string
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutProjectsInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLinks?: Prisma.TestimonialLinkCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutOrganizationInput = {
   id?: string
   name: string
+  slug: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutOrganizationInput = {
@@ -479,35 +628,28 @@ export type ProjectUpdateManyWithWhereWithoutOrganizationInput = {
   data: Prisma.XOR<Prisma.ProjectUpdateManyMutationInput, Prisma.ProjectUncheckedUpdateManyWithoutOrganizationInput>
 }
 
-export type ProjectScalarWhereInput = {
-  AND?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-  OR?: Prisma.ProjectScalarWhereInput[]
-  NOT?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
-  id?: Prisma.StringFilter<"Project"> | string
-  name?: Prisma.StringFilter<"Project"> | string
-  organizationId?: Prisma.StringFilter<"Project"> | string
-  createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
-}
-
 export type ProjectCreateWithoutTestimonialsInput = {
   id?: string
   name: string
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  organization: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
-  testimonialLinks?: Prisma.TestimonialLinkCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigCreateNestedManyWithoutProjectInput
+  user?: Prisma.UserCreateNestedOneWithoutProjectsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
+  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutTestimonialsInput = {
   id?: string
   name: string
-  organizationId: string
+  slug: string
+  userId?: string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutTestimonialsInput = {
@@ -529,138 +671,202 @@ export type ProjectUpdateToOneWithWhereWithoutTestimonialsInput = {
 export type ProjectUpdateWithoutTestimonialsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutProjectsNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUpdateManyWithoutProjectNestedInput
+  user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutProjectsNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutTestimonialsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
 }
 
-export type ProjectCreateWithoutTestimonialLinksInput = {
+export type ProjectCreateWithoutTestimonialLinkInput = {
   id?: string
   name: string
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  organization: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
+  user?: Prisma.UserCreateNestedOneWithoutProjectsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigCreateNestedManyWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
 }
 
-export type ProjectUncheckedCreateWithoutTestimonialLinksInput = {
+export type ProjectUncheckedCreateWithoutTestimonialLinkInput = {
   id?: string
   name: string
-  organizationId: string
+  slug: string
+  userId?: string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedCreateNestedManyWithoutProjectInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
 }
 
-export type ProjectCreateOrConnectWithoutTestimonialLinksInput = {
+export type ProjectCreateOrConnectWithoutTestimonialLinkInput = {
   where: Prisma.ProjectWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinksInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinksInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
 }
 
-export type ProjectUpsertWithoutTestimonialLinksInput = {
-  update: Prisma.XOR<Prisma.ProjectUpdateWithoutTestimonialLinksInput, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinksInput>
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinksInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinksInput>
+export type ProjectUpsertWithoutTestimonialLinkInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinkInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
   where?: Prisma.ProjectWhereInput
 }
 
-export type ProjectUpdateToOneWithWhereWithoutTestimonialLinksInput = {
+export type ProjectUpdateToOneWithWhereWithoutTestimonialLinkInput = {
   where?: Prisma.ProjectWhereInput
-  data: Prisma.XOR<Prisma.ProjectUpdateWithoutTestimonialLinksInput, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinksInput>
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinkInput>
 }
 
-export type ProjectUpdateWithoutTestimonialLinksInput = {
+export type ProjectUpdateWithoutTestimonialLinkInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutProjectsNestedInput
+  user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutProjectsNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUpdateManyWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
 }
 
-export type ProjectUncheckedUpdateWithoutTestimonialLinksInput = {
+export type ProjectUncheckedUpdateWithoutTestimonialLinkInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedUpdateManyWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
 }
 
-export type ProjectCreateWithoutWidgetConfigsInput = {
+export type ProjectCreateWithoutWidgetConfigInput = {
   id?: string
   name: string
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  organization: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
+  user?: Prisma.UserCreateNestedOneWithoutProjectsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutProjectsInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLinks?: Prisma.TestimonialLinkCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
 }
 
-export type ProjectUncheckedCreateWithoutWidgetConfigsInput = {
+export type ProjectUncheckedCreateWithoutWidgetConfigInput = {
   id?: string
   name: string
-  organizationId: string
+  slug: string
+  userId?: string | null
+  organizationId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedCreateNestedManyWithoutProjectInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
 }
 
-export type ProjectCreateOrConnectWithoutWidgetConfigsInput = {
+export type ProjectCreateOrConnectWithoutWidgetConfigInput = {
   where: Prisma.ProjectWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigsInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigInput>
 }
 
-export type ProjectUpsertWithoutWidgetConfigsInput = {
-  update: Prisma.XOR<Prisma.ProjectUpdateWithoutWidgetConfigsInput, Prisma.ProjectUncheckedUpdateWithoutWidgetConfigsInput>
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigsInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigsInput>
+export type ProjectUpsertWithoutWidgetConfigInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutWidgetConfigInput, Prisma.ProjectUncheckedUpdateWithoutWidgetConfigInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutWidgetConfigInput, Prisma.ProjectUncheckedCreateWithoutWidgetConfigInput>
   where?: Prisma.ProjectWhereInput
 }
 
-export type ProjectUpdateToOneWithWhereWithoutWidgetConfigsInput = {
+export type ProjectUpdateToOneWithWhereWithoutWidgetConfigInput = {
   where?: Prisma.ProjectWhereInput
-  data: Prisma.XOR<Prisma.ProjectUpdateWithoutWidgetConfigsInput, Prisma.ProjectUncheckedUpdateWithoutWidgetConfigsInput>
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutWidgetConfigInput, Prisma.ProjectUncheckedUpdateWithoutWidgetConfigInput>
 }
 
-export type ProjectUpdateWithoutWidgetConfigsInput = {
+export type ProjectUpdateWithoutWidgetConfigInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutProjectsNestedInput
+  user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutProjectsNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
 }
 
-export type ProjectUncheckedUpdateWithoutWidgetConfigsInput = {
+export type ProjectUncheckedUpdateWithoutWidgetConfigInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+}
+
+export type ProjectCreateManyUserInput = {
+  id?: string
+  name: string
+  slug: string
+  organizationId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProjectUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutProjectsNestedInput
+  testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProjectCreateManyOrganizationInput = {
   id?: string
   name: string
+  slug: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -668,26 +874,32 @@ export type ProjectCreateManyOrganizationInput = {
 export type ProjectUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLinks?: Prisma.TestimonialLinkUncheckedUpdateManyWithoutProjectNestedInput
-  widgetConfigs?: Prisma.WidgetConfigUncheckedUpdateManyWithoutProjectNestedInput
+  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -699,14 +911,10 @@ export type ProjectUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type ProjectCountOutputType = {
   testimonials: number
-  testimonialLinks: number
-  widgetConfigs: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   testimonials?: boolean | ProjectCountOutputTypeCountTestimonialsArgs
-  testimonialLinks?: boolean | ProjectCountOutputTypeCountTestimonialLinksArgs
-  widgetConfigs?: boolean | ProjectCountOutputTypeCountWidgetConfigsArgs
 }
 
 /**
@@ -726,87 +934,90 @@ export type ProjectCountOutputTypeCountTestimonialsArgs<ExtArgs extends runtime.
   where?: Prisma.TestimonialWhereInput
 }
 
-/**
- * ProjectCountOutputType without action
- */
-export type ProjectCountOutputTypeCountTestimonialLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TestimonialLinkWhereInput
-}
-
-/**
- * ProjectCountOutputType without action
- */
-export type ProjectCountOutputTypeCountWidgetConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.WidgetConfigWhereInput
-}
-
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
+  userId?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Project$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Project$organizationArgs<ExtArgs>
   testimonials?: boolean | Prisma.Project$testimonialsArgs<ExtArgs>
-  testimonialLinks?: boolean | Prisma.Project$testimonialLinksArgs<ExtArgs>
-  widgetConfigs?: boolean | Prisma.Project$widgetConfigsArgs<ExtArgs>
+  testimonialLink?: boolean | Prisma.Project$testimonialLinkArgs<ExtArgs>
+  widgetConfig?: boolean | Prisma.Project$widgetConfigArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
+  userId?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Project$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Project$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
+  userId?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Project$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Project$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectScalar = {
   id?: boolean
   name?: boolean
+  slug?: boolean
+  userId?: boolean
   organizationId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "userId" | "organizationId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Project$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Project$organizationArgs<ExtArgs>
   testimonials?: boolean | Prisma.Project$testimonialsArgs<ExtArgs>
-  testimonialLinks?: boolean | Prisma.Project$testimonialLinksArgs<ExtArgs>
-  widgetConfigs?: boolean | Prisma.Project$widgetConfigsArgs<ExtArgs>
+  testimonialLink?: boolean | Prisma.Project$testimonialLinkArgs<ExtArgs>
+  widgetConfig?: boolean | Prisma.Project$widgetConfigArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Project$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Project$organizationArgs<ExtArgs>
 }
 export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.Project$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Project$organizationArgs<ExtArgs>
 }
 
 export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Project"
   objects: {
-    organization: Prisma.$OrganizationPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs> | null
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
     testimonials: Prisma.$TestimonialPayload<ExtArgs>[]
-    testimonialLinks: Prisma.$TestimonialLinkPayload<ExtArgs>[]
-    widgetConfigs: Prisma.$WidgetConfigPayload<ExtArgs>[]
+    testimonialLink: Prisma.$TestimonialLinkPayload<ExtArgs> | null
+    widgetConfig: Prisma.$WidgetConfigPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    organizationId: string
+    slug: string
+    userId: string | null
+    organizationId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["project"]>
@@ -1203,10 +1414,11 @@ readonly fields: ProjectFieldRefs;
  */
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Project$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  organization<T extends Prisma.Project$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   testimonials<T extends Prisma.Project$testimonialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$testimonialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  testimonialLinks<T extends Prisma.Project$testimonialLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$testimonialLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  widgetConfigs<T extends Prisma.Project$widgetConfigsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$widgetConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WidgetConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  testimonialLink<T extends Prisma.Project$testimonialLinkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$testimonialLinkArgs<ExtArgs>>): Prisma.Prisma__TestimonialLinkClient<runtime.Types.Result.GetResult<Prisma.$TestimonialLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  widgetConfig<T extends Prisma.Project$widgetConfigArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$widgetConfigArgs<ExtArgs>>): Prisma.Prisma__WidgetConfigClient<runtime.Types.Result.GetResult<Prisma.$WidgetConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1238,6 +1450,8 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
 export interface ProjectFieldRefs {
   readonly id: Prisma.FieldRef<"Project", 'String'>
   readonly name: Prisma.FieldRef<"Project", 'String'>
+  readonly slug: Prisma.FieldRef<"Project", 'String'>
+  readonly userId: Prisma.FieldRef<"Project", 'String'>
   readonly organizationId: Prisma.FieldRef<"Project", 'String'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
@@ -1637,6 +1851,44 @@ export type ProjectDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Project.user
+ */
+export type Project$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Project.organization
+ */
+export type Project$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
+}
+
+/**
  * Project.testimonials
  */
 export type Project$testimonialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1661,9 +1913,9 @@ export type Project$testimonialsArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * Project.testimonialLinks
+ * Project.testimonialLink
  */
-export type Project$testimonialLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Project$testimonialLinkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the TestimonialLink
    */
@@ -1677,17 +1929,12 @@ export type Project$testimonialLinksArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.TestimonialLinkInclude<ExtArgs> | null
   where?: Prisma.TestimonialLinkWhereInput
-  orderBy?: Prisma.TestimonialLinkOrderByWithRelationInput | Prisma.TestimonialLinkOrderByWithRelationInput[]
-  cursor?: Prisma.TestimonialLinkWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.TestimonialLinkScalarFieldEnum | Prisma.TestimonialLinkScalarFieldEnum[]
 }
 
 /**
- * Project.widgetConfigs
+ * Project.widgetConfig
  */
-export type Project$widgetConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Project$widgetConfigArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the WidgetConfig
    */
@@ -1701,11 +1948,6 @@ export type Project$widgetConfigsArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.WidgetConfigInclude<ExtArgs> | null
   where?: Prisma.WidgetConfigWhereInput
-  orderBy?: Prisma.WidgetConfigOrderByWithRelationInput | Prisma.WidgetConfigOrderByWithRelationInput[]
-  cursor?: Prisma.WidgetConfigWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.WidgetConfigScalarFieldEnum | Prisma.WidgetConfigScalarFieldEnum[]
 }
 
 /**

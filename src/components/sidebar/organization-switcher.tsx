@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  useClerk,
-  useOrganization,
-  useOrganizationList,
-  useUser,
-} from "@clerk/nextjs";
 import { ChevronsUpDown, Plus, PlusIcon } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,36 +16,50 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 
+import { useRouter } from "next/navigation";
+
 export function OrganizationSwitcher() {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+  
+  const { data: session, isPending: isPendingSession } =
+    authClient.useSession();
+  const { data: organizationList, isPending: isPendingOrganizationList } =
+    authClient.useListOrganizations();
+  const { data: activeOrganization, isPending: isPendingActiveOrganization } =
+    authClient.useActiveOrganization();
 
-  const { user, isLoaded: userIsLoaded } = useUser();
-  const { organization, isLoaded: organizationIsLoaded } = useOrganization();
-  const {
-    userMemberships,
-    setActive,
-    isLoaded: organizationListIsLoaded,
-  } = useOrganizationList({
-    userMemberships: true,
-  });
-  const { openCreateOrganization } = useClerk();
+  const handleCreateOrganization = () => {};
 
-  const handleCreateOrganization = () => {
-    openCreateOrganization();
+  const handleSetActiveOrganization = (organizationId: string) => {
+    authClient.organization.setActive({
+      organizationId,
+    }, {
+      onSuccess: () => {
+        router.refresh();
+      }
+    });
   };
 
-  if (!userIsLoaded || !organizationIsLoaded || !organizationListIsLoaded) {
+  if (
+    isPendingOrganizationList ||
+    isPendingActiveOrganization ||
+    isPendingSession
+  ) {
     return <Skeleton className="h-10 w-full" />;
   }
 
-  if (!user) {
+  if (!session) {
     return null;
   }
 
-  if (!organization) {
+  const { user } = session;
+
+  if (!activeOrganization) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
@@ -62,9 +70,9 @@ export function OrganizationSwitcher() {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <Avatar>
-                  <AvatarImage src={user.imageUrl} alt={user.firstName ?? ""} />
+                  <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
                   <AvatarFallback className="rounded-lg">
-                    {user.firstName?.charAt(0)}
+                    {user.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -82,12 +90,9 @@ export function OrganizationSwitcher() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage
-                      src={user.imageUrl}
-                      alt={user.firstName ?? ""}
-                    />
+                    <AvatarImage src={user.image ?? ""} alt={user.name} />
                     <AvatarFallback className="rounded-lg">
-                      {user.firstName?.charAt(0)}
+                      {user.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
@@ -111,6 +116,10 @@ export function OrganizationSwitcher() {
     );
   }
 
+  if (!activeOrganization) {
+    return <p>No Org</p>;
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -123,15 +132,17 @@ export function OrganizationSwitcher() {
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <Avatar>
                   <AvatarImage
-                    src={organization.imageUrl}
-                    alt={organization.name}
+                    src={activeOrganization.logo ?? ""}
+                    alt={activeOrganization.name}
                   />
-                  <AvatarFallback>{organization.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>
+                    {activeOrganization.name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
               </div>
               <div className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-medium">
-                  {organization.name}
+                  {activeOrganization.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -146,25 +157,21 @@ export function OrganizationSwitcher() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Organizations
             </DropdownMenuLabel>
-            {userMemberships.data?.map((membership) => (
+            {organizationList?.map((organization) => (
               <DropdownMenuItem
-                disabled={membership.organization.id === organization.id}
-                key={membership.organization.id}
+                disabled={organization.id === activeOrganization.id}
+                key={organization.id}
                 className="gap-2 p-2"
-                onClick={() =>
-                  setActive({ organization: membership.organization.id })
-                }
+                onClick={() => handleSetActiveOrganization(organization.id)}
               >
                 <Avatar className="size-6">
                   <AvatarImage
-                    src={membership.organization.imageUrl}
-                    alt={membership.organization.name}
+                    src={organization.logo ?? ""}
+                    alt={organization.name}
                   />
-                  <AvatarFallback>
-                    {membership.organization.name.charAt(0)}
-                  </AvatarFallback>
+                  <AvatarFallback>{organization.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                {membership.organization.name}
+                {organization.name}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

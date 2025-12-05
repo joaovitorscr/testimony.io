@@ -11,6 +11,7 @@ import { usePathname, useRouter } from "next/navigation";
 import type * as React from "react";
 import { NavUser } from "@/components/sidebar/nav-user";
 import { OrganizationSwitcher } from "@/components/sidebar/organization-switcher";
+import { ProjectSwitcher } from "@/components/sidebar/project-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -51,7 +52,20 @@ const navMainItems: {
   },
 ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type Project = {
+  id: string;
+  name: string;
+  slug: string;
+};
+
+export function AppSidebar({
+  projects,
+  activeProjectId,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  projects: Project[];
+  activeProjectId?: string;
+}) {
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
@@ -68,6 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </h1>
         </div>
         <OrganizationSwitcher />
+        <ProjectSwitcher projects={projects} activeProjectId={activeProjectId} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

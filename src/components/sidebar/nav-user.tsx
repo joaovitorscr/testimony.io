@@ -1,7 +1,5 @@
 "use client";
 
-import { useClerk, useUser } from "@clerk/nextjs";
-import ClerkThemes from "@clerk/themes";
 import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,29 +17,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
 import { Skeleton } from "../ui/skeleton";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { user, isLoaded } = useUser();
-  const { openUserProfile, signOut } = useClerk();
+  const { useSession } = authClient;
 
-  if (!isLoaded) {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) {
     return <Skeleton className="h-10 w-full" />;
   }
 
-  if (!user) return null;
+  if (!session) return null;
 
-  const handleOpenUserProfile = () => {
-    openUserProfile({
-      appearance: {
-        theme: ClerkThemes.dark,
-      },
-    });
-  };
+  const { user } = session;
 
   const handleSignOut = () => {
-    signOut();
+    authClient.signOut();
   };
 
   return (
@@ -54,16 +48,14 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.imageUrl} alt={user.firstName ?? ""} />
+                <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
                 <AvatarFallback className="rounded-lg">
-                  {user.firstName?.charAt(0)}
+                  {user.name?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.firstName}</span>
-                <span className="truncate text-xs">
-                  {user.emailAddresses[0].emailAddress}
-                </span>
+                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -77,22 +69,20 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.imageUrl} alt={user.firstName ?? ""} />
+                  <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
                   <AvatarFallback className="rounded-lg">
-                    {user.firstName?.charAt(0)}
+                    {user.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.firstName}</span>
-                  <span className="truncate text-xs">
-                    {user.emailAddresses[0].emailAddress}
-                  </span>
+                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleOpenUserProfile}>
+              <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>

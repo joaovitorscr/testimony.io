@@ -14,61 +14,147 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  clerkUserId String   @unique
-  email       String   @unique
-  name        String?
-  avatarUrl   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String       @id
+  name          String
+  email         String
+  emailVerified Boolean      @default(false)
+  image         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  members       Member[]
+  invitations   Invitation[]
 
-  // Relationships
+  projects Project[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id                   String   @id
+  expiresAt            DateTime
+  token                String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  ipAddress            String?
+  userAgent            String?
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeOrganizationId String?
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Organization {
+  id        String   @id
+  name      String
+  slug      String
+  logo      String?
+  createdAt DateTime
+  members   Member[]
+
+  invitations Invitation[]
+  projects    Project[]
+
+  @@unique([slug])
+  @@map("organization")
+}
+
+model Project {
+  id   String @id @default(uuid())
+  name String
+  slug String @unique
+
+  // Owner (either User or Organization)
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   testimonials    Testimonial[]
   testimonialLink TestimonialLink?
   widgetConfig    WidgetConfig?
 
-  @@map("users")
-}
-
-model Organization {
-  id               String  @id @default(uuid())
-  clerkOrgId       String  @unique
-  name             String
-  stripeCustomerId String? @unique
-  plan             String? @default("free")
-  logoUrl          String?
-
-  projects Project[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("organizations")
+  @@index([userId])
+  @@index([organizationId])
+  @@map("project")
 }
 
-model Project {
-  id             String       @id @default(uuid())
-  name           String
+model Member {
+  id             String       @id
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           String       @default("member")
+  createdAt      DateTime
 
-  testimonials     Testimonial[]
-  testimonialLinks TestimonialLink[]
-  widgetConfigs    WidgetConfig[]
+  @@index([organizationId])
+  @@index([userId])
+  @@map("member")
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Invitation {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String?
+  status         String       @default("pending")
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+  inviterId      String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
-  @@map("projects")
+  @@index([organizationId])
+  @@index([email])
+  @@map("invitation")
 }
 
 model Testimonial {
-  id     String @id @default(uuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  id String @id @default(uuid())
 
-  projectId String?
-  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   customerName      String
   customerCompany   String?
@@ -82,19 +168,18 @@ model Testimonial {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@index([userId])
+  @@index([projectId])
   @@map("testimonials")
 }
 
 model TestimonialLink {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  id String @id @default(uuid())
 
-  projectId String?
-  project   Project? @relation(fields: [projectId], references: [id])
+  // Owner
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  // The unique slug/path for this user's collection form (e.g., /collect/mycompany)
+  // The unique slug/path (e.g., /collect/my-slug)
   slug            String  @unique
   title           String?
   description     String?
@@ -108,21 +193,19 @@ model TestimonialLink {
 }
 
 model WidgetConfig {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  id String @id @default(uuid())
 
-  projectId String?
-  project   Project? @relation(fields: [projectId], references: [id])
+  // Owner
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  // Customization options for the embeddable widget
-  themeColor    String  @default("#3B82F6") // e.g., Tailwind blue-500
-  displayLayout String  @default("list") // "list", "carousel", "grid"
-  displayOrder  String  @default("newest") // "newest", "highest_rating", "random"
+  themeColor    String  @default("#3B82F6")
+  displayLayout String  @default("list")
+  displayOrder  String  @default("newest")
   showRating    Boolean @default(true)
   showAvatar    Boolean @default(true)
-  autoPlay      Boolean @default(true) // For carousel layouts
-  speedMs       Int     @default(5000) // For carousel layouts
+  autoPlay      Boolean @default(true)
+  speedMs       Int     @default(5000)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

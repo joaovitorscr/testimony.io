@@ -26,7 +26,6 @@ export type AggregateTestimonialLink = {
 
 export type TestimonialLinkMinAggregateOutputType = {
   id: string | null
-  userId: string | null
   projectId: string | null
   slug: string | null
   title: string | null
@@ -39,7 +38,6 @@ export type TestimonialLinkMinAggregateOutputType = {
 
 export type TestimonialLinkMaxAggregateOutputType = {
   id: string | null
-  userId: string | null
   projectId: string | null
   slug: string | null
   title: string | null
@@ -52,7 +50,6 @@ export type TestimonialLinkMaxAggregateOutputType = {
 
 export type TestimonialLinkCountAggregateOutputType = {
   id: number
-  userId: number
   projectId: number
   slug: number
   title: number
@@ -67,7 +64,6 @@ export type TestimonialLinkCountAggregateOutputType = {
 
 export type TestimonialLinkMinAggregateInputType = {
   id?: true
-  userId?: true
   projectId?: true
   slug?: true
   title?: true
@@ -80,7 +76,6 @@ export type TestimonialLinkMinAggregateInputType = {
 
 export type TestimonialLinkMaxAggregateInputType = {
   id?: true
-  userId?: true
   projectId?: true
   slug?: true
   title?: true
@@ -93,7 +88,6 @@ export type TestimonialLinkMaxAggregateInputType = {
 
 export type TestimonialLinkCountAggregateInputType = {
   id?: true
-  userId?: true
   projectId?: true
   slug?: true
   title?: true
@@ -179,8 +173,7 @@ export type TestimonialLinkGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type TestimonialLinkGroupByOutputType = {
   id: string
-  userId: string
-  projectId: string | null
+  projectId: string
   slug: string
   title: string | null
   description: string | null
@@ -213,8 +206,7 @@ export type TestimonialLinkWhereInput = {
   OR?: Prisma.TestimonialLinkWhereInput[]
   NOT?: Prisma.TestimonialLinkWhereInput | Prisma.TestimonialLinkWhereInput[]
   id?: Prisma.StringFilter<"TestimonialLink"> | string
-  userId?: Prisma.StringFilter<"TestimonialLink"> | string
-  projectId?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
+  projectId?: Prisma.StringFilter<"TestimonialLink"> | string
   slug?: Prisma.StringFilter<"TestimonialLink"> | string
   title?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
   description?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
@@ -222,14 +214,12 @@ export type TestimonialLinkWhereInput = {
   isActive?: Prisma.BoolFilter<"TestimonialLink"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TestimonialLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TestimonialLink"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
 }
 
 export type TestimonialLinkOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  projectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  projectId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -237,32 +227,28 @@ export type TestimonialLinkOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   project?: Prisma.ProjectOrderByWithRelationInput
 }
 
 export type TestimonialLinkWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId?: string
+  projectId?: string
   slug?: string
   AND?: Prisma.TestimonialLinkWhereInput | Prisma.TestimonialLinkWhereInput[]
   OR?: Prisma.TestimonialLinkWhereInput[]
   NOT?: Prisma.TestimonialLinkWhereInput | Prisma.TestimonialLinkWhereInput[]
-  projectId?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
   title?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
   description?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
   thankYouMessage?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
   isActive?: Prisma.BoolFilter<"TestimonialLink"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TestimonialLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TestimonialLink"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
-}, "id" | "userId" | "slug">
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
+}, "id" | "projectId" | "slug">
 
 export type TestimonialLinkOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  projectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  projectId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -280,8 +266,7 @@ export type TestimonialLinkScalarWhereWithAggregatesInput = {
   OR?: Prisma.TestimonialLinkScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TestimonialLinkScalarWhereWithAggregatesInput | Prisma.TestimonialLinkScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TestimonialLink"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"TestimonialLink"> | string
-  projectId?: Prisma.StringNullableWithAggregatesFilter<"TestimonialLink"> | string | null
+  projectId?: Prisma.StringWithAggregatesFilter<"TestimonialLink"> | string
   slug?: Prisma.StringWithAggregatesFilter<"TestimonialLink"> | string
   title?: Prisma.StringNullableWithAggregatesFilter<"TestimonialLink"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"TestimonialLink"> | string | null
@@ -300,14 +285,12 @@ export type TestimonialLinkCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutTestimonialLinkInput
-  project?: Prisma.ProjectCreateNestedOneWithoutTestimonialLinksInput
+  project: Prisma.ProjectCreateNestedOneWithoutTestimonialLinkInput
 }
 
 export type TestimonialLinkUncheckedCreateInput = {
   id?: string
-  userId: string
-  projectId?: string | null
+  projectId: string
   slug: string
   title?: string | null
   description?: string | null
@@ -326,14 +309,12 @@ export type TestimonialLinkUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutTestimonialLinkNestedInput
-  project?: Prisma.ProjectUpdateOneWithoutTestimonialLinksNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutTestimonialLinkNestedInput
 }
 
 export type TestimonialLinkUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -345,8 +326,7 @@ export type TestimonialLinkUncheckedUpdateInput = {
 
 export type TestimonialLinkCreateManyInput = {
   id?: string
-  userId: string
-  projectId?: string | null
+  projectId: string
   slug: string
   title?: string | null
   description?: string | null
@@ -369,8 +349,7 @@ export type TestimonialLinkUpdateManyMutationInput = {
 
 export type TestimonialLinkUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -385,19 +364,8 @@ export type TestimonialLinkNullableScalarRelationFilter = {
   isNot?: Prisma.TestimonialLinkWhereInput | null
 }
 
-export type TestimonialLinkListRelationFilter = {
-  every?: Prisma.TestimonialLinkWhereInput
-  some?: Prisma.TestimonialLinkWhereInput
-  none?: Prisma.TestimonialLinkWhereInput
-}
-
-export type TestimonialLinkOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type TestimonialLinkCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -410,7 +378,6 @@ export type TestimonialLinkCountOrderByAggregateInput = {
 
 export type TestimonialLinkMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -423,7 +390,6 @@ export type TestimonialLinkMaxOrderByAggregateInput = {
 
 export type TestimonialLinkMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   title?: Prisma.SortOrder
@@ -434,142 +400,36 @@ export type TestimonialLinkMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type TestimonialLinkCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutUserInput, Prisma.TestimonialLinkUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutUserInput
+export type TestimonialLinkCreateNestedOneWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput
   connect?: Prisma.TestimonialLinkWhereUniqueInput
 }
 
-export type TestimonialLinkUncheckedCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutUserInput, Prisma.TestimonialLinkUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutUserInput
+export type TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput
   connect?: Prisma.TestimonialLinkWhereUniqueInput
 }
 
-export type TestimonialLinkUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutUserInput, Prisma.TestimonialLinkUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutUserInput
-  upsert?: Prisma.TestimonialLinkUpsertWithoutUserInput
+export type TestimonialLinkUpdateOneWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput
+  upsert?: Prisma.TestimonialLinkUpsertWithoutProjectInput
   disconnect?: Prisma.TestimonialLinkWhereInput | boolean
   delete?: Prisma.TestimonialLinkWhereInput | boolean
   connect?: Prisma.TestimonialLinkWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TestimonialLinkUpdateToOneWithWhereWithoutUserInput, Prisma.TestimonialLinkUpdateWithoutUserInput>, Prisma.TestimonialLinkUncheckedUpdateWithoutUserInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TestimonialLinkUpdateToOneWithWhereWithoutProjectInput, Prisma.TestimonialLinkUpdateWithoutProjectInput>, Prisma.TestimonialLinkUncheckedUpdateWithoutProjectInput>
 }
 
-export type TestimonialLinkUncheckedUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutUserInput, Prisma.TestimonialLinkUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutUserInput
-  upsert?: Prisma.TestimonialLinkUpsertWithoutUserInput
+export type TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput>
+  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput
+  upsert?: Prisma.TestimonialLinkUpsertWithoutProjectInput
   disconnect?: Prisma.TestimonialLinkWhereInput | boolean
   delete?: Prisma.TestimonialLinkWhereInput | boolean
   connect?: Prisma.TestimonialLinkWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TestimonialLinkUpdateToOneWithWhereWithoutUserInput, Prisma.TestimonialLinkUpdateWithoutUserInput>, Prisma.TestimonialLinkUncheckedUpdateWithoutUserInput>
-}
-
-export type TestimonialLinkCreateNestedManyWithoutProjectInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput> | Prisma.TestimonialLinkCreateWithoutProjectInput[] | Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput | Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput[]
-  createMany?: Prisma.TestimonialLinkCreateManyProjectInputEnvelope
-  connect?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-}
-
-export type TestimonialLinkUncheckedCreateNestedManyWithoutProjectInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput> | Prisma.TestimonialLinkCreateWithoutProjectInput[] | Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput | Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput[]
-  createMany?: Prisma.TestimonialLinkCreateManyProjectInputEnvelope
-  connect?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-}
-
-export type TestimonialLinkUpdateManyWithoutProjectNestedInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput> | Prisma.TestimonialLinkCreateWithoutProjectInput[] | Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput | Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput[]
-  upsert?: Prisma.TestimonialLinkUpsertWithWhereUniqueWithoutProjectInput | Prisma.TestimonialLinkUpsertWithWhereUniqueWithoutProjectInput[]
-  createMany?: Prisma.TestimonialLinkCreateManyProjectInputEnvelope
-  set?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  disconnect?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  delete?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  connect?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  update?: Prisma.TestimonialLinkUpdateWithWhereUniqueWithoutProjectInput | Prisma.TestimonialLinkUpdateWithWhereUniqueWithoutProjectInput[]
-  updateMany?: Prisma.TestimonialLinkUpdateManyWithWhereWithoutProjectInput | Prisma.TestimonialLinkUpdateManyWithWhereWithoutProjectInput[]
-  deleteMany?: Prisma.TestimonialLinkScalarWhereInput | Prisma.TestimonialLinkScalarWhereInput[]
-}
-
-export type TestimonialLinkUncheckedUpdateManyWithoutProjectNestedInput = {
-  create?: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput> | Prisma.TestimonialLinkCreateWithoutProjectInput[] | Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput[]
-  connectOrCreate?: Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput | Prisma.TestimonialLinkCreateOrConnectWithoutProjectInput[]
-  upsert?: Prisma.TestimonialLinkUpsertWithWhereUniqueWithoutProjectInput | Prisma.TestimonialLinkUpsertWithWhereUniqueWithoutProjectInput[]
-  createMany?: Prisma.TestimonialLinkCreateManyProjectInputEnvelope
-  set?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  disconnect?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  delete?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  connect?: Prisma.TestimonialLinkWhereUniqueInput | Prisma.TestimonialLinkWhereUniqueInput[]
-  update?: Prisma.TestimonialLinkUpdateWithWhereUniqueWithoutProjectInput | Prisma.TestimonialLinkUpdateWithWhereUniqueWithoutProjectInput[]
-  updateMany?: Prisma.TestimonialLinkUpdateManyWithWhereWithoutProjectInput | Prisma.TestimonialLinkUpdateManyWithWhereWithoutProjectInput[]
-  deleteMany?: Prisma.TestimonialLinkScalarWhereInput | Prisma.TestimonialLinkScalarWhereInput[]
-}
-
-export type TestimonialLinkCreateWithoutUserInput = {
-  id?: string
-  slug: string
-  title?: string | null
-  description?: string | null
-  thankYouMessage?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  project?: Prisma.ProjectCreateNestedOneWithoutTestimonialLinksInput
-}
-
-export type TestimonialLinkUncheckedCreateWithoutUserInput = {
-  id?: string
-  projectId?: string | null
-  slug: string
-  title?: string | null
-  description?: string | null
-  thankYouMessage?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type TestimonialLinkCreateOrConnectWithoutUserInput = {
-  where: Prisma.TestimonialLinkWhereUniqueInput
-  create: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutUserInput, Prisma.TestimonialLinkUncheckedCreateWithoutUserInput>
-}
-
-export type TestimonialLinkUpsertWithoutUserInput = {
-  update: Prisma.XOR<Prisma.TestimonialLinkUpdateWithoutUserInput, Prisma.TestimonialLinkUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutUserInput, Prisma.TestimonialLinkUncheckedCreateWithoutUserInput>
-  where?: Prisma.TestimonialLinkWhereInput
-}
-
-export type TestimonialLinkUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.TestimonialLinkWhereInput
-  data: Prisma.XOR<Prisma.TestimonialLinkUpdateWithoutUserInput, Prisma.TestimonialLinkUncheckedUpdateWithoutUserInput>
-}
-
-export type TestimonialLinkUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  thankYouMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  project?: Prisma.ProjectUpdateOneWithoutTestimonialLinksNestedInput
-}
-
-export type TestimonialLinkUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  thankYouMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TestimonialLinkUpdateToOneWithWhereWithoutProjectInput, Prisma.TestimonialLinkUpdateWithoutProjectInput>, Prisma.TestimonialLinkUncheckedUpdateWithoutProjectInput>
 }
 
 export type TestimonialLinkCreateWithoutProjectInput = {
@@ -581,12 +441,10 @@ export type TestimonialLinkCreateWithoutProjectInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutTestimonialLinkInput
 }
 
 export type TestimonialLinkUncheckedCreateWithoutProjectInput = {
   id?: string
-  userId: string
   slug: string
   title?: string | null
   description?: string | null
@@ -601,53 +459,15 @@ export type TestimonialLinkCreateOrConnectWithoutProjectInput = {
   create: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput>
 }
 
-export type TestimonialLinkCreateManyProjectInputEnvelope = {
-  data: Prisma.TestimonialLinkCreateManyProjectInput | Prisma.TestimonialLinkCreateManyProjectInput[]
-  skipDuplicates?: boolean
-}
-
-export type TestimonialLinkUpsertWithWhereUniqueWithoutProjectInput = {
-  where: Prisma.TestimonialLinkWhereUniqueInput
+export type TestimonialLinkUpsertWithoutProjectInput = {
   update: Prisma.XOR<Prisma.TestimonialLinkUpdateWithoutProjectInput, Prisma.TestimonialLinkUncheckedUpdateWithoutProjectInput>
   create: Prisma.XOR<Prisma.TestimonialLinkCreateWithoutProjectInput, Prisma.TestimonialLinkUncheckedCreateWithoutProjectInput>
+  where?: Prisma.TestimonialLinkWhereInput
 }
 
-export type TestimonialLinkUpdateWithWhereUniqueWithoutProjectInput = {
-  where: Prisma.TestimonialLinkWhereUniqueInput
+export type TestimonialLinkUpdateToOneWithWhereWithoutProjectInput = {
+  where?: Prisma.TestimonialLinkWhereInput
   data: Prisma.XOR<Prisma.TestimonialLinkUpdateWithoutProjectInput, Prisma.TestimonialLinkUncheckedUpdateWithoutProjectInput>
-}
-
-export type TestimonialLinkUpdateManyWithWhereWithoutProjectInput = {
-  where: Prisma.TestimonialLinkScalarWhereInput
-  data: Prisma.XOR<Prisma.TestimonialLinkUpdateManyMutationInput, Prisma.TestimonialLinkUncheckedUpdateManyWithoutProjectInput>
-}
-
-export type TestimonialLinkScalarWhereInput = {
-  AND?: Prisma.TestimonialLinkScalarWhereInput | Prisma.TestimonialLinkScalarWhereInput[]
-  OR?: Prisma.TestimonialLinkScalarWhereInput[]
-  NOT?: Prisma.TestimonialLinkScalarWhereInput | Prisma.TestimonialLinkScalarWhereInput[]
-  id?: Prisma.StringFilter<"TestimonialLink"> | string
-  userId?: Prisma.StringFilter<"TestimonialLink"> | string
-  projectId?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
-  slug?: Prisma.StringFilter<"TestimonialLink"> | string
-  title?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
-  description?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
-  thankYouMessage?: Prisma.StringNullableFilter<"TestimonialLink"> | string | null
-  isActive?: Prisma.BoolFilter<"TestimonialLink"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"TestimonialLink"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"TestimonialLink"> | Date | string
-}
-
-export type TestimonialLinkCreateManyProjectInput = {
-  id?: string
-  userId: string
-  slug: string
-  title?: string | null
-  description?: string | null
-  thankYouMessage?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
 }
 
 export type TestimonialLinkUpdateWithoutProjectInput = {
@@ -659,24 +479,10 @@ export type TestimonialLinkUpdateWithoutProjectInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutTestimonialLinkNestedInput
 }
 
 export type TestimonialLinkUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  thankYouMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type TestimonialLinkUncheckedUpdateManyWithoutProjectInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -690,7 +496,6 @@ export type TestimonialLinkUncheckedUpdateManyWithoutProjectInput = {
 
 export type TestimonialLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   slug?: boolean
   title?: boolean
@@ -699,13 +504,11 @@ export type TestimonialLinkSelect<ExtArgs extends runtime.Types.Extensions.Inter
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.TestimonialLink$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["testimonialLink"]>
 
 export type TestimonialLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   slug?: boolean
   title?: boolean
@@ -714,13 +517,11 @@ export type TestimonialLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.TestimonialLink$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["testimonialLink"]>
 
 export type TestimonialLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   slug?: boolean
   title?: boolean
@@ -729,13 +530,11 @@ export type TestimonialLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.TestimonialLink$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["testimonialLink"]>
 
 export type TestimonialLinkSelectScalar = {
   id?: boolean
-  userId?: boolean
   projectId?: boolean
   slug?: boolean
   title?: boolean
@@ -746,30 +545,25 @@ export type TestimonialLinkSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TestimonialLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "projectId" | "slug" | "title" | "description" | "thankYouMessage" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["testimonialLink"]>
+export type TestimonialLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "slug" | "title" | "description" | "thankYouMessage" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["testimonialLink"]>
 export type TestimonialLinkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.TestimonialLink$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 export type TestimonialLinkIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.TestimonialLink$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 export type TestimonialLinkIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  project?: boolean | Prisma.TestimonialLink$projectArgs<ExtArgs>
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
 
 export type $TestimonialLinkPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TestimonialLink"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
-    project: Prisma.$ProjectPayload<ExtArgs> | null
+    project: Prisma.$ProjectPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    userId: string
-    projectId: string | null
+    projectId: string
     slug: string
     title: string | null
     description: string | null
@@ -1171,8 +965,7 @@ readonly fields: TestimonialLinkFieldRefs;
  */
 export interface Prisma__TestimonialLinkClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  project<T extends Prisma.TestimonialLink$projectArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TestimonialLink$projectArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1203,7 +996,6 @@ export interface Prisma__TestimonialLinkClient<T, Null = never, ExtArgs extends 
  */
 export interface TestimonialLinkFieldRefs {
   readonly id: Prisma.FieldRef<"TestimonialLink", 'String'>
-  readonly userId: Prisma.FieldRef<"TestimonialLink", 'String'>
   readonly projectId: Prisma.FieldRef<"TestimonialLink", 'String'>
   readonly slug: Prisma.FieldRef<"TestimonialLink", 'String'>
   readonly title: Prisma.FieldRef<"TestimonialLink", 'String'>
@@ -1605,25 +1397,6 @@ export type TestimonialLinkDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many TestimonialLinks to delete.
    */
   limit?: number
-}
-
-/**
- * TestimonialLink.project
- */
-export type TestimonialLink$projectArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Project
-   */
-  select?: Prisma.ProjectSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Project
-   */
-  omit?: Prisma.ProjectOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProjectInclude<ExtArgs> | null
-  where?: Prisma.ProjectWhereInput
 }
 
 /**

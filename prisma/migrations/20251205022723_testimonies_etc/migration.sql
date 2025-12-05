@@ -1,20 +1,8 @@
 -- CreateTable
-CREATE TABLE "users" (
-    "id" TEXT NOT NULL,
-    "clerkUserId" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "name" TEXT,
-    "avatarUrl" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "testimonials" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
+    "organizationId" TEXT,
     "customerName" TEXT NOT NULL,
     "customerCompany" TEXT,
     "customerTitle" TEXT,
@@ -32,7 +20,8 @@ CREATE TABLE "testimonials" (
 -- CreateTable
 CREATE TABLE "testimonial_links" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
+    "organizationId" TEXT,
     "slug" TEXT NOT NULL,
     "title" TEXT,
     "description" TEXT,
@@ -47,7 +36,8 @@ CREATE TABLE "testimonial_links" (
 -- CreateTable
 CREATE TABLE "widget_configs" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
+    "organizationId" TEXT,
     "themeColor" TEXT NOT NULL DEFAULT '#3B82F6',
     "displayLayout" TEXT NOT NULL DEFAULT 'list',
     "displayOrder" TEXT NOT NULL DEFAULT 'newest',
@@ -62,16 +52,16 @@ CREATE TABLE "widget_configs" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_clerkUserId_key" ON "users"("clerkUserId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
-
--- CreateIndex
 CREATE INDEX "testimonials_userId_idx" ON "testimonials"("userId");
 
 -- CreateIndex
+CREATE INDEX "testimonials_organizationId_idx" ON "testimonials"("organizationId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "testimonial_links_userId_key" ON "testimonial_links"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "testimonial_links_organizationId_key" ON "testimonial_links"("organizationId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "testimonial_links_slug_key" ON "testimonial_links"("slug");
@@ -79,11 +69,23 @@ CREATE UNIQUE INDEX "testimonial_links_slug_key" ON "testimonial_links"("slug");
 -- CreateIndex
 CREATE UNIQUE INDEX "widget_configs_userId_key" ON "widget_configs"("userId");
 
--- AddForeignKey
-ALTER TABLE "testimonials" ADD CONSTRAINT "testimonials_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "widget_configs_organizationId_key" ON "widget_configs"("organizationId");
 
 -- AddForeignKey
-ALTER TABLE "testimonial_links" ADD CONSTRAINT "testimonial_links_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "testimonials" ADD CONSTRAINT "testimonials_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "widget_configs" ADD CONSTRAINT "widget_configs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "testimonials" ADD CONSTRAINT "testimonials_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "testimonial_links" ADD CONSTRAINT "testimonial_links_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "testimonial_links" ADD CONSTRAINT "testimonial_links_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "widget_configs" ADD CONSTRAINT "widget_configs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "widget_configs" ADD CONSTRAINT "widget_configs_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;

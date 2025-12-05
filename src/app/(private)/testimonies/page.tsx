@@ -1,10 +1,12 @@
-import { currentUser } from "@clerk/nextjs/server";
 import {
   SearchIcon,
   SlidersHorizontalIcon,
   StarIcon,
   VideoIcon,
 } from "lucide-react";
+import { headers } from "next/headers";
+import { CollectLink } from "@/components/collect-link";
+import { MinimalWidgetEditor } from "@/components/minimal-widget-editor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,8 +18,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { getActiveProjectId } from "@/server/actions/active-project";
+import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 
 function RatingStars({ value }: { value: number }) {
@@ -36,19 +39,28 @@ function RatingStars({ value }: { value: number }) {
 }
 
 export default async function TestimoniesPage() {
-  const user = await currentUser();
-  if (!user) return null;
-
-  const dbUser = await db.user.findUnique({
-    where: { clerkUserId: user.id },
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
 
-  const rawTestimonies = dbUser
-    ? await db.testimonial.findMany({
-        where: { userId: dbUser.id },
-        orderBy: { createdAt: "desc" },
-      })
-    : [];
+  if (!session) return null;
+
+  const activeProjectId = await getActiveProjectId();
+
+  if (!activeProjectId) {
+    return (
+      <div className="flex flex-col items-center justify-center h-svh flex-1">
+        <p className="text-muted-foreground">
+          Please select a project to view testimonies.
+        </p>
+      </div>
+    );
+  }
+
+  const rawTestimonies = await db.testimonial.findMany({
+    where: { projectId: activeProjectId },
+    orderBy: { createdAt: "desc" },
+  });
 
   const testimonies = rawTestimonies.map((t) => ({
     id: t.id,
@@ -171,81 +183,8 @@ export default async function TestimoniesPage() {
 
         {/* Right Side Widgets */}
         <aside className="flex w-[320px] flex-col gap-4">
-          <Card className="border-border/80 bg-card/80">
-            <CardHeader className="space-y-2 pb-4">
-              <CardTitle className="text-sm font-semibold">
-                Collect Link
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Share this link to gather new testimonies.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="flex-1 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs font-mono text-muted-foreground">
-                  vox.app/c/acme-corp
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon-sm"
-                  className="border-border bg-background/60"
-                >
-                  <SearchIcon className="size-3.5" />
-                  <span className="sr-only">Copy link</span>
-                </Button>
-              </div>
-              <Separator className="bg-border/60" />
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">
-                  Accepting responses
-                </span>
-                <Switch checked={true} />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="flex flex-1 flex-col border-border/80 bg-card/80">
-            <CardHeader className="flex items-center justify-between pb-3">
-              <div>
-                <CardTitle className="text-sm font-semibold">
-                  Widget Editor
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Preview how your widget looks on your site.
-                </CardDescription>
-              </div>
-              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                Edit
-              </Button>
-            </CardHeader>
-            <CardContent className="flex flex-1 flex-col justify-between gap-4 pb-4">
-              <div className="rounded-xl border border-border/80 bg-muted/40 p-4">
-                <div className="space-y-2">
-                  <div className="h-2.5 w-24 rounded-full bg-muted" />
-                  <div className="h-2 w-40 rounded-full bg-muted/80" />
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="h-2 w-full rounded-full bg-muted/60" />
-                  <div className="h-2 w-5/6 rounded-full bg-muted/40" />
-                  <div className="h-2 w-2/3 rounded-full bg-muted/40" />
-                </div>
-              </div>
-
-              <div className="space-y-3 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Dark Mode</span>
-                  <Switch checked={true} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Show Avatars</span>
-                  <Switch checked={true} />
-                </div>
-                <Button className="mt-1 w-full rounded-full text-xs font-medium">
-                  Publish Changes
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <CollectLink />
+          <MinimalWidgetEditor />
         </aside>
       </main>
     </div>

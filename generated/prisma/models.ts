@@ -9,8 +9,13 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Session'
+export type * from './models/Account'
+export type * from './models/Verification'
 export type * from './models/Organization'
 export type * from './models/Project'
+export type * from './models/Member'
+export type * from './models/Invitation'
 export type * from './models/Testimonial'
 export type * from './models/TestimonialLink'
 export type * from './models/WidgetConfig'
