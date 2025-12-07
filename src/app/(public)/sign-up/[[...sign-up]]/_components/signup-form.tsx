@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeClosedIcon, EyeIcon, EyeOffIcon, SearchIcon } from "lucide-react";
+import { EyeClosedIcon, EyeIcon } from "lucide-react";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -138,6 +138,7 @@ export function SignupForm({
                           id="password"
                           type={passwordIsHidden ? "password" : "text"}
                           autoComplete="off"
+                          placeholder="MySuperSecretPassword"
                           required
                         />
                         <InputGroupAddon align="inline-end">
@@ -168,6 +169,7 @@ export function SignupForm({
                           id="confirmPassword"
                           type={confirmPasswordIsHidden ? "password" : "text"}
                           autoComplete="off"
+                          placeholder="MySuperSecretPassword"
                           required
                         />
                         <InputGroupAddon align="inline-end">

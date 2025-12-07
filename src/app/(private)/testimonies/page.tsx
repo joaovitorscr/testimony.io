@@ -22,6 +22,8 @@ import { Switch } from "@/components/ui/switch";
 import { getActiveProjectId } from "@/server/actions/active-project";
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function RatingStars({ value }: { value: number }) {
   return (
@@ -39,13 +41,14 @@ function RatingStars({ value }: { value: number }) {
 }
 
 export default async function TestimoniesPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const [session, activeProjectId] = await Promise.all([
+    auth.api.getSession({
+      headers: await headers(),
+    }),
+    getActiveProjectId(),
+  ]);
 
   if (!session) return null;
-
-  const activeProjectId = await getActiveProjectId();
 
   if (!activeProjectId) {
     return (
@@ -183,8 +186,12 @@ export default async function TestimoniesPage() {
 
         {/* Right Side Widgets */}
         <aside className="flex w-[320px] flex-col gap-4">
-          <CollectLink />
-          <MinimalWidgetEditor />
+          <Suspense fallback={<Skeleton className="h-40 w-full" />}>
+            <CollectLink />
+          </Suspense>
+          <Suspense fallback={<Skeleton className="h-40 w-full" />}>
+            <MinimalWidgetEditor />
+          </Suspense>
         </aside>
       </main>
     </div>
