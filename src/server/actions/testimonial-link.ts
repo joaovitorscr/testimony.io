@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export async function updateTestimonialLinkStatus(
   testimonialLinkId: string,
-  isActive: boolean
+  isActive: boolean,
 ) {
   await db.testimonialLink.update({
     where: {
@@ -17,4 +17,3 @@ export async function updateTestimonialLinkStatus(
   });
   revalidatePath("/testimonies");
 }
-

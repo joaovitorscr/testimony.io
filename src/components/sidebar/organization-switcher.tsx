@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 export function OrganizationSwitcher() {
   const { isMobile } = useSidebar();
   const router = useRouter();
-  
+
   const { data: session, isPending: isPendingSession } =
     authClient.useSession();
   const { data: organizationList, isPending: isPendingOrganizationList } =
@@ -36,13 +36,16 @@ export function OrganizationSwitcher() {
   const handleCreateOrganization = () => {};
 
   const handleSetActiveOrganization = (organizationId: string) => {
-    authClient.organization.setActive({
-      organizationId,
-    }, {
-      onSuccess: () => {
-        router.refresh();
-      }
-    });
+    authClient.organization.setActive(
+      {
+        organizationId,
+      },
+      {
+        onSuccess: () => {
+          router.refresh();
+        },
+      },
+    );
   };
 
   if (

@@ -69,7 +69,7 @@ export function SignupForm({
         loading: "Signin up...",
         success: "Account Created!",
         error: "Failed to create account",
-      }
+      },
     );
   };
 
@@ -176,7 +176,7 @@ export function SignupForm({
                           <InputGroupButton
                             onClick={() =>
                               setConfirmPasswordIsHidden(
-                                !confirmPasswordIsHidden
+                                !confirmPasswordIsHidden,
                               )
                             }
                           >

@@ -18,4 +18,3 @@ export async function getActiveProjectId() {
   const cookieStore = await cookies();
   return cookieStore.get(PROJECT_COOKIE_NAME)?.value;
 }
-

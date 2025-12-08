@@ -23,7 +23,7 @@ export default function HeaderLink({ href, children }: HeaderLinkProps) {
       <div
         className={cn(
           "min-w-full h-0.5 invisible bg-sidebar-primary",
-          isActive && "visible"
+          isActive && "visible",
         )}
       />
     </div>

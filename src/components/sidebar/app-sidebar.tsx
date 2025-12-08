@@ -82,7 +82,10 @@ export function AppSidebar({
           </h1>
         </div>
         <OrganizationSwitcher />
-        <ProjectSwitcher projects={projects} activeProjectId={activeProjectId} />
+        <ProjectSwitcher
+          projects={projects}
+          activeProjectId={activeProjectId}
+        />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
