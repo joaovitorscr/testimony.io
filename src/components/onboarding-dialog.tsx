@@ -191,7 +191,7 @@ export function OnboardingDialog({
                         control={form.control}
                         name="name"
                         render={({ field, fieldState }) => (
-                          <Field aria-invalid={fieldState.invalid}>
+                          <Field data-invalid={fieldState.invalid}>
                             <FieldLabel htmlFor="project-name">
                               Project Name
                             </FieldLabel>
@@ -222,7 +222,7 @@ export function OnboardingDialog({
                         control={form.control}
                         name="slug"
                         render={({ field, fieldState }) => (
-                          <Field aria-invalid={fieldState.invalid}>
+                          <Field data-invalid={fieldState.invalid}>
                             <FieldLabel htmlFor="project-slug">Slug</FieldLabel>
                             <Input
                               disabled

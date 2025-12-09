@@ -93,9 +93,10 @@ model Project {
   members     Member[]
   invitations Invitation[]
 
-  testimonials    Testimonial[]
-  testimonialLink TestimonialLink?
-  widgetConfig    WidgetConfig?
+  testimonials      Testimonial[]
+  testimonialLink   TestimonialLink?
+  widgetConfig      WidgetConfig?
+  testimonialTokens TestimonialToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -202,4 +203,21 @@ model WidgetConfig {
   updatedAt DateTime @updatedAt
 
   @@map("widget_configs")
+}
+
+model TestimonialToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  projectId String
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  used      Boolean   @default(false)
+  expiresAt DateTime?
+  cancelled Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  createdBy   String?
+  description String?
+
+  @@index([token])
+  @@map("testimonial_tokens")
 }

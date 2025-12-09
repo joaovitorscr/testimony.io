@@ -1,5 +1,4 @@
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { OnboardingDialog } from "@/components/onboarding-dialog";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -17,7 +16,7 @@ export default async function PrivateLayout({
   });
 
   if (!session) {
-    redirect("/sign-in");
+    return null;
   }
 
   const projects = await db.project.findMany({

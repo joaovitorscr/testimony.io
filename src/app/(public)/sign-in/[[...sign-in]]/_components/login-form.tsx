@@ -79,7 +79,7 @@ export function LoginForm({
                 name="email"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field aria-invalid={fieldState.invalid}>
+                  <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="email">Email</FieldLabel>
                     <Input
                       {...field}
@@ -150,10 +150,6 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription>
     </div>
   );
 }
