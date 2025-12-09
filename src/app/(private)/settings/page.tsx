@@ -2,7 +2,13 @@ import { getActiveProjectId } from "@/server/actions/active-project";
 import { db } from "@/server/db";
 import { MembersList } from "@/components/settings/members-list";
 import { InviteDialog } from "@/components/settings/invite-dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/server/auth";
 import { headers } from "next/headers";
@@ -17,7 +23,9 @@ export default async function SettingsPage() {
   if (!activeProjectId || !session) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-muted-foreground">Please select a project to view settings.</p>
+        <p className="text-muted-foreground">
+          Please select a project to view settings.
+        </p>
       </div>
     );
   }
@@ -39,7 +47,7 @@ export default async function SettingsPage() {
   });
 
   if (!project) {
-     return (
+    return (
       <div className="flex h-full items-center justify-center">
         <p className="text-muted-foreground">Project not found.</p>
       </div>
@@ -56,7 +64,7 @@ export default async function SettingsPage() {
           Manage your project settings and team members.
         </p>
       </div>
-      
+
       <Separator />
 
       <div className="grid gap-8">
@@ -69,12 +77,16 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-2">
-                <div className="text-sm font-medium">Project Name</div>
-                <div className="text-sm text-muted-foreground">{project.name}</div>
+              <div className="text-sm font-medium">Project Name</div>
+              <div className="text-sm text-muted-foreground">
+                {project.name}
+              </div>
             </div>
-             <div className="mt-4 grid gap-2">
-                <div className="text-sm font-medium">Slug</div>
-                <div className="text-sm text-muted-foreground">{project.slug}</div>
+            <div className="mt-4 grid gap-2">
+              <div className="text-sm font-medium">Slug</div>
+              <div className="text-sm text-muted-foreground">
+                {project.slug}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -90,12 +102,12 @@ export default async function SettingsPage() {
             <InviteDialog projectId={project.id} />
           </CardHeader>
           <CardContent>
-             <MembersList 
-                members={project.members} 
-                invitations={project.invitations}
-                currentUserId={session.user.id}
-                isOwner={isOwner}
-             />
+            <MembersList
+              members={project.members}
+              invitations={project.invitations}
+              currentUserId={session.user.id}
+              isOwner={isOwner}
+            />
           </CardContent>
         </Card>
       </div>
