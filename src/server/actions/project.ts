@@ -10,7 +10,10 @@ const createProjectSchema = z.object({
   slug: z.string().min(3).max(50),
 });
 
-export async function createProject(formData: FormData) {
+export async function createProject(newProject: {
+  name: string;
+  slug: string;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -22,12 +25,7 @@ export async function createProject(formData: FormData) {
     };
   }
 
-  const rawData = {
-    name: formData.get("name"),
-    slug: formData.get("slug"),
-  };
-
-  const validatedData = createProjectSchema.safeParse(rawData);
+  const validatedData = createProjectSchema.safeParse(newProject);
 
   if (!validatedData.success) {
     return {

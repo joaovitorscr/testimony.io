@@ -1,28 +1,45 @@
 "use client";
 
-import { Building2, User } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Quote } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
+import z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { authClient } from "@/lib/auth-client";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 import { setActiveProject } from "@/server/actions/active-project";
+import { checkSlugAvailability } from "@/server/actions/check-slug";
 import { createProject } from "@/server/actions/project";
+import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
+
+const createProjectPayloadSchema = z.object({
+  name: z
+    .string({
+      error: "Project Name is required",
+    })
+    .min(2, {
+      error: "Project Name needs at least 2 characters",
+    }),
+  slug: z.string(),
+});
+
+type CreateProjectPayload = z.infer<typeof createProjectPayloadSchema>;
 
 export function OnboardingDialog({
   open,
@@ -32,50 +49,63 @@ export function OnboardingDialog({
   handleOpen?: (open: boolean) => void;
 }) {
   const [step, setStep] = useState<"choice" | "create-org" | "create-project">(
-    "choice",
+    "choice"
   );
-  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
-  const handleCreateOrg = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const form = useForm<CreateProjectPayload>({
+    resolver: zodResolver(createProjectPayloadSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      slug: "",
+    },
+  });
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const slug = formData.get("slug") as string;
+  const projectName = form.watch("name");
+  const [debouncedProjectName] = useDebounce(projectName, 500);
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
 
-    try {
-      await authClient.organization.create(
-        {
-          name,
-          slug,
-        },
-        {
-          onSuccess: () => {
-            toast.success("Organization created successfully");
-            router.refresh();
-          },
-          onError: (ctx) => {
-            toast.error(ctx.error.message);
-          },
-        },
-      );
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create organization");
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    async function generateAndCheckSlug() {
+      if (!debouncedProjectName) {
+        form.setValue("slug", "");
+        return;
+      }
+
+      setIsCheckingSlug(true);
+      const generatedSlug = debouncedProjectName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+      form.setValue("slug", generatedSlug);
+
+      try {
+        const result = await checkSlugAvailability(generatedSlug);
+        if (result.success && !result.available) {
+          form.setError("slug", {
+            type: "manual",
+            message: "This project name is already taken",
+          });
+        } else {
+          form.clearErrors("slug");
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsCheckingSlug(false);
+      }
     }
-  };
 
-  const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const formData = new FormData(e.currentTarget);
+    generateAndCheckSlug();
+  }, [debouncedProjectName, form]);
 
+  const onSubmit = async (values: CreateProjectPayload) => {
     try {
-      const result = await createProject(formData);
+      const result = await createProject(values);
+
       if (result.success) {
         toast.success("Project created successfully");
         router.refresh();
@@ -91,122 +121,230 @@ export function OnboardingDialog({
     } catch (error) {
       console.error(error);
       toast.error("Failed to create project");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Welcome to Testimony.io</DialogTitle>
-          <DialogDescription>
-            To get started, you need to create a workspace for your
-            testimonials.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="overflow-hidden border-0 p-0 sm:max-w-5xl">
+        <div className="grid h-[600px] w-full grid-cols-[1fr_1.2fr]">
+          <OnboardingCover />
 
-        {step === "choice" && (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
-            <Card
-              className="cursor-pointer hover:bg-accent transition-colors"
-              onClick={() => setStep("create-org")}
-            >
-              <CardHeader>
-                <Building2 className="w-8 h-8 mb-2 text-primary" />
-                <CardTitle className="text-base">Organization</CardTitle>
-                <CardDescription>
-                  Best for teams and companies. Collaborate with others.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+          <div className="relative flex flex-col justify-center p-12">
+            <AnimatePresence mode="wait" initial={false}>
+              {step === "choice" && (
+                <motion.div
+                  key="choice"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-8"
+                >
+                  <div className="space-y-4">
+                    <DialogTitle className="font-bold text-3xl tracking-tight">
+                      Welcome to Testimony.io
+                    </DialogTitle>
+                    <DialogDescription className="text-base text-zinc-500 leading-relaxed">
+                      To get started, you need to create a workspace for your
+                      testimonials. In our platform we organize in projects, you
+                      will start creating your one and also will be able to
+                      already invite people to work in the same project as you.
+                    </DialogDescription>
+                  </div>
 
-            <Card
-              className="cursor-pointer hover:bg-accent transition-colors"
-              onClick={() => setStep("create-project")}
-            >
-              <CardHeader>
-                <User className="w-8 h-8 mb-2 text-primary" />
-                <CardTitle className="text-base">Personal Project</CardTitle>
-                <CardDescription>
-                  Best for individuals and personal sites.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                  <Button
+                    size="lg"
+                    className="w-full font-semibold text-base transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    onClick={() => setStep("create-project")}
+                  >
+                    Create a Project
+                  </Button>
+                </motion.div>
+              )}
+
+              {step === "create-project" && (
+                <motion.div
+                  key="create-project"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-8"
+                >
+                  <div className="space-y-2">
+                    <DialogTitle className="font-bold text-2xl tracking-tight">
+                      Create your Project
+                    </DialogTitle>
+                    <DialogDescription className="text-base">
+                      Give your project a name and a slug.
+                    </DialogDescription>
+                  </div>
+
+                  <form
+                    id="create-project-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
+                    <FieldGroup>
+                      <Controller
+                        control={form.control}
+                        name="name"
+                        render={({ field, fieldState }) => (
+                          <Field aria-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="project-name">
+                              Project Name
+                            </FieldLabel>
+                            <InputGroup className="h-11">
+                              <InputGroupInput
+                                {...field}
+                                autoComplete="off"
+                                id="project-name"
+                                name="project-name"
+                                placeholder="My Awesome Project"
+                                required
+                                aria-invalid={fieldState.invalid}
+                                min={2}
+                              />
+                              {isCheckingSlug && (
+                                <InputGroupAddon align="inline-end">
+                                  <Spinner />
+                                </InputGroupAddon>
+                              )}
+                            </InputGroup>
+                            {fieldState.invalid && (
+                              <FieldError errors={[fieldState.error]} />
+                            )}
+                          </Field>
+                        )}
+                      />
+                      <Controller
+                        control={form.control}
+                        name="slug"
+                        render={({ field, fieldState }) => (
+                          <Field aria-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor="project-slug">Slug</FieldLabel>
+                            <Input
+                              disabled
+                              className="h-11"
+                              {...field}
+                              autoComplete="off"
+                              id="project-slug"
+                              name="project-slug"
+                              placeholder="my-awesome-project"
+                              required
+                              aria-invalid={fieldState.invalid}
+                              min={2}
+                            />
+                            {fieldState.invalid && (
+                              <FieldError errors={[fieldState.error]} />
+                            )}
+                          </Field>
+                        )}
+                      />
+
+                      <Field orientation="horizontal">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="lg"
+                          className="flex-1"
+                          onClick={() => setStep("choice")}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={
+                            form.formState.isSubmitting ||
+                            !form.formState.isValid ||
+                            isCheckingSlug
+                          }
+                          size="lg"
+                          className="flex-1"
+                        >
+                          {form.formState.isSubmitting
+                            ? "Creating..."
+                            : "Create Project"}
+                        </Button>
+                      </Field>
+                    </FieldGroup>
+                  </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
-
-        {step === "create-org" && (
-          <form onSubmit={handleCreateOrg} className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label htmlFor="org-name">Organization Name</Label>
-              <Input
-                id="org-name"
-                name="name"
-                placeholder="Acme Corp"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="org-slug">Slug</Label>
-              <Input
-                id="org-slug"
-                name="slug"
-                placeholder="acme-corp"
-                required
-              />
-            </div>
-            <div className="flex justify-between pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setStep("choice")}
-              >
-                Back
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Organization"}
-              </Button>
-            </div>
-          </form>
-        )}
-
-        {step === "create-project" && (
-          <form onSubmit={handleCreateProject} className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label htmlFor="proj-name">Project Name</Label>
-              <Input
-                id="proj-name"
-                name="name"
-                placeholder="My Awesome Project"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="proj-slug">Slug</Label>
-              <Input
-                id="proj-slug"
-                name="slug"
-                placeholder="my-project"
-                required
-              />
-            </div>
-            <div className="flex justify-between pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setStep("choice")}
-              >
-                Back
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Project"}
-              </Button>
-            </div>
-          </form>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export function OnboardingCover() {
+  return (
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-l-lg bg-zinc-900">
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "easeInOut",
+        }}
+        className="-left-10 -top-10 absolute h-64 w-64 rounded-full bg-indigo-500/30 blur-[100px]"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "easeInOut",
+          delay: 4,
+        }}
+        className="-bottom-10 -right-10 absolute h-64 w-64 rounded-full bg-purple-500/30 blur-[100px]"
+      />
+
+      <div className="relative z-10 flex flex-col items-center justify-center gap-6 text-white/80">
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+            delay: 0.2,
+          }}
+          className="flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-br from-white/10 to-white/5 shadow-2xl ring-1 ring-white/20 backdrop-blur-md"
+        >
+          <Quote className="h-10 w-10 fill-white/20 text-white" />
+        </motion.div>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="space-y-2 text-center"
+        >
+          <h3 className="font-bold text-white text-xl tracking-tight">
+            Testimony.io
+          </h3>
+          <p className="font-medium text-sm text-zinc-400">
+            Collect feedback effortlessly
+          </p>
+        </motion.div>
+      </div>
+
+      <div
+        className="absolute inset-0 z-0 opacity-10"
+        style={{
+          backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+    </div>
   );
 }
