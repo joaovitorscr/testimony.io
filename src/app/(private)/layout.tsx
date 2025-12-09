@@ -20,42 +20,23 @@ export default async function PrivateLayout({
     redirect("/sign-in");
   }
 
-  const activeOrganizationId = session.session.activeOrganizationId;
+  const projects = await db.project.findMany({
+    where: {
+      OR: [
+        { userId: session.user.id },
+        { members: { some: { userId: session.user.id } } },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  });
 
-  const [
-    personalProjectsCount,
-    organizationMemberships,
-    projects,
-    activeProjectId,
-  ] = await Promise.all([
-    // Check if the user has any personal projects
-    db.project.count({
-      where: {
-        userId: session.user.id,
-      },
-    }),
-    // Check if the user is a member of any organization
-    db.member.count({
-      where: {
-        userId: session.user.id,
-      },
-    }),
-    // Fetch projects based on current context (Active Org or User)
-    db.project.findMany({
-      where: activeOrganizationId
-        ? { organizationId: activeOrganizationId }
-        : { userId: session.user.id },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-      },
-    }),
-    getActiveProjectId(),
-  ]);
+  const activeProjectId = await getActiveProjectId();
 
-  const showOnboarding =
-    personalProjectsCount === 0 && organizationMemberships === 0;
+  const showOnboarding = projects.length === 0;
 
   return (
     <SidebarProvider className="h-screen">

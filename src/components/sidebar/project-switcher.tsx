@@ -45,10 +45,6 @@ export function ProjectSwitcher({
     router.refresh();
   };
 
-  if (!activeProject && projects.length === 0) {
-    setShowNewProjectDialog(true);
-  }
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>

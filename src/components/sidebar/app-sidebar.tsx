@@ -10,7 +10,6 @@ import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 import type * as React from "react";
 import { NavUser } from "@/components/sidebar/nav-user";
-import { OrganizationSwitcher } from "@/components/sidebar/organization-switcher";
 import { ProjectSwitcher } from "@/components/sidebar/project-switcher";
 import {
   Sidebar,
@@ -73,15 +72,14 @@ export function AppSidebar({
   return (
     <Sidebar collapsible={isMobile ? "icon" : "none"} {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-3 py-4 px-2">
-          <div className="size-10 rounded-xl flex items-center justify-center font-bold tracking-tight text-xl bg-foreground text-background">
+        <div className="flex items-center gap-3 px-2 py-4">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-foreground font-bold text-background text-xl tracking-tight">
             T
           </div>
-          <h1 className="font-semibold text-lg tracking-tight text-sidebar-foreground">
+          <h1 className="font-semibold text-lg text-sidebar-foreground tracking-tight">
             Testimony.io
           </h1>
         </div>
-        <OrganizationSwitcher />
         <ProjectSwitcher
           projects={projects}
           activeProjectId={activeProjectId}
@@ -96,7 +94,7 @@ export function AppSidebar({
               return (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    className="[&>svg]:size-4 text-base"
+                    className="text-base [&>svg]:size-4"
                     isActive={isActive}
                     onClick={() => router.push(item.url)}
                   >
@@ -105,7 +103,7 @@ export function AppSidebar({
                   </SidebarMenuButton>
 
                   {isActive && (
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 rounded-r-md h-full w-2 bg-primary" />
+                    <div className="-translate-y-1/2 absolute top-1/2 right-0 h-full w-2 rounded-r-md bg-primary" />
                   )}
                 </SidebarMenuItem>
               );

@@ -52,14 +52,20 @@ export async function createProject(formData: FormData) {
       };
     }
 
-    const organizationId = formData.get("organizationId") as string | null;
-
     const project = await db.project.create({
       data: {
         name,
         slug,
-        userId: organizationId ? null : session.user.id,
-        organizationId: organizationId || null,
+        userId: session.user.id,
+      },
+    });
+
+    // Create default member for the owner
+    await db.member.create({
+      data: {
+        userId: session.user.id,
+        projectId: project.id,
+        role: "owner",
       },
     });
 
