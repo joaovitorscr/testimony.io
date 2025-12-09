@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Lora, Plus_Jakarta_Sans } from "next/font/google";
 import "../styles/globals.css";
 
-import { ThemeProvider } from "@/components/theme-provider";
+import Providers from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -37,15 +37,10 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} ${loraSerif.variable} ${ibmPlexMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           {children}
           <Toaster />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
