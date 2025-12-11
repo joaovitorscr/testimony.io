@@ -4,12 +4,16 @@ import { auth } from "@/server/auth";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const publicRoutes = ["/sign-in", "/sign-up", "/api/auth"];
+  const publicRoutes = ["/sign-in", "/sign-up", "/api/auth", "/c/:path*"];
 
   if (
     pathname === "/" ||
     publicRoutes.some((route) => pathname.startsWith(route))
   ) {
+    return NextResponse.next();
+  }
+
+  if (pathname.startsWith("/c")) {
     return NextResponse.next();
   }
 
