@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.1.0",
-  "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
+  "clientVersion": "7.0.1",
+  "engineVersion": "f09f2815f091dbba658cdcd2264306d88bb5bda6",
   "activeProvider": "postgresql",
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id            String   @id\n  name          String\n  email         String\n  emailVerified Boolean  @default(false)\n  image         String?\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n\n  sessions    Session[]\n  accounts    Account[]\n  members     Member[]\n  invitations Invitation[]\n\n  projects Project[]\n\n  @@unique([email])\n  @@map(\"user\")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map(\"session\")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map(\"account\")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map(\"verification\")\n}\n\nmodel Project {\n  id   String @id @default(uuid())\n  name String\n  slug String @unique\n\n  // Owner (Optional if members cover ownership, but good to keep for direct ownership or creator tracking)\n  userId String\n  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  members     Member[]\n  invitations Invitation[]\n\n  testimonials      Testimonial[]\n  testimonialLink   TestimonialLink?\n  widgetConfig      WidgetConfig?\n  testimonialTokens TestimonialToken[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([userId])\n  @@map(\"project\")\n}\n\nmodel Member {\n  id String @id @default(uuid())\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  projectId String\n  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  role String @default(\"member\")\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([userId])\n  @@index([projectId])\n  @@map(\"member\")\n}\n\nmodel Invitation {\n  id        String   @id @default(uuid())\n  projectId String\n  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)\n  email     String\n  role      String   @default(\"member\")\n  status    String   @default(\"pending\")\n  expiresAt DateTime\n  createdAt DateTime @default(now())\n\n  inviterId String\n  user      User   @relation(fields: [inviterId], references: [id], onDelete: Cascade)\n\n  @@index([projectId])\n  @@index([email])\n  @@map(\"invitation\")\n}\n\nmodel Testimonial {\n  id String @id @default(uuid())\n\n  projectId String\n  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  customerName      String\n  customerCompany   String?\n  customerTitle     String?\n  customerAvatarUrl String?\n\n  rating     Int?\n  text       String\n  isApproved Boolean  @default(false)\n  isFeatured Boolean  @default(false)\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([projectId])\n  @@map(\"testimonials\")\n}\n\nmodel TestimonialLink {\n  id String @id @default(uuid())\n\n  // Owner\n  projectId String  @unique\n  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  // The unique slug/path (e.g., /collect/my-slug)\n  slug            String  @unique\n  title           String?\n  description     String?\n  thankYouMessage String? @default(\"Thank you for your feedback!\")\n  isActive        Boolean @default(true)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map(\"testimonial_links\")\n}\n\nmodel WidgetConfig {\n  id String @id @default(uuid())\n\n  // Owner\n  projectId String  @unique\n  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  themeColor    String  @default(\"#3B82F6\")\n  displayLayout String  @default(\"list\")\n  displayOrder  String  @default(\"newest\")\n  showRating    Boolean @default(true)\n  showAvatar    Boolean @default(true)\n  autoPlay      Boolean @default(true)\n  speedMs       Int     @default(5000)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@map(\"widget_configs\")\n}\n\nmodel TestimonialToken {\n  id        String    @id @default(uuid())\n  token     String    @unique\n  projectId String\n  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)\n  used      Boolean   @default(false)\n  expiresAt DateTime?\n  cancelled Boolean   @default(false)\n  createdAt DateTime  @default(now())\n\n  createdBy   String?\n  description String?\n\n  @@index([token])\n  @@map(\"testimonial_tokens\")\n}\n",
   "runtimeDataModel": {
@@ -62,7 +62,7 @@ export interface PrismaClientConstructor {
    * const users = await prisma.user.findMany()
    * ```
    * 
-   * Read more in our [docs](https://pris.ly/d/client).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
    */
 
   new <
@@ -84,7 +84,7 @@ export interface PrismaClientConstructor {
  * const users = await prisma.user.findMany()
  * ```
  * 
- * Read more in our [docs](https://pris.ly/d/client).
+ * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
  */
 
 export interface PrismaClient<
@@ -113,7 +113,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://pris.ly/d/raw-queries).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
   $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -125,7 +125,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://pris.ly/d/raw-queries).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
   $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -136,7 +136,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://pris.ly/d/raw-queries).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
   $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -148,7 +148,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://pris.ly/d/raw-queries).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
