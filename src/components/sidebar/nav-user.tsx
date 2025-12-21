@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/server/better-auth/client";
 import { Skeleton } from "../ui/skeleton";
 
 export function NavUser() {

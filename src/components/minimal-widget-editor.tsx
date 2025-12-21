@@ -1,4 +1,5 @@
-import { Switch } from "@radix-ui/react-switch";
+"use client";
+
 import { Button } from "./ui/button";
 import {
   Card,
@@ -7,13 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Switch } from "./ui/switch";
 
 export function MinimalWidgetEditor() {
   return (
     <Card className="flex flex-1 flex-col border-border/80 bg-card/80">
       <CardHeader className="flex items-center justify-between pb-3">
         <div>
-          <CardTitle className="text-sm font-semibold">Widget Editor</CardTitle>
+          <CardTitle className="font-semibold text-sm">Widget Editor</CardTitle>
           <CardDescription className="text-xs">
             Preview how your widget looks on your site.
           </CardDescription>
@@ -44,7 +46,7 @@ export function MinimalWidgetEditor() {
             <span className="text-muted-foreground">Show Avatars</span>
             <Switch checked={true} />
           </div>
-          <Button className="mt-1 w-full rounded-full text-xs font-medium">
+          <Button className="mt-1 w-full rounded-full font-medium text-xs">
             Publish Changes
           </Button>
         </div>

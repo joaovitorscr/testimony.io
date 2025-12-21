@@ -23,9 +23,9 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { setActiveProject } from "@/server/actions/active-project";
 import { checkSlugAvailability } from "@/server/actions/check-slug";
-import { createProject } from "@/server/actions/project";
+import { setActiveProjectId } from "@/server/better-auth/server";
+import { api } from "@/trpc/react";
 import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
 
 const createProjectPayloadSchema = z.object({
@@ -84,6 +84,9 @@ export function OnboardingDialog({
 
       try {
         const result = await checkSlugAvailability(generatedSlug);
+
+        console.log("Result", result);
+
         if (result.success && !result.available) {
           form.setError("slug", {
             type: "manual",
@@ -102,9 +105,11 @@ export function OnboardingDialog({
     generateAndCheckSlug();
   }, [debouncedProjectName, form]);
 
+  const mutation = api.project.create.useMutation();
+
   const onSubmit = async (values: CreateProjectPayload) => {
     try {
-      const result = await createProject(values);
+      const result = await mutation.mutateAsync(values);
 
       if (result.success) {
         toast.success("Project created successfully");
@@ -114,7 +119,7 @@ export function OnboardingDialog({
           handleOpen(false);
         }
 
-        setActiveProject(result.project?.id ?? "");
+        setActiveProjectId(result.project?.id ?? "");
       } else {
         toast.error(result.message);
       }

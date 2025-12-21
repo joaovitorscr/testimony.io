@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getActiveProjectId } from "@/server/actions/active-project";
+import { getActiveProjectId } from "@/server/better-auth/server";
 import { db } from "@/server/db";
 import { CreateTokenForm } from "./_components/create-token-form";
 import { TokenList } from "./_components/token-list";

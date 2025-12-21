@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { setActiveProject } from "@/server/actions/active-project";
+import { setActiveProjectId } from "@/server/better-auth/server";
 import { OnboardingDialog } from "../onboarding-dialog";
 
 type Project = {
@@ -35,13 +35,14 @@ export function ProjectSwitcher({
 }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+
   const [showNewProjectDialog, setShowNewProjectDialog] = React.useState(false);
 
   const activeProject =
     projects.find((p) => p.id === activeProjectId) || projects[0];
 
   const handleSetActiveProject = async (projectId: string) => {
-    await setActiveProject(projectId);
+    await setActiveProjectId(projectId);
     router.refresh();
   };
 

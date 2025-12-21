@@ -30,8 +30,8 @@ import {
 } from "@/components/ui/input-group";
 import { AppleDark } from "@/components/ui/svgs/appleDark";
 import { Google } from "@/components/ui/svgs/google";
-import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/server/better-auth/client";
 
 const signinPayloadSchema = z.object({
   email: z.email(),

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
-import { auth } from "@/server/auth";
+import { auth } from "@/server/better-auth";
 import { db } from "@/server/db";
 
 const inviteUserSchema = z.object({

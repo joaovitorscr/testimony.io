@@ -28,8 +28,8 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/server/better-auth/client";
 
 const signupPayloadSchema = z.object({
   name: z.string(),
@@ -69,7 +69,7 @@ export function SignupForm({
         loading: "Signin up...",
         success: "Account Created!",
         error: "Failed to create account",
-      },
+      }
     );
   };
 
@@ -176,7 +176,7 @@ export function SignupForm({
                           <InputGroupButton
                             onClick={() =>
                               setConfirmPasswordIsHidden(
-                                !confirmPasswordIsHidden,
+                                !confirmPasswordIsHidden
                               )
                             }
                           >

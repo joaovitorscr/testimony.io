@@ -1,13 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "@/server/auth";
+import { getSession } from "@/server/better-auth/server";
 import { db } from "@/server/db";
 
 export async function checkSlugAvailability(slug: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session?.user) {
     return {
@@ -18,7 +15,9 @@ export async function checkSlugAvailability(slug: string) {
 
   try {
     const existingProject = await db.project.findUnique({
-      where: { slug },
+      where: {
+        slug,
+      },
     });
 
     return {
@@ -33,4 +32,3 @@ export async function checkSlugAvailability(slug: string) {
     };
   }
 }
-

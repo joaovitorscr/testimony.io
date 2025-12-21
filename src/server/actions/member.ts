@@ -1,9 +1,9 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "@/server/auth";
-import { db } from "@/server/db";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { auth } from "@/server/better-auth";
+import { db } from "@/server/db";
 
 export async function removeMember(memberId: string) {
   const session = await auth.api.getSession({

@@ -1,20 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { z } from "zod";
-import { auth } from "@/server/auth";
+import { getActiveProjectId, getSession } from "@/server/better-auth/server";
 import { db } from "@/server/db";
-import { getActiveProjectId } from "./active-project";
 
 const createTokenSchema = z.object({
   description: z.string().optional(),
 });
 
 export async function createToken(input: z.infer<typeof createTokenSchema>) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session?.user) {
     return {
@@ -72,9 +68,7 @@ export async function createToken(input: z.infer<typeof createTokenSchema>) {
 }
 
 export async function cancelToken(tokenId: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session?.user) {
     return {
