@@ -10,7 +10,7 @@ import { TestimoniesPageHeader } from "./_components/testimonies-page-header";
 
 export default async function TestimoniesPage() {
   void api.testimonie.all.prefetch();
-  void api.project.getCollectLink.prefetch();
+  void api.collectLink.currentProject.prefetch();
 
   return (
     <HydrateClient>
@@ -25,7 +25,7 @@ export default async function TestimoniesPage() {
           </Suspense>
 
           {/* Right Side Widgets */}
-          <aside className="flex w-[320px] flex-col gap-4">
+          <aside className="flex w-[400px] flex-col gap-4">
             <Suspense fallback={<Skeleton className="h-40 w-full" />}>
               <CollectLink />
             </Suspense>

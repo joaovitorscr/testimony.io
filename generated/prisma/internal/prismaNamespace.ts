@@ -398,7 +398,7 @@ export const ModelName = {
   Member: 'Member',
   Invitation: 'Invitation',
   Testimonial: 'Testimonial',
-  TestimonialLink: 'TestimonialLink',
+  CollectLink: 'CollectLink',
   WidgetConfig: 'WidgetConfig',
   TestimonialToken: 'TestimonialToken'
 } as const
@@ -416,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "project" | "member" | "invitation" | "testimonial" | "testimonialLink" | "widgetConfig" | "testimonialToken"
+    modelProps: "user" | "session" | "account" | "verification" | "project" | "member" | "invitation" | "testimonial" | "collectLink" | "widgetConfig" | "testimonialToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1012,77 +1012,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    TestimonialLink: {
-      payload: Prisma.$TestimonialLinkPayload<ExtArgs>
-      fields: Prisma.TestimonialLinkFieldRefs
+    CollectLink: {
+      payload: Prisma.$CollectLinkPayload<ExtArgs>
+      fields: Prisma.CollectLinkFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.TestimonialLinkFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload> | null
+          args: Prisma.CollectLinkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.TestimonialLinkFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>
+          args: Prisma.CollectLinkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>
         }
         findFirst: {
-          args: Prisma.TestimonialLinkFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload> | null
+          args: Prisma.CollectLinkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.TestimonialLinkFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>
+          args: Prisma.CollectLinkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>
         }
         findMany: {
-          args: Prisma.TestimonialLinkFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>[]
+          args: Prisma.CollectLinkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>[]
         }
         create: {
-          args: Prisma.TestimonialLinkCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>
+          args: Prisma.CollectLinkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>
         }
         createMany: {
-          args: Prisma.TestimonialLinkCreateManyArgs<ExtArgs>
+          args: Prisma.CollectLinkCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.TestimonialLinkCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>[]
+          args: Prisma.CollectLinkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>[]
         }
         delete: {
-          args: Prisma.TestimonialLinkDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>
+          args: Prisma.CollectLinkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>
         }
         update: {
-          args: Prisma.TestimonialLinkUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>
+          args: Prisma.CollectLinkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>
         }
         deleteMany: {
-          args: Prisma.TestimonialLinkDeleteManyArgs<ExtArgs>
+          args: Prisma.CollectLinkDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.TestimonialLinkUpdateManyArgs<ExtArgs>
+          args: Prisma.CollectLinkUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.TestimonialLinkUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>[]
+          args: Prisma.CollectLinkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>[]
         }
         upsert: {
-          args: Prisma.TestimonialLinkUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TestimonialLinkPayload>
+          args: Prisma.CollectLinkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectLinkPayload>
         }
         aggregate: {
-          args: Prisma.TestimonialLinkAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateTestimonialLink>
+          args: Prisma.CollectLinkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCollectLink>
         }
         groupBy: {
-          args: Prisma.TestimonialLinkGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.TestimonialLinkGroupByOutputType>[]
+          args: Prisma.CollectLinkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CollectLinkGroupByOutputType>[]
         }
         count: {
-          args: Prisma.TestimonialLinkCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.TestimonialLinkCountAggregateOutputType> | number
+          args: Prisma.CollectLinkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CollectLinkCountAggregateOutputType> | number
         }
       }
     }
@@ -1388,7 +1388,7 @@ export const TestimonialScalarFieldEnum = {
 export type TestimonialScalarFieldEnum = (typeof TestimonialScalarFieldEnum)[keyof typeof TestimonialScalarFieldEnum]
 
 
-export const TestimonialLinkScalarFieldEnum = {
+export const CollectLinkScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
   slug: 'slug',
@@ -1400,7 +1400,7 @@ export const TestimonialLinkScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type TestimonialLinkScalarFieldEnum = (typeof TestimonialLinkScalarFieldEnum)[keyof typeof TestimonialLinkScalarFieldEnum]
+export type CollectLinkScalarFieldEnum = (typeof CollectLinkScalarFieldEnum)[keyof typeof CollectLinkScalarFieldEnum]
 
 
 export const WidgetConfigScalarFieldEnum = {
@@ -1622,7 +1622,7 @@ export type GlobalOmitConfig = {
   member?: Prisma.MemberOmit
   invitation?: Prisma.InvitationOmit
   testimonial?: Prisma.TestimonialOmit
-  testimonialLink?: Prisma.TestimonialLinkOmit
+  collectLink?: Prisma.CollectLinkOmit
   widgetConfig?: Prisma.WidgetConfigOmit
   testimonialToken?: Prisma.TestimonialTokenOmit
 }

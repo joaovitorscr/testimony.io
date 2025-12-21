@@ -1,8 +1,5 @@
 "use client";
 
-import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 
 export function TestimoniesPageHeader() {
@@ -18,7 +15,7 @@ export function TestimoniesPageHeader() {
           </span>
         )}
       </div>
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <div className="relative w-72">
           <SearchIcon className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-2.5 size-4 text-muted-foreground" />
           <Input
@@ -34,7 +31,7 @@ export function TestimoniesPageHeader() {
           <SlidersHorizontalIcon className="mr-1.5 size-3.5" />
           Filters
         </Button>
-      </div>
+      </div> */}
     </header>
   );
 }

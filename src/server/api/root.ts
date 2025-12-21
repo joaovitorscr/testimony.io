@@ -1,4 +1,5 @@
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { collectLinkRouter } from "./routers/collect-link";
 import { projectRouter } from "./routers/project";
 import { testimonieRouter } from "./routers/testimonie";
 
@@ -10,6 +11,7 @@ import { testimonieRouter } from "./routers/testimonie";
 export const appRouter = createTRPCRouter({
   project: projectRouter,
   testimonie: testimonieRouter,
+  collectLink: collectLinkRouter,
 });
 
 // export type definition of API

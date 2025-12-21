@@ -61,7 +61,7 @@ export const projectRouter = createTRPCRouter({
       });
 
       // By default, we create a collect link for the project
-      const testimonialLink = await ctx.db.testimonialLink.create({
+      const testimonialLink = await ctx.db.collectLink.create({
         data: {
           slug,
           projectId: newProject.id,
@@ -85,7 +85,7 @@ export const projectRouter = createTRPCRouter({
       };
     }),
   getCollectLink: protectedProcedure.query(async ({ ctx }) => {
-    const testimonialLink = await ctx.db.testimonialLink.findUnique({
+    const testimonialLink = await ctx.db.collectLink.findUnique({
       where: {
         projectId: ctx.session.user.activeProjectId,
       },

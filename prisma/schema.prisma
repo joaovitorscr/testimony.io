@@ -87,7 +87,6 @@ model Project {
   name String
   slug String @unique
 
-  // Owner (Optional if members cover ownership, but good to keep for direct ownership or creator tracking)
   userId String
   user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -95,7 +94,7 @@ model Project {
   invitations Invitation[]
 
   testimonials      Testimonial[]
-  testimonialLink   TestimonialLink?
+  collectLink       CollectLink?
   widgetConfig      WidgetConfig?
   testimonialTokens TestimonialToken[]
 
@@ -165,14 +164,13 @@ model Testimonial {
   @@map("testimonials")
 }
 
-model TestimonialLink {
+model CollectLink {
   id String @id @default(uuid())
 
   // Owner
   projectId String  @unique
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  // The unique slug/path (e.g., /collect/my-slug)
   slug            String  @unique
   title           String?
   description     String?

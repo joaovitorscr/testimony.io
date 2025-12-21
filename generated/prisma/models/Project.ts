@@ -194,7 +194,7 @@ export type ProjectWhereInput = {
   members?: Prisma.MemberListRelationFilter
   invitations?: Prisma.InvitationListRelationFilter
   testimonials?: Prisma.TestimonialListRelationFilter
-  testimonialLink?: Prisma.XOR<Prisma.TestimonialLinkNullableScalarRelationFilter, Prisma.TestimonialLinkWhereInput> | null
+  collectLink?: Prisma.XOR<Prisma.CollectLinkNullableScalarRelationFilter, Prisma.CollectLinkWhereInput> | null
   widgetConfig?: Prisma.XOR<Prisma.WidgetConfigNullableScalarRelationFilter, Prisma.WidgetConfigWhereInput> | null
   testimonialTokens?: Prisma.TestimonialTokenListRelationFilter
 }
@@ -210,7 +210,7 @@ export type ProjectOrderByWithRelationInput = {
   members?: Prisma.MemberOrderByRelationAggregateInput
   invitations?: Prisma.InvitationOrderByRelationAggregateInput
   testimonials?: Prisma.TestimonialOrderByRelationAggregateInput
-  testimonialLink?: Prisma.TestimonialLinkOrderByWithRelationInput
+  collectLink?: Prisma.CollectLinkOrderByWithRelationInput
   widgetConfig?: Prisma.WidgetConfigOrderByWithRelationInput
   testimonialTokens?: Prisma.TestimonialTokenOrderByRelationAggregateInput
 }
@@ -229,7 +229,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   members?: Prisma.MemberListRelationFilter
   invitations?: Prisma.InvitationListRelationFilter
   testimonials?: Prisma.TestimonialListRelationFilter
-  testimonialLink?: Prisma.XOR<Prisma.TestimonialLinkNullableScalarRelationFilter, Prisma.TestimonialLinkWhereInput> | null
+  collectLink?: Prisma.XOR<Prisma.CollectLinkNullableScalarRelationFilter, Prisma.CollectLinkWhereInput> | null
   widgetConfig?: Prisma.XOR<Prisma.WidgetConfigNullableScalarRelationFilter, Prisma.WidgetConfigWhereInput> | null
   testimonialTokens?: Prisma.TestimonialTokenListRelationFilter
 }, "id" | "slug">
@@ -268,7 +268,7 @@ export type ProjectCreateInput = {
   members?: Prisma.MemberCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
@@ -283,7 +283,7 @@ export type ProjectUncheckedCreateInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -298,7 +298,7 @@ export type ProjectUpdateInput = {
   members?: Prisma.MemberUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
@@ -313,7 +313,7 @@ export type ProjectUncheckedUpdateInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -470,18 +470,18 @@ export type ProjectUpdateOneRequiredWithoutTestimonialsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTestimonialsInput, Prisma.ProjectUpdateWithoutTestimonialsInput>, Prisma.ProjectUncheckedUpdateWithoutTestimonialsInput>
 }
 
-export type ProjectCreateNestedOneWithoutTestimonialLinkInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialLinkInput
+export type ProjectCreateNestedOneWithoutCollectLinkInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutCollectLinkInput, Prisma.ProjectUncheckedCreateWithoutCollectLinkInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutCollectLinkInput
   connect?: Prisma.ProjectWhereUniqueInput
 }
 
-export type ProjectUpdateOneRequiredWithoutTestimonialLinkNestedInput = {
-  create?: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
-  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutTestimonialLinkInput
-  upsert?: Prisma.ProjectUpsertWithoutTestimonialLinkInput
+export type ProjectUpdateOneRequiredWithoutCollectLinkNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutCollectLinkInput, Prisma.ProjectUncheckedCreateWithoutCollectLinkInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutCollectLinkInput
+  upsert?: Prisma.ProjectUpsertWithoutCollectLinkInput
   connect?: Prisma.ProjectWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutTestimonialLinkInput, Prisma.ProjectUpdateWithoutTestimonialLinkInput>, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinkInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutCollectLinkInput, Prisma.ProjectUpdateWithoutCollectLinkInput>, Prisma.ProjectUncheckedUpdateWithoutCollectLinkInput>
 }
 
 export type ProjectCreateNestedOneWithoutWidgetConfigInput = {
@@ -521,7 +521,7 @@ export type ProjectCreateWithoutUserInput = {
   members?: Prisma.MemberCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
@@ -535,7 +535,7 @@ export type ProjectUncheckedCreateWithoutUserInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -587,7 +587,7 @@ export type ProjectCreateWithoutMembersInput = {
   user?: Prisma.UserCreateNestedOneWithoutProjectsInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
@@ -601,7 +601,7 @@ export type ProjectUncheckedCreateWithoutMembersInput = {
   updatedAt?: Date | string
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -631,7 +631,7 @@ export type ProjectUpdateWithoutMembersInput = {
   user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
@@ -645,7 +645,7 @@ export type ProjectUncheckedUpdateWithoutMembersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -659,7 +659,7 @@ export type ProjectCreateWithoutInvitationsInput = {
   user?: Prisma.UserCreateNestedOneWithoutProjectsInput
   members?: Prisma.MemberCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
@@ -673,7 +673,7 @@ export type ProjectUncheckedCreateWithoutInvitationsInput = {
   updatedAt?: Date | string
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -703,7 +703,7 @@ export type ProjectUpdateWithoutInvitationsInput = {
   user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
   members?: Prisma.MemberUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
@@ -717,7 +717,7 @@ export type ProjectUncheckedUpdateWithoutInvitationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.MemberUncheckedUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -731,7 +731,7 @@ export type ProjectCreateWithoutTestimonialsInput = {
   user?: Prisma.UserCreateNestedOneWithoutProjectsInput
   members?: Prisma.MemberCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
@@ -745,7 +745,7 @@ export type ProjectUncheckedCreateWithoutTestimonialsInput = {
   updatedAt?: Date | string
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -775,7 +775,7 @@ export type ProjectUpdateWithoutTestimonialsInput = {
   user?: Prisma.UserUpdateOneWithoutProjectsNestedInput
   members?: Prisma.MemberUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
@@ -789,12 +789,12 @@ export type ProjectUncheckedUpdateWithoutTestimonialsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.MemberUncheckedUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedUpdateManyWithoutProjectNestedInput
 }
 
-export type ProjectCreateWithoutTestimonialLinkInput = {
+export type ProjectCreateWithoutCollectLinkInput = {
   id?: string
   name: string
   slug: string
@@ -808,7 +808,7 @@ export type ProjectCreateWithoutTestimonialLinkInput = {
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
 
-export type ProjectUncheckedCreateWithoutTestimonialLinkInput = {
+export type ProjectUncheckedCreateWithoutCollectLinkInput = {
   id?: string
   name: string
   slug: string
@@ -822,23 +822,23 @@ export type ProjectUncheckedCreateWithoutTestimonialLinkInput = {
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
 
-export type ProjectCreateOrConnectWithoutTestimonialLinkInput = {
+export type ProjectCreateOrConnectWithoutCollectLinkInput = {
   where: Prisma.ProjectWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutCollectLinkInput, Prisma.ProjectUncheckedCreateWithoutCollectLinkInput>
 }
 
-export type ProjectUpsertWithoutTestimonialLinkInput = {
-  update: Prisma.XOR<Prisma.ProjectUpdateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinkInput>
-  create: Prisma.XOR<Prisma.ProjectCreateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedCreateWithoutTestimonialLinkInput>
+export type ProjectUpsertWithoutCollectLinkInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutCollectLinkInput, Prisma.ProjectUncheckedUpdateWithoutCollectLinkInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutCollectLinkInput, Prisma.ProjectUncheckedCreateWithoutCollectLinkInput>
   where?: Prisma.ProjectWhereInput
 }
 
-export type ProjectUpdateToOneWithWhereWithoutTestimonialLinkInput = {
+export type ProjectUpdateToOneWithWhereWithoutCollectLinkInput = {
   where?: Prisma.ProjectWhereInput
-  data: Prisma.XOR<Prisma.ProjectUpdateWithoutTestimonialLinkInput, Prisma.ProjectUncheckedUpdateWithoutTestimonialLinkInput>
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutCollectLinkInput, Prisma.ProjectUncheckedUpdateWithoutCollectLinkInput>
 }
 
-export type ProjectUpdateWithoutTestimonialLinkInput = {
+export type ProjectUpdateWithoutCollectLinkInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -852,7 +852,7 @@ export type ProjectUpdateWithoutTestimonialLinkInput = {
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
 
-export type ProjectUncheckedUpdateWithoutTestimonialLinkInput = {
+export type ProjectUncheckedUpdateWithoutCollectLinkInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
@@ -876,7 +876,7 @@ export type ProjectCreateWithoutWidgetConfigInput = {
   members?: Prisma.MemberCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenCreateNestedManyWithoutProjectInput
 }
 
@@ -890,7 +890,7 @@ export type ProjectUncheckedCreateWithoutWidgetConfigInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -920,7 +920,7 @@ export type ProjectUpdateWithoutWidgetConfigInput = {
   members?: Prisma.MemberUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
 
@@ -934,7 +934,7 @@ export type ProjectUncheckedUpdateWithoutWidgetConfigInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -948,7 +948,7 @@ export type ProjectCreateWithoutTestimonialTokensInput = {
   members?: Prisma.MemberCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigCreateNestedOneWithoutProjectInput
 }
 
@@ -962,7 +962,7 @@ export type ProjectUncheckedCreateWithoutTestimonialTokensInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutProjectInput
   invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutProjectInput
   testimonials?: Prisma.TestimonialUncheckedCreateNestedManyWithoutProjectInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedCreateNestedOneWithoutProjectInput
+  collectLink?: Prisma.CollectLinkUncheckedCreateNestedOneWithoutProjectInput
   widgetConfig?: Prisma.WidgetConfigUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -992,7 +992,7 @@ export type ProjectUpdateWithoutTestimonialTokensInput = {
   members?: Prisma.MemberUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
 }
 
@@ -1006,7 +1006,7 @@ export type ProjectUncheckedUpdateWithoutTestimonialTokensInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -1027,7 +1027,7 @@ export type ProjectUpdateWithoutUserInput = {
   members?: Prisma.MemberUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUpdateManyWithoutProjectNestedInput
 }
@@ -1041,7 +1041,7 @@ export type ProjectUncheckedUpdateWithoutUserInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutProjectNestedInput
   invitations?: Prisma.InvitationUncheckedUpdateManyWithoutProjectNestedInput
   testimonials?: Prisma.TestimonialUncheckedUpdateManyWithoutProjectNestedInput
-  testimonialLink?: Prisma.TestimonialLinkUncheckedUpdateOneWithoutProjectNestedInput
+  collectLink?: Prisma.CollectLinkUncheckedUpdateOneWithoutProjectNestedInput
   widgetConfig?: Prisma.WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput
   testimonialTokens?: Prisma.TestimonialTokenUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -1123,7 +1123,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   members?: boolean | Prisma.Project$membersArgs<ExtArgs>
   invitations?: boolean | Prisma.Project$invitationsArgs<ExtArgs>
   testimonials?: boolean | Prisma.Project$testimonialsArgs<ExtArgs>
-  testimonialLink?: boolean | Prisma.Project$testimonialLinkArgs<ExtArgs>
+  collectLink?: boolean | Prisma.Project$collectLinkArgs<ExtArgs>
   widgetConfig?: boolean | Prisma.Project$widgetConfigArgs<ExtArgs>
   testimonialTokens?: boolean | Prisma.Project$testimonialTokensArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -1164,7 +1164,7 @@ export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   members?: boolean | Prisma.Project$membersArgs<ExtArgs>
   invitations?: boolean | Prisma.Project$invitationsArgs<ExtArgs>
   testimonials?: boolean | Prisma.Project$testimonialsArgs<ExtArgs>
-  testimonialLink?: boolean | Prisma.Project$testimonialLinkArgs<ExtArgs>
+  collectLink?: boolean | Prisma.Project$collectLinkArgs<ExtArgs>
   widgetConfig?: boolean | Prisma.Project$widgetConfigArgs<ExtArgs>
   testimonialTokens?: boolean | Prisma.Project$testimonialTokensArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -1183,7 +1183,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     members: Prisma.$MemberPayload<ExtArgs>[]
     invitations: Prisma.$InvitationPayload<ExtArgs>[]
     testimonials: Prisma.$TestimonialPayload<ExtArgs>[]
-    testimonialLink: Prisma.$TestimonialLinkPayload<ExtArgs> | null
+    collectLink: Prisma.$CollectLinkPayload<ExtArgs> | null
     widgetConfig: Prisma.$WidgetConfigPayload<ExtArgs> | null
     testimonialTokens: Prisma.$TestimonialTokenPayload<ExtArgs>[]
   }
@@ -1592,7 +1592,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   members<T extends Prisma.Project$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invitations<T extends Prisma.Project$invitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   testimonials<T extends Prisma.Project$testimonialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$testimonialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  testimonialLink<T extends Prisma.Project$testimonialLinkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$testimonialLinkArgs<ExtArgs>>): Prisma.Prisma__TestimonialLinkClient<runtime.Types.Result.GetResult<Prisma.$TestimonialLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  collectLink<T extends Prisma.Project$collectLinkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$collectLinkArgs<ExtArgs>>): Prisma.Prisma__CollectLinkClient<runtime.Types.Result.GetResult<Prisma.$CollectLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   widgetConfig<T extends Prisma.Project$widgetConfigArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$widgetConfigArgs<ExtArgs>>): Prisma.Prisma__WidgetConfigClient<runtime.Types.Result.GetResult<Prisma.$WidgetConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   testimonialTokens<T extends Prisma.Project$testimonialTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$testimonialTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestimonialTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2117,22 +2117,22 @@ export type Project$testimonialsArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * Project.testimonialLink
+ * Project.collectLink
  */
-export type Project$testimonialLinkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Project$collectLinkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the TestimonialLink
+   * Select specific fields to fetch from the CollectLink
    */
-  select?: Prisma.TestimonialLinkSelect<ExtArgs> | null
+  select?: Prisma.CollectLinkSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the TestimonialLink
+   * Omit specific fields from the CollectLink
    */
-  omit?: Prisma.TestimonialLinkOmit<ExtArgs> | null
+  omit?: Prisma.CollectLinkOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TestimonialLinkInclude<ExtArgs> | null
-  where?: Prisma.TestimonialLinkWhereInput
+  include?: Prisma.CollectLinkInclude<ExtArgs> | null
+  where?: Prisma.CollectLinkWhereInput
 }
 
 /**

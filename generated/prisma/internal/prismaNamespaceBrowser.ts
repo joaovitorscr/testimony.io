@@ -57,7 +57,7 @@ export const ModelName = {
   Member: 'Member',
   Invitation: 'Invitation',
   Testimonial: 'Testimonial',
-  TestimonialLink: 'TestimonialLink',
+  CollectLink: 'CollectLink',
   WidgetConfig: 'WidgetConfig',
   TestimonialToken: 'TestimonialToken'
 } as const
@@ -193,7 +193,7 @@ export const TestimonialScalarFieldEnum = {
 export type TestimonialScalarFieldEnum = (typeof TestimonialScalarFieldEnum)[keyof typeof TestimonialScalarFieldEnum]
 
 
-export const TestimonialLinkScalarFieldEnum = {
+export const CollectLinkScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
   slug: 'slug',
@@ -205,7 +205,7 @@ export const TestimonialLinkScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type TestimonialLinkScalarFieldEnum = (typeof TestimonialLinkScalarFieldEnum)[keyof typeof TestimonialLinkScalarFieldEnum]
+export type CollectLinkScalarFieldEnum = (typeof CollectLinkScalarFieldEnum)[keyof typeof CollectLinkScalarFieldEnum]
 
 
 export const WidgetConfigScalarFieldEnum = {

@@ -58,10 +58,10 @@ export type Invitation = Prisma.InvitationModel
  */
 export type Testimonial = Prisma.TestimonialModel
 /**
- * Model TestimonialLink
+ * Model CollectLink
  * 
  */
-export type TestimonialLink = Prisma.TestimonialLinkModel
+export type CollectLink = Prisma.CollectLinkModel
 /**
  * Model WidgetConfig
  * 
