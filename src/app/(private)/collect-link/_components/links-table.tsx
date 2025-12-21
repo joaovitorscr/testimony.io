@@ -33,6 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { env } from "@/env";
 import { api } from "@/trpc/react";
 import { EmptyState } from "./empty-state";
 
@@ -235,10 +236,7 @@ function ActionsCell({ token }: { token: Token }) {
   });
 
   const isActive = !token.used && !token.cancelled;
-  const linkUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/c/${token.project.slug}?token=${token.token}`
-      : "";
+  const linkUrl = `${env.NEXT_PUBLIC_APP_URL}/c/${token.project.slug}?token=${token.token}`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(linkUrl);
