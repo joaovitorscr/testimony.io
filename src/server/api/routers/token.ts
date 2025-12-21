@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -6,7 +7,10 @@ export const tokenRouter = createTRPCRouter({
     const projectId = ctx.session.user.activeProjectId;
 
     if (!projectId) {
-      return [];
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No active project selected",
+      });
     }
 
     const tokens = await ctx.db.testimonialToken.findMany({
@@ -27,12 +31,10 @@ export const tokenRouter = createTRPCRouter({
     const projectId = ctx.session.user.activeProjectId;
 
     if (!projectId) {
-      return {
-        total: 0,
-        active: 0,
-        used: 0,
-        cancelled: 0,
-      };
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No active project selected",
+      });
     }
 
     const tokens = await ctx.db.testimonialToken.findMany({
@@ -50,7 +52,6 @@ export const tokenRouter = createTRPCRouter({
       cancelled: tokens.filter((t) => t.cancelled).length,
     };
   }),
-
   create: protectedProcedure
     .input(
       z.object({
@@ -61,7 +62,10 @@ export const tokenRouter = createTRPCRouter({
       const projectId = ctx.session.user.activeProjectId;
 
       if (!projectId) {
-        throw new Error("No active project selected");
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No active project selected",
+        });
       }
 
       const token = await ctx.db.testimonialToken.create({
@@ -94,7 +98,10 @@ export const tokenRouter = createTRPCRouter({
       const projectId = ctx.session.user.activeProjectId;
 
       if (!projectId) {
-        throw new Error("No active project selected");
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No active project selected",
+        });
       }
 
       const token = await ctx.db.testimonialToken.findUnique({
@@ -102,11 +109,17 @@ export const tokenRouter = createTRPCRouter({
       });
 
       if (!token) {
-        throw new Error("Token not found");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Token not found",
+        });
       }
 
       if (token.projectId !== projectId) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized",
+        });
       }
 
       await ctx.db.testimonialToken.update({

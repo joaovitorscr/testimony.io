@@ -38,10 +38,10 @@ export const projectRouter = createTRPCRouter({
       });
 
       if (existingProject) {
-        return {
-          success: false,
+        throw new TRPCError({
+          code: "CONFLICT",
           message: "Project with this slug already exists",
-        };
+        });
       }
 
       const newProject = await ctx.db.project.create({
@@ -87,10 +87,10 @@ export const projectRouter = createTRPCRouter({
     }),
   getCollectLink: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.activeProjectId) {
-      return {
-        success: false,
+      throw new TRPCError({
+        code: "BAD_REQUEST",
         message: "No active project selected",
-      };
+      });
     }
 
     const testimonialLink = await ctx.db.collectLink.findUnique({
@@ -100,21 +100,20 @@ export const projectRouter = createTRPCRouter({
     });
 
     if (!testimonialLink) {
-      return {
-        success: false,
+      throw new TRPCError({
+        code: "NOT_FOUND",
         message: "No collect link found",
-      };
+      });
     }
 
-    return {
-      success: true,
-      testimonialLink,
-      message: "Collect link fetched successfully",
-    };
+    return testimonialLink;
   }),
   currentProject: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.activeProjectId) {
-      return null;
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No active project selected",
+      });
     }
 
     const project = await ctx.db.project.findUnique({
@@ -132,7 +131,10 @@ export const projectRouter = createTRPCRouter({
     });
 
     if (!project) {
-      return null;
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Project not found",
+      });
     }
 
     return project;
@@ -197,9 +199,6 @@ export const projectRouter = createTRPCRouter({
         },
       });
 
-      return {
-        success: true,
-        invitation,
-      };
+      return invitation;
     }),
 });

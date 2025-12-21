@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -6,7 +7,10 @@ export const collectLinkRouter = createTRPCRouter({
     const projectId = ctx.session.user.activeProjectId;
 
     if (!projectId) {
-      return null;
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No active project selected",
+      });
     }
 
     const link = await ctx.db.collectLink.findUnique({
@@ -16,7 +20,10 @@ export const collectLinkRouter = createTRPCRouter({
     });
 
     if (!link) {
-      return null;
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Collect link not found",
+      });
     }
 
     return link;
@@ -37,7 +44,10 @@ export const collectLinkRouter = createTRPCRouter({
       });
 
       if (!link) {
-        return { success: false, message: "Collect Link not found" };
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Collect link not found",
+        });
       }
 
       await ctx.db.collectLink.update({

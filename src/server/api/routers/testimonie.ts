@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const testimonieRouter = createTRPCRouter({
@@ -5,7 +6,10 @@ export const testimonieRouter = createTRPCRouter({
     const currentProjectId = ctx.session.user.activeProjectId;
 
     if (!currentProjectId) {
-      return [];
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No active project selected",
+      });
     }
 
     const testimonies = await ctx.db.testimonial.findMany({

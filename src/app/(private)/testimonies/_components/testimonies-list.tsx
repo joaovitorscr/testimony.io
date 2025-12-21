@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import { StarIcon } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -71,7 +72,7 @@ export function TestimonieCard({ testimony }: { testimony: Testimonial }) {
           </div>
         </div>
         <div className="flex flex-col items-end gap-2 text-muted-foreground text-xs">
-          <span>{testimony.createdAt.toLocaleDateString()}</span>
+          <span>{format(testimony.createdAt, "MMM d, yyyy")}</span>
           <Switch checked={true} />
         </div>
       </CardHeader>
