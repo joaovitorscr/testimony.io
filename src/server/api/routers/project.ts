@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { auth } from "@/server/better-auth";
@@ -85,6 +86,13 @@ export const projectRouter = createTRPCRouter({
       };
     }),
   getCollectLink: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user.activeProjectId) {
+      return {
+        success: false,
+        message: "No active project selected",
+      };
+    }
+
     const testimonialLink = await ctx.db.collectLink.findUnique({
       where: {
         projectId: ctx.session.user.activeProjectId,
@@ -104,4 +112,94 @@ export const projectRouter = createTRPCRouter({
       message: "Collect link fetched successfully",
     };
   }),
+  currentProject: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user.activeProjectId) {
+      return null;
+    }
+
+    const project = await ctx.db.project.findUnique({
+      where: {
+        id: ctx.session.user.activeProjectId,
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+        },
+        invitations: true,
+      },
+    });
+
+    if (!project) {
+      return null;
+    }
+
+    return project;
+  }),
+  inviteUser: protectedProcedure
+    .input(
+      z.object({
+        email: z.email(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user.activeProjectId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No active project selected",
+        });
+      }
+
+      const email = input.email.toLowerCase().trim();
+
+      if (ctx.session.user.email === email) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You cannot invite yourself",
+        });
+      }
+
+      const existingUser = await ctx.db.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (!existingUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      const existingInvitation = await ctx.db.invitation.findFirst({
+        where: {
+          email,
+          projectId: ctx.session.user.activeProjectId,
+        },
+      });
+
+      if (existingInvitation) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Invitation already exists",
+        });
+      }
+
+      const invitation = await ctx.db.invitation.create({
+        data: {
+          email,
+          projectId: ctx.session.user.activeProjectId,
+          role: "member",
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          inviterId: ctx.session.user.id,
+        },
+      });
+
+      return {
+        success: true,
+        invitation,
+      };
+    }),
 });

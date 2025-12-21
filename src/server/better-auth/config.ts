@@ -16,7 +16,7 @@ export const auth = betterAuth({
     additionalFields: {
       activeProjectId: {
         type: "string",
-        required: true,
+        required: false,
         defaultValue: null,
       },
     },
