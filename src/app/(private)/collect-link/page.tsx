@@ -1,93 +1,61 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getActiveProjectId } from "@/server/better-auth/server";
-import { db } from "@/server/db";
-import { CreateTokenForm } from "./_components/create-token-form";
-import { TokenList } from "./_components/token-list";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { api, HydrateClient } from "@/trpc/server";
+import { CreateLinkCard } from "./_components/create-link-card";
+import { LinksTable } from "./_components/links-table";
+import { StatsHeader } from "./_components/stats-header";
 
 export default async function CollectLinkPage() {
-  const activeProjectId = await getActiveProjectId();
-
-  if (!activeProjectId) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-muted-foreground">
-          Please select a project to view collection links.
-        </p>
-      </div>
-    );
-  }
-
-  const tokens = await db.testimonialToken.findMany({
-    where: { projectId: activeProjectId },
-    orderBy: { createdAt: "desc" },
-    include: {
-      project: {
-        select: {
-          slug: true,
-        },
-      },
-    },
-  });
-
-  const stats = {
-    total: tokens.length,
-    active: tokens.filter((t) => !t.used && !t.cancelled).length,
-    used: tokens.filter((t) => t.used).length,
-    cancelled: tokens.filter((t) => t.cancelled).length,
-  };
+  void api.token.getAll.prefetch();
+  void api.token.getStats.prefetch();
 
   return (
-    <div className="flex flex-1 flex-col gap-8 overflow-auto p-8">
-      <div>
-        <h1 className="font-bold text-3xl tracking-tight">Collection Links</h1>
-        <p className="text-muted-foreground">
-          Create and manage unique links to collect testimonials.
-        </p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Total Links</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats.total}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Active</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl text-green-600">
-              {stats.active}
+    <HydrateClient>
+      <div className="flex min-h-svh flex-1 flex-col bg-background/60">
+        <Suspense
+          fallback={
+            <div className="border-border/60 border-b px-8 py-8">
+              <Skeleton className="mb-2 h-8 w-48" />
+              <Skeleton className="mb-6 h-4 w-80" />
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <Skeleton className="h-20 rounded-xl" />
+                <Skeleton className="h-20 rounded-xl" />
+                <Skeleton className="h-20 rounded-xl" />
+                <Skeleton className="h-20 rounded-xl" />
+              </div>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Collected</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats.used}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Cancelled</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl text-muted-foreground">
-              {stats.cancelled}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          }
+        >
+          <StatsHeader />
+        </Suspense>
 
-      <div className="grid gap-8">
-        <CreateTokenForm />
-        <TokenList tokens={tokens} />
+        <main className="flex flex-1 flex-col gap-8 px-8 py-8">
+          <CreateLinkCard />
+
+          <Suspense
+            fallback={
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                </div>
+                <div className="overflow-hidden rounded-xl border">
+                  <div className="border-b bg-muted/30 px-6 py-3">
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="border-b px-6 py-4 last:border-0">
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            }
+          >
+            <LinksTable />
+          </Suspense>
+        </main>
       </div>
-    </div>
+    </HydrateClient>
   );
 }
