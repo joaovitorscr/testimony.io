@@ -101,6 +101,7 @@ export const widgetRouter = createTRPCRouter({
           project: {
             select: {
               testimonials: true,
+              id: true,
             },
           },
         },
@@ -151,6 +152,12 @@ export const widgetRouter = createTRPCRouter({
         });
       }
 
+      const widgetConfig = await ctx.db.widgetConfig.findUnique({
+        where: {
+          projectId: widget.project.id,
+        },
+      });
+
       // --- Render Widget HTML (Server-Side) ---
       const React = require("react");
       const ReactDOMServer = require("react-dom/server");
@@ -160,7 +167,7 @@ export const widgetRouter = createTRPCRouter({
       const widgetHtml = ReactDOMServer.renderToString(
         React.createElement(TestimonialWidget, {
           testimonies: widget.project.testimonials,
-          // Pass other styling/config props from widget
+          widgetConfig: widgetConfig,
         })
       );
 
