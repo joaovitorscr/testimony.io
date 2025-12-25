@@ -121,7 +121,7 @@ export function OnboardingDialog({
 
         setActiveProjectId(result.project?.id ?? "");
       } else {
-        toast.error(result.message);
+        toast.error("Failed to create project");
       }
     } catch (error) {
       console.error(error);

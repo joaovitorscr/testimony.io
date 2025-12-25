@@ -5,9 +5,9 @@ import { db } from "@/server/db";
 
 export async function updateTestimonialLinkStatus(
   testimonialLinkId: string,
-  isActive: boolean,
+  isActive: boolean
 ) {
-  await db.testimonialLink.update({
+  await db.collectLink.update({
     where: {
       id: testimonialLinkId,
     },

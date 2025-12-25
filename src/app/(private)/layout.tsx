@@ -32,6 +32,10 @@ export default async function PrivateLayout({
 
   const activeProjectId = await getActiveProjectId();
 
+  if (!activeProjectId) {
+    return null;
+  }
+
   return (
     <SidebarProvider className="h-screen">
       <AppSidebar projects={projects} activeProjectId={activeProjectId} />
