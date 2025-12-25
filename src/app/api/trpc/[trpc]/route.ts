@@ -1,5 +1,5 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import type { NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { env } from "@/env";
 import { appRouter } from "@/server/api/root";
@@ -15,8 +15,15 @@ const createContext = async (req: NextRequest) => {
   });
 };
 
-const handler = (req: NextRequest) =>
-  fetchRequestHandler({
+const setCorsHeaders = (res: Response) => {
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  return res;
+};
+
+const handler = async (req: NextRequest) => {
+  const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
     req,
     router: appRouter,
@@ -30,5 +37,13 @@ const handler = (req: NextRequest) =>
           }
         : undefined,
   });
+
+  return setCorsHeaders(response);
+};
+
+export const OPTIONS = () => {
+  const response = new NextResponse(null, { status: 204 });
+  return setCorsHeaders(response);
+};
 
 export { handler as GET, handler as POST };

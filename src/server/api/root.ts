@@ -3,6 +3,7 @@ import { collectLinkRouter } from "./routers/collect-link";
 import { projectRouter } from "./routers/project";
 import { testimonieRouter } from "./routers/testimonie";
 import { tokenRouter } from "./routers/token";
+import { widgetRouter } from "./routers/widget";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   testimonie: testimonieRouter,
   collectLink: collectLinkRouter,
   token: tokenRouter,
+  widget: widgetRouter,
 });
 
 // export type definition of API

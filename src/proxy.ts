@@ -16,6 +16,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Allow public widget endpoint without authentication
+  if (pathname.includes("/api/trpc/widget.getWidgetContent")) {
+    return NextResponse.next();
+  }
+
   const session = await getSession();
 
   // THIS IS NOT SECURE!

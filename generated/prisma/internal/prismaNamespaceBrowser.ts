@@ -211,13 +211,16 @@ export type CollectLinkScalarFieldEnum = (typeof CollectLinkScalarFieldEnum)[key
 export const WidgetConfigScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
-  themeColor: 'themeColor',
+  primaryColor: 'primaryColor',
+  backgroundColor: 'backgroundColor',
+  textColor: 'textColor',
   displayLayout: 'displayLayout',
   displayOrder: 'displayOrder',
   showRating: 'showRating',
   showAvatar: 'showAvatar',
   autoPlay: 'autoPlay',
   speedMs: 'speedMs',
+  allowedDomains: 'allowedDomains',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

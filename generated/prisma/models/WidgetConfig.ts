@@ -37,7 +37,9 @@ export type WidgetConfigSumAggregateOutputType = {
 export type WidgetConfigMinAggregateOutputType = {
   id: string | null
   projectId: string | null
-  themeColor: string | null
+  primaryColor: string | null
+  backgroundColor: string | null
+  textColor: string | null
   displayLayout: string | null
   displayOrder: string | null
   showRating: boolean | null
@@ -51,7 +53,9 @@ export type WidgetConfigMinAggregateOutputType = {
 export type WidgetConfigMaxAggregateOutputType = {
   id: string | null
   projectId: string | null
-  themeColor: string | null
+  primaryColor: string | null
+  backgroundColor: string | null
+  textColor: string | null
   displayLayout: string | null
   displayOrder: string | null
   showRating: boolean | null
@@ -65,13 +69,16 @@ export type WidgetConfigMaxAggregateOutputType = {
 export type WidgetConfigCountAggregateOutputType = {
   id: number
   projectId: number
-  themeColor: number
+  primaryColor: number
+  backgroundColor: number
+  textColor: number
   displayLayout: number
   displayOrder: number
   showRating: number
   showAvatar: number
   autoPlay: number
   speedMs: number
+  allowedDomains: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -89,7 +96,9 @@ export type WidgetConfigSumAggregateInputType = {
 export type WidgetConfigMinAggregateInputType = {
   id?: true
   projectId?: true
-  themeColor?: true
+  primaryColor?: true
+  backgroundColor?: true
+  textColor?: true
   displayLayout?: true
   displayOrder?: true
   showRating?: true
@@ -103,7 +112,9 @@ export type WidgetConfigMinAggregateInputType = {
 export type WidgetConfigMaxAggregateInputType = {
   id?: true
   projectId?: true
-  themeColor?: true
+  primaryColor?: true
+  backgroundColor?: true
+  textColor?: true
   displayLayout?: true
   displayOrder?: true
   showRating?: true
@@ -117,13 +128,16 @@ export type WidgetConfigMaxAggregateInputType = {
 export type WidgetConfigCountAggregateInputType = {
   id?: true
   projectId?: true
-  themeColor?: true
+  primaryColor?: true
+  backgroundColor?: true
+  textColor?: true
   displayLayout?: true
   displayOrder?: true
   showRating?: true
   showAvatar?: true
   autoPlay?: true
   speedMs?: true
+  allowedDomains?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -218,13 +232,16 @@ export type WidgetConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type WidgetConfigGroupByOutputType = {
   id: string
   projectId: string
-  themeColor: string
+  primaryColor: string
+  backgroundColor: string
+  textColor: string
   displayLayout: string
   displayOrder: string
   showRating: boolean
   showAvatar: boolean
   autoPlay: boolean
   speedMs: number
+  allowedDomains: string[]
   createdAt: Date
   updatedAt: Date
   _count: WidgetConfigCountAggregateOutputType | null
@@ -255,13 +272,16 @@ export type WidgetConfigWhereInput = {
   NOT?: Prisma.WidgetConfigWhereInput | Prisma.WidgetConfigWhereInput[]
   id?: Prisma.StringFilter<"WidgetConfig"> | string
   projectId?: Prisma.StringFilter<"WidgetConfig"> | string
-  themeColor?: Prisma.StringFilter<"WidgetConfig"> | string
+  primaryColor?: Prisma.StringFilter<"WidgetConfig"> | string
+  backgroundColor?: Prisma.StringFilter<"WidgetConfig"> | string
+  textColor?: Prisma.StringFilter<"WidgetConfig"> | string
   displayLayout?: Prisma.StringFilter<"WidgetConfig"> | string
   displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
   showRating?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   showAvatar?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   autoPlay?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
+  allowedDomains?: Prisma.StringNullableListFilter<"WidgetConfig">
   createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -270,13 +290,16 @@ export type WidgetConfigWhereInput = {
 export type WidgetConfigOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  themeColor?: Prisma.SortOrder
+  primaryColor?: Prisma.SortOrder
+  backgroundColor?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
   autoPlay?: Prisma.SortOrder
   speedMs?: Prisma.SortOrder
+  allowedDomains?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   project?: Prisma.ProjectOrderByWithRelationInput
@@ -288,13 +311,16 @@ export type WidgetConfigWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.WidgetConfigWhereInput | Prisma.WidgetConfigWhereInput[]
   OR?: Prisma.WidgetConfigWhereInput[]
   NOT?: Prisma.WidgetConfigWhereInput | Prisma.WidgetConfigWhereInput[]
-  themeColor?: Prisma.StringFilter<"WidgetConfig"> | string
+  primaryColor?: Prisma.StringFilter<"WidgetConfig"> | string
+  backgroundColor?: Prisma.StringFilter<"WidgetConfig"> | string
+  textColor?: Prisma.StringFilter<"WidgetConfig"> | string
   displayLayout?: Prisma.StringFilter<"WidgetConfig"> | string
   displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
   showRating?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   showAvatar?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   autoPlay?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
+  allowedDomains?: Prisma.StringNullableListFilter<"WidgetConfig">
   createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
@@ -303,13 +329,16 @@ export type WidgetConfigWhereUniqueInput = Prisma.AtLeast<{
 export type WidgetConfigOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  themeColor?: Prisma.SortOrder
+  primaryColor?: Prisma.SortOrder
+  backgroundColor?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
   autoPlay?: Prisma.SortOrder
   speedMs?: Prisma.SortOrder
+  allowedDomains?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.WidgetConfigCountOrderByAggregateInput
@@ -325,26 +354,32 @@ export type WidgetConfigScalarWhereWithAggregatesInput = {
   NOT?: Prisma.WidgetConfigScalarWhereWithAggregatesInput | Prisma.WidgetConfigScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   projectId?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
-  themeColor?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
+  primaryColor?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
+  backgroundColor?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
+  textColor?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   displayLayout?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   displayOrder?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   showRating?: Prisma.BoolWithAggregatesFilter<"WidgetConfig"> | boolean
   showAvatar?: Prisma.BoolWithAggregatesFilter<"WidgetConfig"> | boolean
   autoPlay?: Prisma.BoolWithAggregatesFilter<"WidgetConfig"> | boolean
   speedMs?: Prisma.IntWithAggregatesFilter<"WidgetConfig"> | number
+  allowedDomains?: Prisma.StringNullableListFilter<"WidgetConfig">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"WidgetConfig"> | Date | string
 }
 
 export type WidgetConfigCreateInput = {
   id?: string
-  themeColor?: string
+  primaryColor?: string
+  backgroundColor?: string
+  textColor?: string
   displayLayout?: string
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: number
+  allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutWidgetConfigInput
@@ -353,26 +388,32 @@ export type WidgetConfigCreateInput = {
 export type WidgetConfigUncheckedCreateInput = {
   id?: string
   projectId: string
-  themeColor?: string
+  primaryColor?: string
+  backgroundColor?: string
+  textColor?: string
   displayLayout?: string
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: number
+  allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type WidgetConfigUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
+  backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutWidgetConfigNestedInput
@@ -381,13 +422,16 @@ export type WidgetConfigUpdateInput = {
 export type WidgetConfigUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
+  backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -395,26 +439,32 @@ export type WidgetConfigUncheckedUpdateInput = {
 export type WidgetConfigCreateManyInput = {
   id?: string
   projectId: string
-  themeColor?: string
+  primaryColor?: string
+  backgroundColor?: string
+  textColor?: string
   displayLayout?: string
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: number
+  allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type WidgetConfigUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
+  backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -422,13 +472,16 @@ export type WidgetConfigUpdateManyMutationInput = {
 export type WidgetConfigUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
+  backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -438,16 +491,27 @@ export type WidgetConfigNullableScalarRelationFilter = {
   isNot?: Prisma.WidgetConfigWhereInput | null
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type WidgetConfigCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  themeColor?: Prisma.SortOrder
+  primaryColor?: Prisma.SortOrder
+  backgroundColor?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
   autoPlay?: Prisma.SortOrder
   speedMs?: Prisma.SortOrder
+  allowedDomains?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -459,7 +523,9 @@ export type WidgetConfigAvgOrderByAggregateInput = {
 export type WidgetConfigMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  themeColor?: Prisma.SortOrder
+  primaryColor?: Prisma.SortOrder
+  backgroundColor?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
@@ -473,7 +539,9 @@ export type WidgetConfigMaxOrderByAggregateInput = {
 export type WidgetConfigMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
-  themeColor?: Prisma.SortOrder
+  primaryColor?: Prisma.SortOrder
+  backgroundColor?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   displayLayout?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
@@ -520,6 +588,10 @@ export type WidgetConfigUncheckedUpdateOneWithoutProjectNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WidgetConfigUpdateToOneWithWhereWithoutProjectInput, Prisma.WidgetConfigUpdateWithoutProjectInput>, Prisma.WidgetConfigUncheckedUpdateWithoutProjectInput>
 }
 
+export type WidgetConfigCreateallowedDomainsInput = {
+  set: string[]
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -528,28 +600,39 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type WidgetConfigUpdateallowedDomainsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type WidgetConfigCreateWithoutProjectInput = {
   id?: string
-  themeColor?: string
+  primaryColor?: string
+  backgroundColor?: string
+  textColor?: string
   displayLayout?: string
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: number
+  allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type WidgetConfigUncheckedCreateWithoutProjectInput = {
   id?: string
-  themeColor?: string
+  primaryColor?: string
+  backgroundColor?: string
+  textColor?: string
   displayLayout?: string
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: number
+  allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -572,26 +655,32 @@ export type WidgetConfigUpdateToOneWithWhereWithoutProjectInput = {
 
 export type WidgetConfigUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
+  backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WidgetConfigUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  themeColor?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
+  backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   displayLayout?: Prisma.StringFieldUpdateOperationsInput | string
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
   autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -601,13 +690,16 @@ export type WidgetConfigUncheckedUpdateWithoutProjectInput = {
 export type WidgetConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
-  themeColor?: boolean
+  primaryColor?: boolean
+  backgroundColor?: boolean
+  textColor?: boolean
   displayLayout?: boolean
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: boolean
+  allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -616,13 +708,16 @@ export type WidgetConfigSelect<ExtArgs extends runtime.Types.Extensions.Internal
 export type WidgetConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
-  themeColor?: boolean
+  primaryColor?: boolean
+  backgroundColor?: boolean
+  textColor?: boolean
   displayLayout?: boolean
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: boolean
+  allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -631,13 +726,16 @@ export type WidgetConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 export type WidgetConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   projectId?: boolean
-  themeColor?: boolean
+  primaryColor?: boolean
+  backgroundColor?: boolean
+  textColor?: boolean
   displayLayout?: boolean
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: boolean
+  allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
@@ -646,18 +744,21 @@ export type WidgetConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type WidgetConfigSelectScalar = {
   id?: boolean
   projectId?: boolean
-  themeColor?: boolean
+  primaryColor?: boolean
+  backgroundColor?: boolean
+  textColor?: boolean
   displayLayout?: boolean
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
   autoPlay?: boolean
   speedMs?: boolean
+  allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WidgetConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "themeColor" | "displayLayout" | "displayOrder" | "showRating" | "showAvatar" | "autoPlay" | "speedMs" | "createdAt" | "updatedAt", ExtArgs["result"]["widgetConfig"]>
+export type WidgetConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "primaryColor" | "backgroundColor" | "textColor" | "displayLayout" | "displayOrder" | "showRating" | "showAvatar" | "autoPlay" | "speedMs" | "allowedDomains" | "createdAt" | "updatedAt", ExtArgs["result"]["widgetConfig"]>
 export type WidgetConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
@@ -676,13 +777,16 @@ export type $WidgetConfigPayload<ExtArgs extends runtime.Types.Extensions.Intern
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     projectId: string
-    themeColor: string
+    primaryColor: string
+    backgroundColor: string
+    textColor: string
     displayLayout: string
     displayOrder: string
     showRating: boolean
     showAvatar: boolean
     autoPlay: boolean
     speedMs: number
+    allowedDomains: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["widgetConfig"]>
@@ -1111,13 +1215,16 @@ export interface Prisma__WidgetConfigClient<T, Null = never, ExtArgs extends run
 export interface WidgetConfigFieldRefs {
   readonly id: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly projectId: Prisma.FieldRef<"WidgetConfig", 'String'>
-  readonly themeColor: Prisma.FieldRef<"WidgetConfig", 'String'>
+  readonly primaryColor: Prisma.FieldRef<"WidgetConfig", 'String'>
+  readonly backgroundColor: Prisma.FieldRef<"WidgetConfig", 'String'>
+  readonly textColor: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly displayLayout: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly displayOrder: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly showRating: Prisma.FieldRef<"WidgetConfig", 'Boolean'>
   readonly showAvatar: Prisma.FieldRef<"WidgetConfig", 'Boolean'>
   readonly autoPlay: Prisma.FieldRef<"WidgetConfig", 'Boolean'>
   readonly speedMs: Prisma.FieldRef<"WidgetConfig", 'Int'>
+  readonly allowedDomains: Prisma.FieldRef<"WidgetConfig", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"WidgetConfig", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"WidgetConfig", 'DateTime'>
 }
