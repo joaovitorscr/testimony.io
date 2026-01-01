@@ -71,6 +71,13 @@ export const projectRouter = createTRPCRouter({
         },
       });
 
+      // By default, we create a widget config for the project
+      await ctx.db.widgetConfig.create({
+        data: {
+          projectId: newProject.id,
+        },
+      });
+
       // We update the active project id for the user
       await auth.api.updateUser({
         body: {

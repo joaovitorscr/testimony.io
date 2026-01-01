@@ -33,8 +33,8 @@ const createProjectPayloadSchema = z.object({
     .string({
       error: "Project Name is required",
     })
-    .min(2, {
-      error: "Project Name needs at least 2 characters",
+    .min(3, {
+      error: "Project Name needs at least 3 characters",
     }),
   slug: z.string(),
 });
@@ -84,8 +84,6 @@ export function OnboardingDialog({
 
       try {
         const result = await checkSlugAvailability(generatedSlug);
-
-        console.log("Result", result);
 
         if (result.success && !result.available) {
           form.setError("slug", {
