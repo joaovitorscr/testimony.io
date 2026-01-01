@@ -5,7 +5,7 @@ import { StarIcon } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -31,9 +31,12 @@ export function TestimoniesList() {
             No testimonies have been collected yet.
           </p>
         </div>
-        <Button>
-          <Link href="/collect-link">Start Collecting Testimonies</Link>
-        </Button>
+        <Link
+          className={buttonVariants({ variant: "default" })}
+          href="/collect-link"
+        >
+          Start Collecting Testimonies
+        </Link>
       </section>
     );
   }
