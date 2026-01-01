@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "/home/joaovitorscr/coding/testimony.io/generated/prisma",
+      "value": "/Users/joaovitorscr/coding/personal/testimony.io/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -32,12 +32,12 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/joaovitorscr/coding/testimony.io/prisma/schema.prisma",
+    "sourceFilePath": "/Users/joaovitorscr/coding/personal/testimony.io/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../prisma",

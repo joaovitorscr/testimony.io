@@ -3,14 +3,18 @@ import { CollectLink } from "@/components/collect-link";
 import { MinimalWidgetEditor } from "@/components/minimal-widget-editor";
 
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { getSession } from "@/server/better-auth/server";
 import { api, HydrateClient } from "@/trpc/server";
 import { TestimoniesList } from "./_components/testimonies-list";
 import { TestimoniesPageHeader } from "./_components/testimonies-page-header";
 
 export default async function TestimoniesPage() {
-  void api.testimonie.all.prefetch();
-  void api.collectLink.currentProject.prefetch();
+  const session = await getSession();
+
+  if (session?.user.activeProjectId) {
+    void api.testimonie.all.prefetch();
+    void api.collectLink.currentProject.prefetch();
+  }
 
   return (
     <HydrateClient>

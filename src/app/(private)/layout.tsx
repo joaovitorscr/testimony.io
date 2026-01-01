@@ -21,6 +21,14 @@ export default async function PrivateLayout({
 
   const showOnboarding = projects.length === 0;
 
+  if (showOnboarding) {
+    return (
+      <main className="min-h-svh flex-1 bg-linear-to-br from-primary/30 via-primary/10 to-primary/5">
+        <OnboardingDialog open={true} />
+      </main>
+    );
+  }
+
   if (!session.user.activeProjectId && projects.length > 0) {
     await auth.api.updateUser({
       body: {
@@ -40,7 +48,6 @@ export default async function PrivateLayout({
     <SidebarProvider className="h-screen">
       <AppSidebar projects={projects} activeProjectId={activeProjectId} />
       <SidebarInset>{children}</SidebarInset>
-      <OnboardingDialog open={showOnboarding} />
     </SidebarProvider>
   );
 }
