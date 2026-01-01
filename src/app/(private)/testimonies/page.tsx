@@ -14,6 +14,7 @@ export default async function TestimoniesPage() {
   if (session?.user.activeProjectId) {
     void api.testimonie.all.prefetch();
     void api.collectLink.currentProject.prefetch();
+    void api.widget.getWidgetConfig.prefetch();
   }
 
   return (

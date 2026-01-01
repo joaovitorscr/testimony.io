@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/trpc/react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -11,6 +12,30 @@ import {
 import { Switch } from "./ui/switch";
 
 export function MinimalWidgetEditor() {
+  const [widgetConfig] = api.widget.getWidgetConfig.useSuspenseQuery();
+  const utils = api.useUtils();
+
+  const updateWidgetConfigMutation = api.widget.updateWidgetConfig.useMutation({
+    onSuccess: () => {
+      void utils.widget.getWidgetConfig.invalidate();
+    },
+  });
+
+  if (!widgetConfig) {
+    return null;
+  }
+
+  const handleUpdateWidgetConfig = async () => {
+    await updateWidgetConfigMutation.mutateAsync({
+      config: {
+        ...widgetConfig,
+        speedMs: [widgetConfig.speedMs],
+        showRating: !widgetConfig.showRating,
+        showAvatar: !widgetConfig.showAvatar,
+      },
+    });
+  };
+
   return (
     <Card className="flex flex-1 flex-col border-border/80 bg-card/80">
       <CardHeader className="flex items-center justify-between pb-3">
@@ -40,11 +65,17 @@ export function MinimalWidgetEditor() {
         <div className="space-y-3 text-xs">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Dark Mode</span>
-            <Switch checked={true} />
+            <Switch
+              onCheckedChange={handleUpdateWidgetConfig}
+              checked={widgetConfig.showRating}
+            />
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Show Avatars</span>
-            <Switch checked={true} />
+            <Switch
+              onCheckedChange={handleUpdateWidgetConfig}
+              checked={widgetConfig.showAvatar}
+            />
           </div>
           <Button className="mt-1 w-full rounded-full font-medium text-xs">
             Publish Changes
