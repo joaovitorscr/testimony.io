@@ -197,8 +197,8 @@ model WidgetConfig {
   displayOrder    String  @default("newest")
   showRating      Boolean @default(true)
   showAvatar      Boolean @default(true)
-  autoPlay        Boolean @default(true)
-  speedMs         Int     @default(5000)
+  gridColumns     Int     @default(3)
+  gridGap         Int     @default(16)
 
   allowedDomains String[]
 

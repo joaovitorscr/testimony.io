@@ -6,13 +6,11 @@ import {
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
-  ClockIcon,
+  Columns3Icon,
   EyeIcon,
-  GalleryHorizontal,
   LayoutGridIcon,
   ListIcon,
   PaletteIcon,
-  PlayIcon,
   StarIcon,
   UserIcon,
 } from "lucide-react";
@@ -64,12 +62,6 @@ const displayLayoutOptions = [
     description: "Show testimonials in a grid.",
     icon: LayoutGridIcon,
   },
-  {
-    id: "carousel",
-    title: "Carousel",
-    description: "Show testimonials in a carousel.",
-    icon: GalleryHorizontal,
-  },
 ];
 
 const displayOrderOptions = [
@@ -100,8 +92,8 @@ export default function WidgetConfigurator() {
       displayOrder: widgetConfig?.displayOrder ?? "newest",
       showRating: widgetConfig?.showRating ?? true,
       showAvatar: widgetConfig?.showAvatar ?? true,
-      autoPlay: widgetConfig?.autoPlay ?? true,
-      speedMs: widgetConfig?.speedMs ? [widgetConfig.speedMs] : [5000],
+      gridColumns: widgetConfig?.gridColumns ?? 3,
+      gridGap: widgetConfig?.gridGap ?? 16,
     },
   });
 
@@ -138,7 +130,7 @@ export default function WidgetConfigurator() {
   }, [form, triggerDebouncedUpdateWidgetConfig]);
 
   return (
-    <section className="flex h-[calc(100vh-8rem)] flex-col">
+    <section className="flex h-[calc(100vh-5rem)] flex-col">
       <Card className="flex h-full flex-col overflow-hidden">
         <CardHeader className="shrink-0">
           <CardTitle>Widget Configuration</CardTitle>
@@ -450,64 +442,68 @@ export default function WidgetConfigurator() {
                         </Field>
                       )}
                     />
+                  </FieldGroup>
+                </FieldSet>
+                <FieldSeparator />
+                <FieldSet>
+                  <FieldLegend className="flex flex-row gap-2">
+                    <Columns3Icon />
+                    Grid Settings
+                  </FieldLegend>
+                  <FieldDescription>
+                    Configure the grid layout for your testimonials.
+                  </FieldDescription>
+                  <FieldGroup>
                     <Controller
                       control={form.control}
-                      name="autoPlay"
+                      name="gridColumns"
                       render={({ field, fieldState }) => (
-                        <Field
-                          orientation="horizontal"
-                          data-invalid={fieldState.invalid}
-                        >
-                          <FieldContent>
-                            <FieldLabel htmlFor="form-widget-configuration-auto-play">
-                              <PlayIcon /> Auto Play
-                            </FieldLabel>
-                            <FieldDescription>
-                              Automatically play the testimonials.
-                            </FieldDescription>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </FieldContent>
-                          <Switch
-                            id="form-widget-configuration-auto-play"
-                            name={field.name}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            aria-invalid={fieldState.invalid}
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="form-widget-configuration-grid-columns">
+                            Columns
+                          </FieldLabel>
+                          <FieldDescription>
+                            Number of columns to display (1-6).
+                          </FieldDescription>
+                          <Slider
+                            id="form-widget-configuration-grid-columns"
+                            min={1}
+                            max={6}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
+                            showTooltip
                           />
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
                         </Field>
                       )}
                     />
                     <Controller
                       control={form.control}
-                      name="speedMs"
+                      name="gridGap"
                       render={({ field, fieldState }) => (
-                        <Field
-                          orientation="vertical"
-                          data-invalid={fieldState.invalid}
-                        >
-                          <FieldContent>
-                            <FieldLabel htmlFor="form-widget-configuration-speed-ms">
-                              <ClockIcon /> Carousel Speed (ms)
-                            </FieldLabel>
-                            <FieldDescription>
-                              The speed of the carousel in milliseconds.
-                            </FieldDescription>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </FieldContent>
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor="form-widget-configuration-grid-gap">
+                            Gap
+                          </FieldLabel>
+                          <FieldDescription>
+                            Space between testimonial cards (0-48px).
+                          </FieldDescription>
                           <Slider
-                            id="form-widget-configuration-speed-ms"
-                            name={field.name}
-                            value={field.value}
-                            max={5000}
+                            id="form-widget-configuration-grid-gap"
+                            min={0}
+                            max={48}
                             step={1}
-                            className={cn("w-[60%]")}
-                            onValueChange={field.onChange}
-                            aria-invalid={fieldState.invalid}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
+                            showTooltip
+                            formatValue={(v) => `${v}px`}
                           />
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
                         </Field>
                       )}
                     />

@@ -29,7 +29,6 @@ export function MinimalWidgetEditor() {
     await updateWidgetConfigMutation.mutateAsync({
       config: {
         ...widgetConfig,
-        speedMs: [widgetConfig.speedMs],
         showRating: !widgetConfig.showRating,
         showAvatar: !widgetConfig.showAvatar,
       },

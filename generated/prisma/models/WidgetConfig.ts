@@ -27,11 +27,13 @@ export type AggregateWidgetConfig = {
 }
 
 export type WidgetConfigAvgAggregateOutputType = {
-  speedMs: number | null
+  gridColumns: number | null
+  gridGap: number | null
 }
 
 export type WidgetConfigSumAggregateOutputType = {
-  speedMs: number | null
+  gridColumns: number | null
+  gridGap: number | null
 }
 
 export type WidgetConfigMinAggregateOutputType = {
@@ -44,8 +46,8 @@ export type WidgetConfigMinAggregateOutputType = {
   displayOrder: string | null
   showRating: boolean | null
   showAvatar: boolean | null
-  autoPlay: boolean | null
-  speedMs: number | null
+  gridColumns: number | null
+  gridGap: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,8 +62,8 @@ export type WidgetConfigMaxAggregateOutputType = {
   displayOrder: string | null
   showRating: boolean | null
   showAvatar: boolean | null
-  autoPlay: boolean | null
-  speedMs: number | null
+  gridColumns: number | null
+  gridGap: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,8 +78,8 @@ export type WidgetConfigCountAggregateOutputType = {
   displayOrder: number
   showRating: number
   showAvatar: number
-  autoPlay: number
-  speedMs: number
+  gridColumns: number
+  gridGap: number
   allowedDomains: number
   createdAt: number
   updatedAt: number
@@ -86,11 +88,13 @@ export type WidgetConfigCountAggregateOutputType = {
 
 
 export type WidgetConfigAvgAggregateInputType = {
-  speedMs?: true
+  gridColumns?: true
+  gridGap?: true
 }
 
 export type WidgetConfigSumAggregateInputType = {
-  speedMs?: true
+  gridColumns?: true
+  gridGap?: true
 }
 
 export type WidgetConfigMinAggregateInputType = {
@@ -103,8 +107,8 @@ export type WidgetConfigMinAggregateInputType = {
   displayOrder?: true
   showRating?: true
   showAvatar?: true
-  autoPlay?: true
-  speedMs?: true
+  gridColumns?: true
+  gridGap?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -119,8 +123,8 @@ export type WidgetConfigMaxAggregateInputType = {
   displayOrder?: true
   showRating?: true
   showAvatar?: true
-  autoPlay?: true
-  speedMs?: true
+  gridColumns?: true
+  gridGap?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -135,8 +139,8 @@ export type WidgetConfigCountAggregateInputType = {
   displayOrder?: true
   showRating?: true
   showAvatar?: true
-  autoPlay?: true
-  speedMs?: true
+  gridColumns?: true
+  gridGap?: true
   allowedDomains?: true
   createdAt?: true
   updatedAt?: true
@@ -239,8 +243,8 @@ export type WidgetConfigGroupByOutputType = {
   displayOrder: string
   showRating: boolean
   showAvatar: boolean
-  autoPlay: boolean
-  speedMs: number
+  gridColumns: number
+  gridGap: number
   allowedDomains: string[]
   createdAt: Date
   updatedAt: Date
@@ -279,8 +283,8 @@ export type WidgetConfigWhereInput = {
   displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
   showRating?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   showAvatar?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  autoPlay?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
+  gridColumns?: Prisma.IntFilter<"WidgetConfig"> | number
+  gridGap?: Prisma.IntFilter<"WidgetConfig"> | number
   allowedDomains?: Prisma.StringNullableListFilter<"WidgetConfig">
   createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
@@ -297,8 +301,8 @@ export type WidgetConfigOrderByWithRelationInput = {
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
-  autoPlay?: Prisma.SortOrder
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
   allowedDomains?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -318,8 +322,8 @@ export type WidgetConfigWhereUniqueInput = Prisma.AtLeast<{
   displayOrder?: Prisma.StringFilter<"WidgetConfig"> | string
   showRating?: Prisma.BoolFilter<"WidgetConfig"> | boolean
   showAvatar?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  autoPlay?: Prisma.BoolFilter<"WidgetConfig"> | boolean
-  speedMs?: Prisma.IntFilter<"WidgetConfig"> | number
+  gridColumns?: Prisma.IntFilter<"WidgetConfig"> | number
+  gridGap?: Prisma.IntFilter<"WidgetConfig"> | number
   allowedDomains?: Prisma.StringNullableListFilter<"WidgetConfig">
   createdAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WidgetConfig"> | Date | string
@@ -336,8 +340,8 @@ export type WidgetConfigOrderByWithAggregationInput = {
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
-  autoPlay?: Prisma.SortOrder
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
   allowedDomains?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -361,8 +365,8 @@ export type WidgetConfigScalarWhereWithAggregatesInput = {
   displayOrder?: Prisma.StringWithAggregatesFilter<"WidgetConfig"> | string
   showRating?: Prisma.BoolWithAggregatesFilter<"WidgetConfig"> | boolean
   showAvatar?: Prisma.BoolWithAggregatesFilter<"WidgetConfig"> | boolean
-  autoPlay?: Prisma.BoolWithAggregatesFilter<"WidgetConfig"> | boolean
-  speedMs?: Prisma.IntWithAggregatesFilter<"WidgetConfig"> | number
+  gridColumns?: Prisma.IntWithAggregatesFilter<"WidgetConfig"> | number
+  gridGap?: Prisma.IntWithAggregatesFilter<"WidgetConfig"> | number
   allowedDomains?: Prisma.StringNullableListFilter<"WidgetConfig">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WidgetConfig"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"WidgetConfig"> | Date | string
@@ -377,8 +381,8 @@ export type WidgetConfigCreateInput = {
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
+  gridColumns?: number
+  gridGap?: number
   allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -395,8 +399,8 @@ export type WidgetConfigUncheckedCreateInput = {
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
+  gridColumns?: number
+  gridGap?: number
   allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -411,8 +415,8 @@ export type WidgetConfigUpdateInput = {
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  gridColumns?: Prisma.IntFieldUpdateOperationsInput | number
+  gridGap?: Prisma.IntFieldUpdateOperationsInput | number
   allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -429,8 +433,8 @@ export type WidgetConfigUncheckedUpdateInput = {
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  gridColumns?: Prisma.IntFieldUpdateOperationsInput | number
+  gridGap?: Prisma.IntFieldUpdateOperationsInput | number
   allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -446,8 +450,8 @@ export type WidgetConfigCreateManyInput = {
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
+  gridColumns?: number
+  gridGap?: number
   allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -462,8 +466,8 @@ export type WidgetConfigUpdateManyMutationInput = {
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  gridColumns?: Prisma.IntFieldUpdateOperationsInput | number
+  gridGap?: Prisma.IntFieldUpdateOperationsInput | number
   allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -479,8 +483,8 @@ export type WidgetConfigUncheckedUpdateManyInput = {
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  gridColumns?: Prisma.IntFieldUpdateOperationsInput | number
+  gridGap?: Prisma.IntFieldUpdateOperationsInput | number
   allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -509,15 +513,16 @@ export type WidgetConfigCountOrderByAggregateInput = {
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
-  autoPlay?: Prisma.SortOrder
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
   allowedDomains?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type WidgetConfigAvgOrderByAggregateInput = {
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
 }
 
 export type WidgetConfigMaxOrderByAggregateInput = {
@@ -530,8 +535,8 @@ export type WidgetConfigMaxOrderByAggregateInput = {
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
-  autoPlay?: Prisma.SortOrder
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -546,14 +551,15 @@ export type WidgetConfigMinOrderByAggregateInput = {
   displayOrder?: Prisma.SortOrder
   showRating?: Prisma.SortOrder
   showAvatar?: Prisma.SortOrder
-  autoPlay?: Prisma.SortOrder
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type WidgetConfigSumOrderByAggregateInput = {
-  speedMs?: Prisma.SortOrder
+  gridColumns?: Prisma.SortOrder
+  gridGap?: Prisma.SortOrder
 }
 
 export type WidgetConfigCreateNestedOneWithoutProjectInput = {
@@ -614,8 +620,8 @@ export type WidgetConfigCreateWithoutProjectInput = {
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
+  gridColumns?: number
+  gridGap?: number
   allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -630,8 +636,8 @@ export type WidgetConfigUncheckedCreateWithoutProjectInput = {
   displayOrder?: string
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: number
+  gridColumns?: number
+  gridGap?: number
   allowedDomains?: Prisma.WidgetConfigCreateallowedDomainsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -662,8 +668,8 @@ export type WidgetConfigUpdateWithoutProjectInput = {
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  gridColumns?: Prisma.IntFieldUpdateOperationsInput | number
+  gridGap?: Prisma.IntFieldUpdateOperationsInput | number
   allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -678,8 +684,8 @@ export type WidgetConfigUncheckedUpdateWithoutProjectInput = {
   displayOrder?: Prisma.StringFieldUpdateOperationsInput | string
   showRating?: Prisma.BoolFieldUpdateOperationsInput | boolean
   showAvatar?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  autoPlay?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  speedMs?: Prisma.IntFieldUpdateOperationsInput | number
+  gridColumns?: Prisma.IntFieldUpdateOperationsInput | number
+  gridGap?: Prisma.IntFieldUpdateOperationsInput | number
   allowedDomains?: Prisma.WidgetConfigUpdateallowedDomainsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -697,8 +703,8 @@ export type WidgetConfigSelect<ExtArgs extends runtime.Types.Extensions.Internal
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: boolean
+  gridColumns?: boolean
+  gridGap?: boolean
   allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -715,8 +721,8 @@ export type WidgetConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: boolean
+  gridColumns?: boolean
+  gridGap?: boolean
   allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -733,8 +739,8 @@ export type WidgetConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: boolean
+  gridColumns?: boolean
+  gridGap?: boolean
   allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -751,14 +757,14 @@ export type WidgetConfigSelectScalar = {
   displayOrder?: boolean
   showRating?: boolean
   showAvatar?: boolean
-  autoPlay?: boolean
-  speedMs?: boolean
+  gridColumns?: boolean
+  gridGap?: boolean
   allowedDomains?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WidgetConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "primaryColor" | "backgroundColor" | "textColor" | "displayLayout" | "displayOrder" | "showRating" | "showAvatar" | "autoPlay" | "speedMs" | "allowedDomains" | "createdAt" | "updatedAt", ExtArgs["result"]["widgetConfig"]>
+export type WidgetConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "projectId" | "primaryColor" | "backgroundColor" | "textColor" | "displayLayout" | "displayOrder" | "showRating" | "showAvatar" | "gridColumns" | "gridGap" | "allowedDomains" | "createdAt" | "updatedAt", ExtArgs["result"]["widgetConfig"]>
 export type WidgetConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
@@ -784,8 +790,8 @@ export type $WidgetConfigPayload<ExtArgs extends runtime.Types.Extensions.Intern
     displayOrder: string
     showRating: boolean
     showAvatar: boolean
-    autoPlay: boolean
-    speedMs: number
+    gridColumns: number
+    gridGap: number
     allowedDomains: string[]
     createdAt: Date
     updatedAt: Date
@@ -1222,8 +1228,8 @@ export interface WidgetConfigFieldRefs {
   readonly displayOrder: Prisma.FieldRef<"WidgetConfig", 'String'>
   readonly showRating: Prisma.FieldRef<"WidgetConfig", 'Boolean'>
   readonly showAvatar: Prisma.FieldRef<"WidgetConfig", 'Boolean'>
-  readonly autoPlay: Prisma.FieldRef<"WidgetConfig", 'Boolean'>
-  readonly speedMs: Prisma.FieldRef<"WidgetConfig", 'Int'>
+  readonly gridColumns: Prisma.FieldRef<"WidgetConfig", 'Int'>
+  readonly gridGap: Prisma.FieldRef<"WidgetConfig", 'Int'>
   readonly allowedDomains: Prisma.FieldRef<"WidgetConfig", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"WidgetConfig", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"WidgetConfig", 'DateTime'>

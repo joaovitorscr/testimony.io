@@ -1413,8 +1413,8 @@ export const WidgetConfigScalarFieldEnum = {
   displayOrder: 'displayOrder',
   showRating: 'showRating',
   showAvatar: 'showAvatar',
-  autoPlay: 'autoPlay',
-  speedMs: 'speedMs',
+  gridColumns: 'gridColumns',
+  gridGap: 'gridGap',
   allowedDomains: 'allowedDomains',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
