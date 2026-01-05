@@ -15,17 +15,32 @@ const TestimonialWidget: React.FC<TestimonialWidgetProps> = ({
   widgetConfig,
 }) => {
   if (!testimonies || testimonies.length === 0) {
-    return <div className="no-testimonies">No testimonies yet.</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.5rem",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <h3 style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+          No testimonies have been collected yet.
+        </h3>
+        <p
+          style={{ fontSize: "1rem", color: "gray", letterSpacing: "-0.025em" }}
+        >
+          Start collecting on testimonies.io dashboard
+        </p>
+      </div>
+    );
   }
-
-  console.log("Testimonies:", testimonies);
-  console.log("Widget Config:", widgetConfig);
 
   const isGridLayout = widgetConfig.displayLayout === "grid";
 
   return (
     <div
-      className="testimonial-widget-container"
       style={{
         padding: "1rem",
         display: isGridLayout ? "grid" : "flex",
