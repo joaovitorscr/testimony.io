@@ -155,62 +155,14 @@ export const widgetRouter = createTRPCRouter({
         },
       });
 
-      const sampleTestimonials = [
-        {
-          id: "1",
-          text: "This product has completely transformed how we handle customer feedback. The interface is intuitive and the insights are invaluable.",
-          customerName: "Sarah Chen",
-          customerTitle: "Product Manager",
-          customerCompany: "TechCorp",
-          rating: 5,
-          createdAt: new Date("2024-01-15"),
+      const testimonials = await ctx.db.testimonial.findMany({
+        where: {
+          projectId: widget.project.id,
         },
-        {
-          id: "2",
-          text: "Outstanding support team and a product that delivers on its promises. Highly recommended!",
-          customerName: "Marcus Johnson",
-          customerTitle: "CEO",
-          customerCompany: "StartupXYZ",
-          rating: 5,
-          createdAt: new Date("2024-03-20"),
+        orderBy: {
+          createdAt: widgetConfig?.displayOrder === "newest" ? "desc" : "asc",
         },
-        {
-          id: "3",
-          text: "We've seen a 40% increase in customer engagement since implementing this solution.",
-          customerName: "Emily Rodriguez",
-          customerTitle: "Marketing Director",
-          customerCompany: "GrowthCo",
-          rating: 4,
-          createdAt: new Date("2024-02-10"),
-        },
-        {
-          id: "4",
-          text: "Simple, elegant, and powerful. Everything we needed in one package.",
-          customerName: "David Kim",
-          customerTitle: "Engineering Lead",
-          customerCompany: "DevStudio",
-          rating: 5,
-          createdAt: new Date("2024-04-05"),
-        },
-        {
-          id: "5",
-          text: "The best investment we've made this year. Our team loves using it daily.",
-          customerName: "Lisa Thompson",
-          customerTitle: "Operations Manager",
-          customerCompany: "ScaleUp Inc",
-          rating: 4,
-          createdAt: new Date("2024-01-28"),
-        },
-        {
-          id: "6",
-          text: "Incredibly easy to set up and the results speak for themselves. A game-changer for our business.",
-          customerName: "Alex Rivera",
-          customerTitle: "Founder",
-          customerCompany: "Innovate Labs",
-          rating: 5,
-          createdAt: new Date("2024-05-12"),
-        },
-      ];
+      });
 
       // --- Render Widget HTML (Server-Side) ---
       const React = require("react");
@@ -220,7 +172,7 @@ export const widgetRouter = createTRPCRouter({
 
       const widgetHtml = ReactDOMServer.renderToString(
         React.createElement(TestimonialWidget, {
-          testimonies: sampleTestimonials,
+          testimonies: testimonials,
           widgetConfig: widgetConfig,
         })
       );
