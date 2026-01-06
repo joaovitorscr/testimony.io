@@ -12,43 +12,39 @@ export function StatsHeader() {
   const [stats] = api.token.getStats.useSuspenseQuery();
 
   return (
-    <header className="border-border/60 border-b bg-linear-to-r from-card via-card to-accent/5">
-      <div className="px-8 py-8">
-        <div className="mb-6">
-          <h1 className="font-bold text-3xl tracking-tight">
-            Collection Links
-          </h1>
-          <p className="mt-1 text-muted-foreground">
-            Generate unique links to collect testimonials from your customers
-          </p>
-        </div>
+    <header className="px-8 pt-8">
+      <div className="mb-6">
+        <h2 className="font-bold text-3xl tracking-tight">Collection Links</h2>
+        <p className="mt-1 text-muted-foreground">
+          Generate unique links to collect testimonials from your customers
+        </p>
+      </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatCard
-            label="Total Links"
-            value={stats.total}
-            icon={<LinkIcon className="size-4" />}
-            variant="default"
-          />
-          <StatCard
-            label="Active"
-            value={stats.active}
-            icon={<SparklesIcon className="size-4" />}
-            variant="success"
-          />
-          <StatCard
-            label="Collected"
-            value={stats.used}
-            icon={<CheckCircle2Icon className="size-4" />}
-            variant="info"
-          />
-          <StatCard
-            label="Cancelled"
-            value={stats.cancelled}
-            icon={<XCircleIcon className="size-4" />}
-            variant="muted"
-          />
-        </div>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <StatCard
+          label="Total Links"
+          value={stats.total}
+          icon={<LinkIcon className="size-4" />}
+          variant="default"
+        />
+        <StatCard
+          label="Active"
+          value={stats.active}
+          icon={<SparklesIcon className="size-4" />}
+          variant="success"
+        />
+        <StatCard
+          label="Collected"
+          value={stats.used}
+          icon={<CheckCircle2Icon className="size-4" />}
+          variant="info"
+        />
+        <StatCard
+          label="Cancelled"
+          value={stats.cancelled}
+          icon={<XCircleIcon className="size-4" />}
+          variant="muted"
+        />
       </div>
     </header>
   );

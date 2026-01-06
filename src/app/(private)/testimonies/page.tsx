@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getSession } from "@/server/better-auth/server";
 import { api, HydrateClient } from "@/trpc/server";
 import { TestimoniesList } from "./_components/testimonies-list";
-import { TestimoniesPageHeader } from "./_components/testimonies-page-header";
 
 export default async function TestimoniesPage() {
   const session = await getSession();
@@ -19,12 +18,15 @@ export default async function TestimoniesPage() {
 
   return (
     <HydrateClient>
-      <div className="flex min-h-svh flex-1 flex-col bg-background/60">
-        <Suspense fallback={<Skeleton className="h-16 rounded-none" />}>
-          <TestimoniesPageHeader />
-        </Suspense>
+      <main className="flex min-h-svh flex-1 flex-col">
+        <header className="px-8 py-8">
+          <h1 className="font-bold text-3xl tracking-tight">Testimonies</h1>
+          <p className="mt-1 text-muted-foreground">
+            Manage your testimonies and collect feedback from your customers
+          </p>
+        </header>
 
-        <main className="flex flex-1 gap-6 px-8 py-6">
+        <div className="flex flex-1 gap-6 px-8 py-6">
           <Suspense fallback={<Skeleton className="h-40 flex-1" />}>
             <TestimoniesList />
           </Suspense>
@@ -38,8 +40,8 @@ export default async function TestimoniesPage() {
               <MinimalWidgetEditor />
             </Suspense>
           </aside>
-        </main>
-      </div>
+        </div>
+      </main>
     </HydrateClient>
   );
 }

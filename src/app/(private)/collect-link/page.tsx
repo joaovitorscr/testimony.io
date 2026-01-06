@@ -11,10 +11,10 @@ export default async function CollectLinkPage() {
 
   return (
     <HydrateClient>
-      <div className="flex min-h-svh flex-1 flex-col bg-background/60">
+      <div className="flex min-h-svh flex-1 flex-col">
         <Suspense
           fallback={
-            <div className="border-border/60 border-b px-8 py-8">
+            <div className="px-8 py-8">
               <Skeleton className="mb-2 h-8 w-48" />
               <Skeleton className="mb-6 h-4 w-80" />
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
