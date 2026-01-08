@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertCircleIcon } from "lucide-react";
 import * as React from "react";
 import {
   Card,
@@ -13,7 +14,7 @@ import { WidgetCard } from "@/components/widgets/widget-card";
 import { api } from "@/trpc/react";
 import type { Testimonial } from "../../../../../generated/prisma/client";
 
-const sampleTestimonials: Partial<Testimonial>[] = [
+const sampleTestimonials: Testimonial[] = [
   {
     id: "1",
     text: "This product has completely transformed how we handle customer feedback. The interface is intuitive and the insights are invaluable.",
@@ -22,6 +23,11 @@ const sampleTestimonials: Partial<Testimonial>[] = [
     customerCompany: "TechCorp",
     rating: 5,
     createdAt: new Date("2024-01-15"),
+    updatedAt: new Date(),
+    projectId: "1",
+    customerAvatarUrl: null,
+    isApproved: true,
+    isFeatured: false,
   },
   {
     id: "2",
@@ -31,6 +37,11 @@ const sampleTestimonials: Partial<Testimonial>[] = [
     customerCompany: "StartupXYZ",
     rating: 5,
     createdAt: new Date("2024-03-20"),
+    updatedAt: new Date(),
+    projectId: "1",
+    customerAvatarUrl: null,
+    isApproved: true,
+    isFeatured: false,
   },
   {
     id: "3",
@@ -40,6 +51,11 @@ const sampleTestimonials: Partial<Testimonial>[] = [
     customerCompany: "GrowthCo",
     rating: 4,
     createdAt: new Date("2024-02-10"),
+    updatedAt: new Date(),
+    projectId: "1",
+    customerAvatarUrl: null,
+    isApproved: true,
+    isFeatured: false,
   },
   {
     id: "4",
@@ -49,6 +65,11 @@ const sampleTestimonials: Partial<Testimonial>[] = [
     customerCompany: "DevStudio",
     rating: 5,
     createdAt: new Date("2024-04-05"),
+    updatedAt: new Date(),
+    projectId: "1",
+    customerAvatarUrl: null,
+    isApproved: true,
+    isFeatured: false,
   },
   {
     id: "5",
@@ -58,6 +79,11 @@ const sampleTestimonials: Partial<Testimonial>[] = [
     customerCompany: "ScaleUp Inc",
     rating: 4,
     createdAt: new Date("2024-01-28"),
+    updatedAt: new Date(),
+    projectId: "1",
+    customerAvatarUrl: null,
+    isApproved: true,
+    isFeatured: false,
   },
   {
     id: "6",
@@ -67,36 +93,30 @@ const sampleTestimonials: Partial<Testimonial>[] = [
     customerCompany: "Innovate Labs",
     rating: 5,
     createdAt: new Date("2024-05-12"),
+    updatedAt: new Date(),
+    projectId: "1",
+    customerAvatarUrl: null,
+    isApproved: true,
+    isFeatured: false,
   },
 ];
 
-const fallbackTestimonials: Testimonial[] = sampleTestimonials.map((t) => ({
-  id: t.id!,
-  text: t.text!,
-  customerName: t.customerName!,
-  customerTitle: t.customerTitle ?? null,
-  customerCompany: t.customerCompany ?? null,
-  customerAvatarUrl: null,
-  projectId: "1",
-  rating: t.rating ?? null,
-  isApproved: true,
-  isFeatured: false,
-  createdAt: t.createdAt ?? new Date(),
-  updatedAt: new Date(),
-}));
-
 export function WidgetVisualizer() {
-  const { data: testimonies = [] } = api.testimonie.all.useQuery();
-  const { data: widgetConfig } = api.widget.getWidgetConfig.useQuery();
+  const [testimonies] = api.testimonie.all.useSuspenseQuery();
+  const [widgetConfig] = api.widget.getWidgetConfig.useSuspenseQuery();
 
   const displayTestimonials = React.useMemo(() => {
     const testimonials =
-      testimonies.length > 0 ? testimonies : fallbackTestimonials;
+      testimonies.length > 0 ? testimonies : sampleTestimonials;
 
     if (widgetConfig?.displayOrder) {
       const sorted = [...testimonials].sort((a, b) => {
-        const dateA = a.createdAt.getTime();
-        const dateB = b.createdAt.getTime();
+        const dateA = a.createdAt?.getTime();
+        const dateB = b.createdAt?.getTime();
+
+        if (dateA === undefined || dateB === undefined) {
+          return 0;
+        }
 
         if (widgetConfig.displayOrder === "newest") {
           return dateB - dateA;
@@ -112,6 +132,7 @@ export function WidgetVisualizer() {
 
     return testimonials;
   }, [testimonies, widgetConfig?.displayOrder]);
+
   const isGridLayout = React.useMemo(
     () => widgetConfig?.displayLayout === "grid",
     [widgetConfig?.displayLayout]
@@ -131,6 +152,15 @@ export function WidgetVisualizer() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden p-4">
+          {testimonies.length === 0 && (
+            <div className="inline-flex items-center gap-1 px-4 pb-4 text-yellow-400">
+              <AlertCircleIcon />
+              <p>
+                No testimonies have been collected yet. Fallback to sample
+                testimonials.
+              </p>
+            </div>
+          )}
           <ScrollArea className="h-full">
             <div
               className="p-4"
