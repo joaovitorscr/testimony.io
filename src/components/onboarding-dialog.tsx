@@ -48,9 +48,7 @@ export function OnboardingDialog({
   open: boolean;
   handleOpen?: (open: boolean) => void;
 }) {
-  const [step, setStep] = useState<"choice" | "create-org" | "create-project">(
-    "choice"
-  );
+  const [step, setStep] = useState<"choice" | "create-project">("choice");
 
   const router = useRouter();
 
@@ -66,15 +64,18 @@ export function OnboardingDialog({
   const projectName = form.watch("name");
   const [debouncedProjectName] = useDebounce(projectName, 500);
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [slugValidated, setSlugValidated] = useState(false);
 
   useEffect(() => {
     async function generateAndCheckSlug() {
       if (!debouncedProjectName) {
         form.setValue("slug", "");
+        setSlugValidated(false);
         return;
       }
 
       setIsCheckingSlug(true);
+      setSlugValidated(false);
       const generatedSlug = debouncedProjectName
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
@@ -90,11 +91,14 @@ export function OnboardingDialog({
             type: "manual",
             message: "This project name is already taken",
           });
+          setSlugValidated(false);
         } else {
           form.clearErrors("slug");
+          setSlugValidated(true);
         }
       } catch (error) {
         console.error(error);
+        setSlugValidated(false);
       } finally {
         setIsCheckingSlug(false);
       }
@@ -261,7 +265,8 @@ export function OnboardingDialog({
                           disabled={
                             form.formState.isSubmitting ||
                             !form.formState.isValid ||
-                            isCheckingSlug
+                            isCheckingSlug ||
+                            !slugValidated
                           }
                           size="lg"
                           className="flex-1"
