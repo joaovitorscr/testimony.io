@@ -49,7 +49,6 @@ export function OnboardingDialog({
   handleOpen?: (open: boolean) => void;
 }) {
   const [step, setStep] = useState<"choice" | "create-project">("choice");
-
   const router = useRouter();
 
   const form = useForm<CreateProjectPayload>({
@@ -68,14 +67,16 @@ export function OnboardingDialog({
 
   useEffect(() => {
     async function generateAndCheckSlug() {
+      setSlugValidated(false);
+
       if (!debouncedProjectName) {
         form.setValue("slug", "");
-        setSlugValidated(false);
+
         return;
       }
 
       setIsCheckingSlug(true);
-      setSlugValidated(false);
+
       const generatedSlug = debouncedProjectName
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
@@ -93,8 +94,8 @@ export function OnboardingDialog({
           });
           setSlugValidated(false);
         } else {
-          form.clearErrors("slug");
           setSlugValidated(true);
+          form.clearErrors("slug");
         }
       } catch (error) {
         console.error(error);
@@ -131,8 +132,19 @@ export function OnboardingDialog({
     }
   };
 
+  const handleCloseDialog = (open: boolean) => {
+    form.reset();
+    setSlugValidated(false);
+    setIsCheckingSlug(false);
+    setStep("choice");
+
+    if (handleOpen) {
+      handleOpen(open);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={handleOpen}>
+    <Dialog open={open} onOpenChange={handleCloseDialog}>
       <DialogContent className="overflow-hidden border-0 p-0 sm:max-w-5xl">
         <div className="grid h-[600px] w-full grid-cols-[1fr_1.2fr]">
           <OnboardingCover />
