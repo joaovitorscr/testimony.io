@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StarIcon } from "lucide-react";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { submitTestimonial } from "@/server/actions/testimonial";
+import { api } from "@/trpc/react";
 
 const testimonialSchema = z.object({
   customerName: z.string().min(1, "Name is required"),
@@ -29,8 +28,8 @@ const testimonialSchema = z.object({
 type TestimonialFormValues = z.infer<typeof testimonialSchema>;
 
 export function TestimonialForm({ token }: { token: string }) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const createTestimonieMutation =
+    api.testimonie.submitTestimonie.useMutation();
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(testimonialSchema),
@@ -44,19 +43,20 @@ export function TestimonialForm({ token }: { token: string }) {
   });
 
   const onSubmit = async (values: TestimonialFormValues) => {
-    setIsSubmitting(true);
-    const result = await submitTestimonial({ ...values, token });
-    setIsSubmitting(false);
-
-    if (result.success) {
-      setIsSuccess(true);
-      toast.success("Testimonial submitted successfully!");
-    } else {
-      toast.error(result.message || "Failed to submit testimonial");
-    }
+    toast.promise(
+      createTestimonieMutation.mutateAsync({
+        token,
+        testimonie: values,
+      }),
+      {
+        loading: "Submitting testimonial...",
+        success: "Testimonial submitted successfully!",
+        error: "Failed to submit testimonial",
+      }
+    );
   };
 
-  if (isSuccess) {
+  if (createTestimonieMutation.isSuccess) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 p-8 text-center">
         <h2 className="font-bold text-2xl">Thank You!</h2>
@@ -164,8 +164,14 @@ export function TestimonialForm({ token }: { token: string }) {
         </div>
       </FieldGroup>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Submit Testimonial"}
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={createTestimonieMutation.isPending || !form.formState.isValid}
+      >
+        {createTestimonieMutation.isPending
+          ? "Submitting..."
+          : "Submit Testimonial"}
       </Button>
     </form>
   );
