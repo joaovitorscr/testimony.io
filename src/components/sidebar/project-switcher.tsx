@@ -18,19 +18,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { setActiveProjectId } from "@/server/better-auth/server";
+import type { Project } from "../../../generated/prisma/client";
 import { OnboardingDialog } from "../onboarding-dialog";
-
-type Project = {
-  id: string;
-  name: string;
-  slug: string;
-};
 
 export function ProjectSwitcher({
   projects,
   activeProjectId,
 }: {
-  projects: Project[];
+  projects: Pick<Project, "id" | "name" | "slug">[];
   activeProjectId?: string;
 }) {
   const { isMobile } = useSidebar();

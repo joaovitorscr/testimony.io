@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  LayoutIcon,
-  LinkIcon,
-  MessageCircleIcon,
-  SettingsIcon,
-} from "lucide-react";
+import { LayoutIcon, LinkIcon, MessageCircleIcon } from "lucide-react";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 import type * as React from "react";
@@ -23,6 +18,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { Project } from "../../../generated/prisma/client";
 
 const navMainItems: {
   title: string;
@@ -44,25 +40,14 @@ const navMainItems: {
     url: "/collect-link",
     icon: LinkIcon,
   },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: SettingsIcon,
-  },
 ];
-
-type Project = {
-  id: string;
-  name: string;
-  slug: string;
-};
 
 export function AppSidebar({
   projects,
   activeProjectId,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  projects: Project[];
+  projects: Pick<Project, "id" | "name" | "slug">[];
   activeProjectId?: string;
 }) {
   const isMobile = useIsMobile();
