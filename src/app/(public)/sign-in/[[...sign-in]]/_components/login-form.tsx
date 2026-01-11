@@ -33,6 +33,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 
 type LoginPayload = z.infer<typeof loginPayloadSchema>;
 
@@ -40,6 +41,8 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [loggingIn, setLoggingIn] = React.useState(false);
+
   const [passwordIsHidden, setPasswordIsHidden] = React.useState(true);
 
   const form = useForm<LoginPayload>({
@@ -56,6 +59,7 @@ export function LoginForm({
     form.setError("root", {
       message: undefined,
     });
+    setLoggingIn(true);
 
     await authClient.signIn.email({
       email: values.email,
@@ -63,10 +67,15 @@ export function LoginForm({
       rememberMe: values.remember,
       callbackURL: "/testimonies",
       fetchOptions: {
+        onSuccess: () => {
+          setLoggingIn(false);
+        },
         onError: (error) => {
           form.setError("root", {
             message: error.error.message,
           });
+
+          setLoggingIn(false);
         },
       },
     });
@@ -155,7 +164,19 @@ export function LoginForm({
               />
 
               <Field>
-                <Button type="submit">Login</Button>
+                <Button
+                  type="submit"
+                  disabled={loggingIn || !form.formState.isValid}
+                >
+                  {loggingIn ? (
+                    <>
+                      <Spinner />
+                      <span>Logging in...</span>
+                    </>
+                  ) : (
+                    "Login"
+                  )}
+                </Button>
               </Field>
               <FieldDescription className="text-center">
                 Don&apos;t have an account?{" "}

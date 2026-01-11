@@ -67,6 +67,10 @@ export function SignupForm({
   });
 
   const onSubmit = async (values: SignupPayload) => {
+    form.setError("root", {
+      message: undefined,
+    });
+
     setCreatingAccount(true);
     await authClient.signUp.email({
       name: values.name,
