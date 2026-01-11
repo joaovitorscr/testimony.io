@@ -1,6 +1,8 @@
 "use client";
 
-import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut } from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import type { Route } from "next";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -23,6 +25,7 @@ import { Skeleton } from "../ui/skeleton";
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { useSession } = authClient;
+  const router = useRouter();
 
   const { data: session, isPending } = useSession();
 
@@ -36,6 +39,7 @@ export function NavUser() {
 
   const handleSignOut = () => {
     authClient.signOut();
+    router.push("/sign-in" as Route);
   };
 
   return (
