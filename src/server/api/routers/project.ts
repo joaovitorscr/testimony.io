@@ -146,10 +146,11 @@ export const projectRouter = createTRPCRouter({
 
     return project;
   }),
-  inviteUser: protectedProcedure
+  update: protectedProcedure
     .input(
       z.object({
-        email: z.email(),
+        name: z.string().min(3).max(50),
+        slug: z.string().min(3).max(50),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -160,52 +161,31 @@ export const projectRouter = createTRPCRouter({
         });
       }
 
-      const email = input.email.toLowerCase().trim();
+      const { name, slug } = input;
 
-      if (ctx.session.user.email === email) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "You cannot invite yourself",
-        });
-      }
-
-      const existingUser = await ctx.db.user.findUnique({
+      const existingProject = await ctx.db.project.findUnique({
         where: {
-          email,
+          slug,
         },
       });
 
-      if (!existingUser) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
-        });
-      }
-
-      const existingInvitation = await ctx.db.invitation.findFirst({
-        where: {
-          email,
-          projectId: ctx.session.user.activeProjectId,
-        },
-      });
-
-      if (existingInvitation) {
+      if (existingProject) {
         throw new TRPCError({
           code: "CONFLICT",
-          message: "Invitation already exists",
+          message: "Project with this slug already exists",
         });
       }
 
-      const invitation = await ctx.db.invitation.create({
+      const updatedProject = await ctx.db.project.update({
+        where: {
+          id: ctx.session.user.activeProjectId,
+        },
         data: {
-          email,
-          projectId: ctx.session.user.activeProjectId,
-          role: "member",
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          inviterId: ctx.session.user.id,
+          name,
+          slug,
         },
       });
 
-      return invitation;
+      return updatedProject;
     }),
 });

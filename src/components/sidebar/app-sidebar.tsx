@@ -1,9 +1,14 @@
 "use client";
 
-import { LayoutIcon, LinkIcon, MessageCircleIcon } from "lucide-react";
+import {
+  LayoutIcon,
+  LinkIcon,
+  MessageCircleIcon,
+  SettingsIcon,
+} from "lucide-react";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
-import type * as React from "react";
+import * as React from "react";
 import { NavUser } from "@/components/sidebar/nav-user";
 import { ProjectSwitcher } from "@/components/sidebar/project-switcher";
 import {
@@ -18,7 +23,9 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { api } from "@/trpc/react";
 import type { Project } from "../../../generated/prisma/client";
+import { ProjectSettings } from "../project-settings";
 
 const navMainItems: {
   title: string;
@@ -50,56 +57,79 @@ export function AppSidebar({
   projects: Pick<Project, "id" | "name" | "slug">[];
   activeProjectId?: string;
 }) {
+  const [projectSettingsOpen, setProjectSettingsOpen] = React.useState(false);
+  const utils = api.useUtils();
+
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
 
+  React.useEffect(() => {
+    void utils.project.currentProject.prefetch();
+  }, [utils.project.currentProject]);
+
   return (
-    <Sidebar collapsible={isMobile ? "icon" : "none"} {...props}>
-      <SidebarHeader>
-        <div className="flex items-center gap-3 px-2 py-4">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-foreground font-bold text-background text-xl tracking-tight">
-            T
+    <>
+      <Sidebar collapsible={isMobile ? "icon" : "none"} {...props}>
+        <SidebarHeader>
+          <div className="flex items-center gap-3 px-2 py-4">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-foreground font-bold text-background text-xl tracking-tight">
+              T
+            </div>
+            <h1 className="font-semibold text-lg text-sidebar-foreground tracking-tight">
+              Testimony.io
+            </h1>
           </div>
-          <h1 className="font-semibold text-lg text-sidebar-foreground tracking-tight">
-            Testimony.io
-          </h1>
-        </div>
-        <ProjectSwitcher
-          projects={projects}
-          activeProjectId={activeProjectId}
-        />
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-            {navMainItems.map((item) => {
-              const isActive = pathname.startsWith(item.url);
+          <ProjectSwitcher
+            projects={projects}
+            activeProjectId={activeProjectId}
+          />
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarMenu>
+              {navMainItems.map((item) => {
+                const isActive = pathname.startsWith(item.url);
 
-              return (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    className="text-base [&>svg]:size-4"
-                    isActive={isActive}
-                    onClick={() => router.push(item.url)}
-                  >
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      className="text-base [&>svg]:size-4"
+                      isActive={isActive}
+                      onClick={() => router.push(item.url)}
+                    >
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
 
-                  {isActive && (
-                    <div className="-translate-y-1/2 absolute top-1/2 right-0 h-full w-2 rounded-r-md bg-primary" />
-                  )}
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+                    {isActive && (
+                      <div className="-translate-y-1/2 absolute top-1/2 right-0 h-full w-2 rounded-r-md bg-primary" />
+                    )}
+                  </SidebarMenuItem>
+                );
+              })}
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setProjectSettingsOpen(true)}>
+                  <SettingsIcon />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <React.Suspense fallback={null}>
+        {projectSettingsOpen && (
+          <ProjectSettings
+            open={projectSettingsOpen}
+            onOpenChange={setProjectSettingsOpen}
+          />
+        )}
+      </React.Suspense>
+    </>
   );
 }
