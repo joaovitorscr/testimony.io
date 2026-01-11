@@ -2,18 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
+import type { Route } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -28,77 +25,113 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/server/better-auth/client";
 
-const signupPayloadSchema = z.object({
-  name: z.string(),
-  email: z.email(),
-  password: z.string(),
-  confirmPassword: z.string(),
-});
+const signupPayloadSchema = z
+  .object({
+    name: z.string().min(4),
+    email: z.email("Invalid email address"),
+    password: z.string().min(8),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
 
-export type SignupPayload = z.infer<typeof signupPayloadSchema>;
+type SignupPayload = z.infer<typeof signupPayloadSchema>;
+
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [passwordIsHidden, setPasswordIsHidden] = React.useState<boolean>(true);
-  const [confirmPasswordIsHidden, setConfirmPasswordIsHidden] =
-    React.useState<boolean>(true);
+  const [creatingAccount, setCreatingAccount] = React.useState(false);
 
-  const form = useForm({
+  const [passwordIsHidden, setPasswordIsHidden] = React.useState(true);
+  const [confirmPasswordIsHidden, setConfirmPasswordIsHidden] =
+    React.useState(true);
+
+  const router = useRouter();
+
+  const form = useForm<SignupPayload>({
     resolver: zodResolver(signupPayloadSchema),
     mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = async (values: SignupPayload) => {
-    toast.promise(
-      authClient.signUp.email({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        callbackURL: "/testimonies",
-      }),
-      {
-        loading: "Signin up...",
-        success: "Account Created!",
-        error: "Failed to create account",
-      }
-    );
+    setCreatingAccount(true);
+    await authClient.signUp.email({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      callbackURL: "/testimonies",
+      fetchOptions: {
+        onSuccess: () => {
+          setCreatingAccount(false);
+
+          router.push("/testimonies");
+        },
+        onError: (error) => {
+          form.setError("root", {
+            message: error.error.message,
+          });
+          setCreatingAccount(false);
+        },
+      },
+    });
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create your account</CardTitle>
-          <CardDescription>
-            Enter your email below to create your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+    <div className={cn("flex h-full flex-col gap-6", className)} {...props}>
+      <Card className="overflow-hidden p-0">
+        <CardContent className="grid p-0 md:grid-cols-2">
+          <div className="relative hidden bg-muted md:block">
+            <Image
+              src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              width={1000}
+              height={1000}
+              alt="Image"
+              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.8]"
+            />
+          </div>
+          <form
+            id="signup-form"
+            className="p-6 md:p-8"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <FieldGroup>
+              <div className="flex flex-col items-center gap-2 text-center">
+                <h1 className="font-bold text-2xl">Create your account</h1>
+                <p className="text-balance text-muted-foreground text-sm">
+                  Enter your email below to create your account
+                </p>
+              </div>
+              {form.formState.errors.root && (
+                <Field orientation="horizontal" className="justify-center">
+                  <FieldError errors={[form.formState.errors.root]} />
+                </Field>
+              )}
               <Controller
-                name="name"
                 control={form.control}
+                name="name"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                    <FieldLabel htmlFor="name">Name</FieldLabel>
                     <Input
                       {...field}
                       id="name"
-                      aria-invalid={fieldState.invalid}
                       type="text"
                       placeholder="John Doe"
-                      autoComplete="off"
                       required
+                      aria-invalid={fieldState.invalid}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -106,10 +139,9 @@ export function SignupForm({
                   </Field>
                 )}
               />
-
               <Controller
-                name="email"
                 control={form.control}
+                name="email"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -118,87 +150,121 @@ export function SignupForm({
                       id="email"
                       type="email"
                       placeholder="m@example.com"
-                      autoComplete="off"
                       required
+                      aria-invalid={fieldState.invalid}
                     />
+                    <FieldDescription>
+                      We&apos;ll use this to contact you. We will not share your
+                      email with anyone else.
+                    </FieldDescription>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 )}
               />
-
-              <Controller
-                name="password"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Password</FieldLabel>
-                      <InputGroup>
-                        <InputGroupInput
-                          {...field}
-                          id="password"
-                          type={passwordIsHidden ? "password" : "text"}
-                          autoComplete="off"
-                          placeholder="MySuperSecretPassword"
-                          required
-                        />
-                        <InputGroupAddon align="inline-end">
-                          <InputGroupButton
-                            onClick={() =>
-                              setPasswordIsHidden(!passwordIsHidden)
-                            }
-                          >
-                            {passwordIsHidden ? <EyeClosedIcon /> : <EyeIcon />}
-                          </InputGroupButton>
-                        </InputGroupAddon>
-                      </InputGroup>
-                    </Field>
-                  );
-                }}
-              />
-
-              <Controller
-                name="confirmPassword"
-                control={form.control}
-                render={({ field, fieldState }) => {
-                  return (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel>Confirm Password</FieldLabel>
-                      <InputGroup>
-                        <InputGroupInput
-                          {...field}
-                          id="confirmPassword"
-                          type={confirmPasswordIsHidden ? "password" : "text"}
-                          autoComplete="off"
-                          placeholder="MySuperSecretPassword"
-                          required
-                        />
-                        <InputGroupAddon align="inline-end">
-                          <InputGroupButton
-                            onClick={() =>
-                              setConfirmPasswordIsHidden(
-                                !confirmPasswordIsHidden
-                              )
-                            }
-                          >
-                            {confirmPasswordIsHidden ? (
-                              <EyeClosedIcon />
-                            ) : (
-                              <EyeIcon />
-                            )}
-                          </InputGroupButton>
-                        </InputGroupAddon>
-                      </InputGroup>
-                    </Field>
-                  );
-                }}
-              />
-
               <Field>
-                <Button type="submit">Create Account</Button>
-                <FieldDescription className="text-center">
-                  Already have an account? <a href="/sign-in">Sign in</a>
+                <Field className="grid grid-cols-2 gap-4">
+                  <Controller
+                    control={form.control}
+                    name="password"
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="password">Password</FieldLabel>
+                        <InputGroup>
+                          <InputGroupInput
+                            {...field}
+                            id="password"
+                            type={passwordIsHidden ? "password" : "text"}
+                            required
+                            autoComplete="new-password"
+                            placeholder="********"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          <InputGroupAddon align="inline-end">
+                            <InputGroupButton
+                              onClick={() =>
+                                setPasswordIsHidden(!passwordIsHidden)
+                              }
+                            >
+                              {passwordIsHidden ? (
+                                <EyeClosedIcon />
+                              ) : (
+                                <EyeIcon />
+                              )}
+                            </InputGroupButton>
+                          </InputGroupAddon>
+                        </InputGroup>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="confirm-password">
+                          Confirm Password
+                        </FieldLabel>
+                        <InputGroup>
+                          <InputGroupInput
+                            {...field}
+                            id="confirm-password"
+                            type={confirmPasswordIsHidden ? "password" : "text"}
+                            required
+                            autoComplete="new-password"
+                            placeholder="********"
+                            aria-invalid={fieldState.invalid}
+                          />
+                          <InputGroupAddon align="inline-end">
+                            <InputGroupButton
+                              onClick={() =>
+                                setConfirmPasswordIsHidden(
+                                  !confirmPasswordIsHidden
+                                )
+                              }
+                            >
+                              {confirmPasswordIsHidden ? (
+                                <EyeClosedIcon />
+                              ) : (
+                                <EyeIcon />
+                              )}
+                            </InputGroupButton>
+                          </InputGroupAddon>
+                        </InputGroup>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                </Field>
+                <FieldDescription>
+                  Must be at least 8 characters long.
                 </FieldDescription>
               </Field>
+              <Field>
+                <Button
+                  type="submit"
+                  disabled={creatingAccount || !form.formState.isValid}
+                >
+                  {creatingAccount ? (
+                    <>
+                      <Spinner />
+                      <span>Creating account...</span>
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
+                </Button>
+              </Field>
+              <FieldDescription className="text-center">
+                Already have an account?{" "}
+                <Link href={"/sign-in" as Route}>Sign in</Link>
+              </FieldDescription>
             </FieldGroup>
           </form>
         </CardContent>
