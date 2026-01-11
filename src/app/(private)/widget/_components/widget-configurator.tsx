@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
+import z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -42,12 +43,22 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import {
-  type WidgetConfigFormSchema,
-  widgetConfigFormSchema,
-} from "@/lib/schemas/widget";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+
+export const widgetConfigFormSchema = z.object({
+  primaryColor: z.string(),
+  backgroundColor: z.string(),
+  textColor: z.string(),
+  displayLayout: z.string(),
+  displayOrder: z.string(),
+  showRating: z.boolean(),
+  showAvatar: z.boolean(),
+  gridColumns: z.number().min(1).max(6),
+  gridGap: z.number().min(0).max(48),
+});
+
+export type WidgetConfigForm = z.infer<typeof widgetConfigFormSchema>;
 
 const displayLayoutOptions = [
   {
@@ -82,7 +93,7 @@ const displayOrderOptions = [
 export default function WidgetConfigurator() {
   const [widgetConfig] = api.widget.getWidgetConfig.useSuspenseQuery();
 
-  const form = useForm<WidgetConfigFormSchema>({
+  const form = useForm<WidgetConfigForm>({
     resolver: zodResolver(widgetConfigFormSchema),
     defaultValues: {
       primaryColor: widgetConfig?.primaryColor ?? "#3B82F6",
