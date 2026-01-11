@@ -25,12 +25,23 @@ const loginPayloadSchema = z.object({
   remember: z.boolean().optional(),
 });
 
+import { EyeClosedIcon, EyeIcon } from "lucide-react";
+import * as React from "react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+
 type LoginPayload = z.infer<typeof loginPayloadSchema>;
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [passwordIsHidden, setPasswordIsHidden] = React.useState(true);
+
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginPayloadSchema),
     mode: "onChange",
@@ -118,14 +129,24 @@ export function LoginForm({
                         Forgot your password?
                       </Link>
                     </div>
-                    <Input
-                      {...field}
-                      id="password"
-                      type="password"
-                      required
-                      autoComplete="current-password"
-                      aria-invalid={fieldState.invalid}
-                    />
+                    <InputGroup>
+                      <InputGroupInput
+                        {...field}
+                        id="password"
+                        type={passwordIsHidden ? "password" : "text"}
+                        required
+                        autoComplete="current-password"
+                        placeholder="********"
+                        aria-invalid={fieldState.invalid}
+                      />
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          onClick={() => setPasswordIsHidden(!passwordIsHidden)}
+                        >
+                          {passwordIsHidden ? <EyeClosedIcon /> : <EyeIcon />}
+                        </InputGroupButton>
+                      </InputGroupAddon>
+                    </InputGroup>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
