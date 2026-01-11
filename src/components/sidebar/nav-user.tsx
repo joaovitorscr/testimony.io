@@ -38,8 +38,13 @@ export function NavUser() {
   const { user } = session;
 
   const handleSignOut = () => {
-    authClient.signOut();
-    router.push("/sign-in" as Route);
+    authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/sign-in" as Route);
+        },
+      },
+    });
   };
 
   return (
