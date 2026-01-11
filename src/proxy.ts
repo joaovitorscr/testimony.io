@@ -3,15 +3,27 @@ import { getSession } from "./server/better-auth/server";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const publicRoutes = ["/sign-in", "/sign-up", "/api/auth", "/c/:path*"];
+  const session = await getSession();
 
-  if (
-    pathname === "/" ||
-    publicRoutes.some((route) => pathname.startsWith(route))
-  ) {
+  const publicRoutes = ["/sign-in", "/sign-up", "/reset-password"];
+
+  // Allow anyone to access public routes
+  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+    // If user is authenticated, redirect to testimonies page
+    if (session) {
+      return NextResponse.redirect(new URL("/testimonies", request.url));
+    }
+
+    // If not authenticated, allow them to proceed to the public route
     return NextResponse.next();
   }
 
+  // Allow anyone to access the auth API
+  if (pathname.startsWith("/api/auth")) {
+    return NextResponse.next();
+  }
+
+  // Allow public collection endpoint without authentication
   if (pathname.startsWith("/c")) {
     return NextResponse.next();
   }
@@ -21,15 +33,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = await getSession();
-
-  // THIS IS NOT SECURE!
-  // This is the recommended approach to optimistically redirect users
-  // We recommend handling auth checks in each page/route
+  // If none of the above, and user is not authenticated, redirect to sign-in page.
   if (!session) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
+  // If authenticated and not redirected by earlier rules, allow access
   return NextResponse.next();
 }
 
