@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import { widgetConfigFormSchema } from "@/lib/schemas/widget";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const widgetRouter = createTRPCRouter({
@@ -52,7 +51,17 @@ export const widgetRouter = createTRPCRouter({
   updateWidgetConfig: protectedProcedure
     .input(
       z.object({
-        config: widgetConfigFormSchema,
+        config: z.object({
+          primaryColor: z.string(),
+          backgroundColor: z.string(),
+          textColor: z.string(),
+          displayLayout: z.string(),
+          displayOrder: z.string(),
+          showRating: z.boolean(),
+          showAvatar: z.boolean(),
+          gridColumns: z.number().min(1).max(6),
+          gridGap: z.number().min(0).max(48),
+        }),
       })
     )
     .mutation(async ({ input, ctx }) => {
