@@ -143,7 +143,7 @@ export function WidgetVisualizer() {
   }
 
   return (
-    <section className="flex h-[calc(100vh-5rem)] flex-col">
+    <section className="flex h-[calc(100vh-12rem)] flex-col">
       <Card className="flex h-full flex-col overflow-hidden">
         <CardHeader className="shrink-0">
           <CardTitle>Widget Visualizer</CardTitle>
