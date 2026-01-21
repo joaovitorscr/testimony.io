@@ -8,7 +8,7 @@ export const widgetRouter = createTRPCRouter({
       z.object({
         widgetId: z.uuid(),
         domains: z.array(z.url("Invalid URL format")),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (!ctx.session.user.activeProjectId) {
@@ -62,7 +62,7 @@ export const widgetRouter = createTRPCRouter({
           gridColumns: z.number().min(1).max(6),
           gridGap: z.number().min(0).max(48),
         }),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (!ctx.session.user.activeProjectId) {
@@ -92,7 +92,7 @@ export const widgetRouter = createTRPCRouter({
       z.object({
         widgetId: z.uuid(),
         domain: z.url().optional(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { widgetId, domain: embedDomain } = input;
@@ -132,7 +132,7 @@ export const widgetRouter = createTRPCRouter({
         isDomainAllowed = widget.allowedDomains.some((allowed) => {
           const normalizedAllowed = new URL(allowed).hostname.replace(
             /^www\./,
-            ""
+            "",
           );
 
           return normalizedAllowed === normalizedEmbedDomain;
@@ -149,7 +149,7 @@ export const widgetRouter = createTRPCRouter({
       // Domain is not allowed, throw an error
       if (!isDomainAllowed) {
         console.warn(
-          `Widget ${widgetId} blocked for unauthorized domain: ${embedDomain}`
+          `Widget ${widgetId} blocked for unauthorized domain: ${embedDomain}`,
         );
 
         throw new TRPCError({
@@ -183,9 +183,28 @@ export const widgetRouter = createTRPCRouter({
         React.createElement(TestimonialWidget, {
           testimonies: testimonials,
           widgetConfig: widgetConfig,
-        })
+        }),
       );
 
       return { html: widgetHtml };
     }),
+  getWidgetDomains: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user.activeProjectId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No active project selected",
+      });
+    }
+
+    const widgetDomains = await ctx.db.widgetConfig.findFirst({
+      where: {
+        projectId: ctx.session.user.activeProjectId,
+      },
+      select: {
+        allowedDomains: true,
+      },
+    });
+
+    return widgetDomains;
+  }),
 });

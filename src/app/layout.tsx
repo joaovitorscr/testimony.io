@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Lora, Plus_Jakarta_Sans } from "next/font/google";
 import "../styles/globals.css";
 
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/react";
 
@@ -38,7 +39,7 @@ export default function RootLayout({
         className={`${plusJakartaSans.variable} ${loraSerif.variable} ${ibmPlexMono.variable} dark antialiased`}
       >
         <TRPCReactProvider>
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
           <Toaster />
         </TRPCReactProvider>
       </body>

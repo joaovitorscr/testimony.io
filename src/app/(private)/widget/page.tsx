@@ -1,12 +1,11 @@
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { api, HydrateClient } from "@/trpc/server";
-import WidgetConfigurator from "./_components/widget-configurator";
-import { WidgetVisualizer } from "./_components/widget-visualizer";
+import { WidgetTabs } from "./_components/widget-tabs";
 
 export default async function WidgetPage() {
   void api.testimonie.all.prefetch();
+
   void api.widget.getWidgetConfig.prefetch();
+  void api.widget.getWidgetDomains.prefetch();
 
   return (
     <HydrateClient>
@@ -21,14 +20,7 @@ export default async function WidgetPage() {
           </p>
         </header>
 
-        <div className="grid flex-1 grid-cols-2 gap-6 px-8 py-6">
-          <Suspense fallback={<Skeleton className="h-40 w-full" />}>
-            <WidgetConfigurator />
-          </Suspense>
-          <Suspense fallback={<Skeleton className="h-40 w-full" />}>
-            <WidgetVisualizer />
-          </Suspense>
-        </div>
+        <WidgetTabs />
       </main>
     </HydrateClient>
   );
