@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { OnboardingDialog } from "@/components/onboarding-dialog";
+import { PageHeader } from "@/components/page-header";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { auth } from "@/server/better-auth";
@@ -47,7 +48,10 @@ export default async function PrivateLayout({
   return (
     <SidebarProvider className="h-screen">
       <AppSidebar projects={projects} activeProjectId={activeProjectId} />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset>
+        <PageHeader />
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }
