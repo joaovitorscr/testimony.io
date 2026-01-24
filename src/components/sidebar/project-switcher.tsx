@@ -73,6 +73,7 @@ export function ProjectSwitcher({
             {projects.map((project) => (
               <DropdownMenuItem
                 key={project.id}
+                disabled={project.id === activeProjectId}
                 onClick={() => handleSetActiveProject(project.id)}
                 className="gap-2 p-2"
               >
