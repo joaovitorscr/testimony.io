@@ -14,7 +14,7 @@ import {
   StarIcon,
   UserIcon,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
@@ -38,6 +38,7 @@ import {
   FieldSet,
   FieldTitle,
 } from "@/components/ui/field";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -123,13 +124,13 @@ export default function WidgetConfigurator() {
         loading: "Updating widget config...",
         success: "Widget config updated successfully",
         error: "Failed to update widget config",
-      }
+      },
     );
   };
 
   const triggerDebouncedUpdateWidgetConfig = useDebouncedCallback(
     onSubmit,
-    600
+    600,
   );
 
   // Watch all form values and trigger debounced update on change
@@ -147,10 +148,10 @@ export default function WidgetConfigurator() {
           <CardTitle>Widget Configuration</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full pr-4">
+          <ScrollArea className="h-full lg:pr-4">
             <form id="form-widget-configurator" className="pr-4">
               <FieldGroup>
-                <div className="grid grid-cols-[1fr_auto_1fr] gap-4">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_auto_1fr]">
                   <FieldSet>
                     <FieldLegend className="flex flex-row gap-2">
                       <PaletteIcon />
@@ -476,15 +477,24 @@ export default function WidgetConfigurator() {
                           <FieldDescription>
                             Number of columns to display (1-6).
                           </FieldDescription>
-                          <Slider
-                            id="form-widget-configuration-grid-columns"
-                            min={1}
-                            max={6}
-                            step={1}
-                            value={[field.value]}
-                            onValueChange={(value) => field.onChange(value[0])}
-                            showTooltip
-                          />
+                          <div className="relative pt-6">
+                            <Slider
+                              id="form-widget-configuration-grid-columns"
+                              min={1}
+                              max={6}
+                              step={1}
+                              value={[field.value]}
+                              onValueChange={(value) =>
+                                field.onChange(value[0])
+                              }
+                            />
+                            <div
+                              className="-translate-x-1/2 -top-2 absolute rounded bg-primary px-2 py-1 text-primary-foreground text-xs"
+                              style={{ left: `${(field.value / 6) * 100}%` }}
+                            >
+                              {field.value} columns
+                            </div>
+                          </div>
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
                           )}
@@ -502,16 +512,24 @@ export default function WidgetConfigurator() {
                           <FieldDescription>
                             Space between testimonial cards (0-48px).
                           </FieldDescription>
-                          <Slider
-                            id="form-widget-configuration-grid-gap"
-                            min={0}
-                            max={48}
-                            step={1}
-                            value={[field.value]}
-                            onValueChange={(value) => field.onChange(value[0])}
-                            showTooltip
-                            formatValue={(v) => `${v}px`}
-                          />
+                          <div className="relative pt-6">
+                            <Slider
+                              id="form-widget-configuration-grid-gap"
+                              min={0}
+                              max={48}
+                              step={1}
+                              value={[field.value]}
+                              onValueChange={(value) =>
+                                field.onChange(value[0])
+                              }
+                            />
+                            <div
+                              className="-translate-x-1/2 -top-2 absolute rounded bg-primary px-2 py-1 text-primary-foreground text-xs"
+                              style={{ left: `${(field.value / 48) * 100}%` }}
+                            >
+                              {field.value}px
+                            </div>
+                          </div>
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
                           )}

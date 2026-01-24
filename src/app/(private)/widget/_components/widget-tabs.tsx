@@ -29,7 +29,7 @@ export function WidgetTabs() {
         <TabsTrigger value="domains">Domains</TabsTrigger>
       </TabsList>
       <TabsContent value="configuration">
-        <div className="grid flex-1 grid-cols-2 gap-6 py-6">
+        <div className="grid flex-1 grid-cols-1 gap-6 py-6 lg:grid-cols-2">
           <Suspense fallback={<Skeleton className="h-40 w-full" />}>
             <WidgetConfigurator />
           </Suspense>
