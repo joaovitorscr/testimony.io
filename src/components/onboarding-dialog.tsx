@@ -145,8 +145,8 @@ export function OnboardingDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleCloseDialog}>
-      <DialogContent className="overflow-hidden border-0 p-0 sm:max-w-5xl">
-        <div className="grid h-[600px] w-full grid-cols-[1fr_1.2fr]">
+      <DialogContent className="overflow-hidden border-0 p-0 sm:max-w-2xl lg:max-w-5xl">
+        <div className="grid w-full grid-cols-1 md:grid-cols-[1fr_1.2fr] lg:h-[600px]">
           <OnboardingCover />
 
           <div className="relative flex flex-col justify-center p-12">
@@ -302,7 +302,7 @@ export function OnboardingDialog({
 
 export function OnboardingCover() {
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-l-lg bg-zinc-900">
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-l-lg bg-zinc-900 py-4 lg:py-0">
       <motion.div
         animate={{
           scale: [1, 1.2, 1],
