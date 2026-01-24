@@ -4,6 +4,7 @@ import "../styles/globals.css";
 
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { env } from "@/env";
 import { TRPCReactProvider } from "@/trpc/react";
 
@@ -100,7 +101,9 @@ export default function RootLayout({
         className={`${plusJakartaSans.variable} ${loraSerif.variable} ${ibmPlexMono.variable} dark antialiased`}
       >
         <TRPCReactProvider>
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <NuqsAdapter>
+            <TooltipProvider>{children}</TooltipProvider>
+          </NuqsAdapter>
           <Toaster />
         </TRPCReactProvider>
       </body>

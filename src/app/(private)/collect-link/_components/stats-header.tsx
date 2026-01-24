@@ -12,7 +12,7 @@ export function StatsHeader() {
   const [stats] = api.token.getStats.useSuspenseQuery();
 
   return (
-    <header className="px-8 pt-8">
+    <header className="px-8 py-4">
       <div className="mb-6">
         <h2 className="font-bold text-3xl tracking-tight">Collection Links</h2>
         <p className="mt-1 text-muted-foreground">

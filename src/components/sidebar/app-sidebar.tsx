@@ -3,11 +3,12 @@
 import {
   LayoutIcon,
   LinkIcon,
+  type LucideIcon,
   MessageCircleIcon,
   SettingsIcon,
 } from "lucide-react";
 import type { Route } from "next";
-import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import * as React from "react";
 import { NavUser } from "@/components/sidebar/nav-user";
 import { ProjectSwitcher } from "@/components/sidebar/project-switcher";
@@ -16,21 +17,23 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { api } from "@/trpc/react";
 import type { Project } from "../../../generated/prisma/client";
 import { ProjectSettings } from "../project-settings";
+import { NavMain } from "./nav-main";
 
 const navMainItems: {
   title: string;
   url: Route;
-  icon: React.ComponentType;
+  icon: LucideIcon;
 }[] = [
   {
     title: "Testimonies",
@@ -60,54 +63,46 @@ export function AppSidebar({
   const [projectSettingsOpen, setProjectSettingsOpen] = React.useState(false);
   const utils = api.useUtils();
 
-  const isMobile = useIsMobile();
-  const pathname = usePathname();
-  const router = useRouter();
-
   React.useEffect(() => {
     void utils.project.currentProject.prefetch();
   }, [utils.project.currentProject]);
 
   return (
     <>
-      <Sidebar collapsible={isMobile ? "icon" : "none"} {...props}>
-        <SidebarHeader>
-          <div className="flex items-center gap-3 px-2 py-4">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-foreground font-bold text-background text-xl tracking-tight">
-              T
-            </div>
-            <h1 className="font-semibold text-lg text-sidebar-foreground tracking-tight">
-              Testimony.io
-            </h1>
-          </div>
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader className="gap-8 pt-4">
+          <SidebarMenu>
+            <SidebarMenuItem className="grid place-items-center">
+              <Image
+                className="col-start-1 row-start-1 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0"
+                src="/branding_white.svg"
+                alt="Testimony.io"
+                width={180}
+                height={120}
+                priority
+              />
+              <Image
+                className="col-start-1 row-start-1 opacity-0 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-100"
+                src="/logo_white.svg"
+                alt="Testimony.io"
+                width={32}
+                height={32}
+                priority
+              />
+            </SidebarMenuItem>
+          </SidebarMenu>
+
           <ProjectSwitcher
             projects={projects}
             activeProjectId={activeProjectId}
           />
         </SidebarHeader>
+        <SidebarSeparator />
         <SidebarContent>
+          <NavMain items={navMainItems} />
           <SidebarGroup>
+            <SidebarGroupLabel>Project Management</SidebarGroupLabel>
             <SidebarMenu>
-              {navMainItems.map((item) => {
-                const isActive = pathname.startsWith(item.url);
-
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      className="text-base [&>svg]:size-4"
-                      isActive={isActive}
-                      onClick={() => router.push(item.url)}
-                    >
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-
-                    {isActive && (
-                      <div className="-translate-y-1/2 absolute top-1/2 right-0 h-full w-2 rounded-r-md bg-primary" />
-                    )}
-                  </SidebarMenuItem>
-                );
-              })}
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => setProjectSettingsOpen(true)}>
                   <SettingsIcon />
@@ -117,6 +112,7 @@ export function AppSidebar({
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarSeparator />
         <SidebarFooter>
           <NavUser />
         </SidebarFooter>

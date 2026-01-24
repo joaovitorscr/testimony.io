@@ -10,7 +10,7 @@ export default async function WidgetPage() {
   return (
     <HydrateClient>
       <main className="flex min-h-svh flex-1 flex-col overflow-y-auto">
-        <header className="px-8 py-8">
+        <header className="px-8 py-4">
           <h1 className="font-bold text-3xl tracking-tight">
             Widget Configuration
           </h1>
