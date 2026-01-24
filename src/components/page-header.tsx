@@ -14,8 +14,8 @@ export function PageHeader() {
   }
 
   return (
-    <header className="flex h-10 w-full items-center justify-between bg-sidebar px-16 shadow-sm">
-      <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+    <header className="flex h-10 w-full items-center justify-between bg-sidebar px-5 shadow-sm">
+      <Button variant="ghost" size="sm" onClick={toggleSidebar}>
         <MenuIcon />
         <p>Open Menu</p>
       </Button>
