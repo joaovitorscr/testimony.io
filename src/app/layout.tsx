@@ -62,7 +62,7 @@ export const metadata: Metadata = {
       "Collect powerful testimonials from your customers and display them beautifully on your website. Boost trust, increase conversions, and grow your business with social proof.",
     images: [
       {
-        url: "/app-preview.png",
+        url: "/app_preview.png",
         width: 1200,
         height: 630,
         alt: "Testimony.io - Customer Testimonial Platform",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     title: "Testimony.io - Collect & Display Customer Testimonials",
     description:
       "Collect powerful testimonials from your customers and display them beautifully on your website. Boost trust and grow your business with social proof.",
-    images: ["/app-preview.png"],
+    images: ["/app_preview.png"],
     creator: "@testimonyio",
   },
   robots: {

@@ -1,10 +1,9 @@
-<h1 align="center">
-  <br />
-  <img src="./public/app-preview.png" alt="Testimony.io" width="800" />
-  <br />
-  Testimony.io
-  <br />
-</h1>
+<a href="https://testimony.io.joaovitorscr.com" target="_blank" rel="noopener">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" alt="Testimony.io" srcset="https://testimony.io.joaovitorscr.com/public/branding_white.svg" />
+    <img alt="Testimony.io" src="https://testimony.io.joaovitorscr.com/public/branding_black.svg" />
+  </picture>
+</a>
 
 <h4 align="center">
   Collect, manage, and showcase customer testimonials with ease.
