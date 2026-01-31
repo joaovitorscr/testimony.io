@@ -227,15 +227,3 @@ Once you've configured your widget, you can embed it on any website:
   scrolling="no"
 />
 ```
-
-<br />
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-<p align="center">
-  Made with ❤️ using Next.js and TypeScript
-</p>
