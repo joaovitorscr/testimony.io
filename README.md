@@ -1,7 +1,7 @@
 <a href="https://testimony.io.joaovitorscr.com" target="_blank" rel="noopener">
   <picture>
-    <source media="(prefers-color-scheme: dark)" alt="Testimony.io" srcset="https://testimony.io.joaovitorscr.com/public/branding_white.png" />
-    <img alt="Testimony.io" src="https://testimony.io.joaovitorscr.com/public/branding_black.png" />
+    <source media="(prefers-color-scheme: dark)" alt="Testimony.io" srcset="https://testimony.io.joaovitorscr.com/branding_white.png" />
+    <img alt="Testimony.io" src="https://testimony.io.joaovitorscr.com/branding_black.png" />
   </picture>
 </a>
 
