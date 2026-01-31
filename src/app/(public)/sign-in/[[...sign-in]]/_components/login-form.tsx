@@ -129,15 +129,7 @@ export function LoginForm({
                 name="password"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <div className="flex items-center">
-                      <FieldLabel htmlFor="password">Password</FieldLabel>
-                      <Link
-                        href={"/forgot-password" as Route}
-                        className="ml-auto text-sm underline-offset-2 hover:underline"
-                      >
-                        Forgot your password?
-                      </Link>
-                    </div>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
