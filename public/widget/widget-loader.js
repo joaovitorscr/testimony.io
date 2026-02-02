@@ -8,14 +8,12 @@
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   };
 
-  // The placeholder div *inside* the iframe's document
   const widgetDiv = document.getElementById("testimonial-widget");
   if (!widgetDiv) {
     console.error("Testimonial widget placeholder not found inside iframe.");
     return;
   }
 
-  // Get widgetId from URL query parameter
   const widgetId = getQueryParam("widgetId");
 
   if (!widgetId) {
@@ -24,10 +22,17 @@
     return;
   }
 
-  const embedDomain = window.location.origin; // This will be the origin of the iframe (e.g., http://localhost:3000)
+  const getEmbedDomain = () => {
+    if (typeof document.referrer === "string" && document.referrer !== "") {
+      try {
+        return new URL(document.referrer).origin;
+      } catch (_) {}
+    }
+    return window.location.origin;
+  };
+  const embedDomain = getEmbedDomain();
 
   const input = { json: { widgetId, domain: embedDomain } };
-  // Use current origin so it works with localhost in dev and your deployed URL in production
   const apiUrl = `${window.location.origin}/api/trpc/widget.getWidgetContent?input=${encodeURIComponent(
     JSON.stringify(input),
   )}`;
