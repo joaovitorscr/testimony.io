@@ -132,7 +132,7 @@ function LinksDataTable({ data }: { data: Token[] }) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}

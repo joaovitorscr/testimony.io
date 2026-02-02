@@ -28,7 +28,7 @@
 
   const input = { json: { widgetId, domain: embedDomain } };
   const apiUrl = `http://localhost:3000/api/trpc/widget.getWidgetContent?input=${encodeURIComponent(
-    JSON.stringify(input)
+    JSON.stringify(input),
   )}`;
 
   fetch(apiUrl)
@@ -55,7 +55,7 @@
             "<p>Widget is not authorized for this domain.</p>";
         } else {
           console.error(
-            `tRPC Error in iframe: ${trpcError.data?.code} - ${trpcError.message}`
+            `tRPC Error in iframe: ${trpcError.data?.code} - ${trpcError.message}`,
           );
           widgetDiv.innerHTML = "<p>Failed to load widget due to an error.</p>";
         }

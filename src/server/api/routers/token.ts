@@ -56,7 +56,7 @@ export const tokenRouter = createTRPCRouter({
     .input(
       z.object({
         description: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const projectId = ctx.session.user.activeProjectId;
@@ -92,7 +92,7 @@ export const tokenRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().min(1, "Token ID is required"),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const projectId = ctx.session.user.activeProjectId;

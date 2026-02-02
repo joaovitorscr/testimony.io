@@ -6,7 +6,7 @@ import { api } from "@/trpc/server";
 import { auth } from ".";
 
 export const getSession = cache(async () =>
-  auth.api.getSession({ headers: await headers() })
+  auth.api.getSession({ headers: await headers() }),
 );
 
 export const getActiveProjectId = cache(async () => {

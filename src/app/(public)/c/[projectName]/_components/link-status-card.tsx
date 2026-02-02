@@ -122,13 +122,13 @@ export function LinkStatusCard({ status, className }: LinkStatusCardProps) {
     <div
       className={cn(
         "flex min-h-screen items-center justify-center bg-linear-to-br from-muted/30 via-background to-muted/50 p-4",
-        className
+        className,
       )}
     >
       <Card
         className={cn(
           "fade-in-0 slide-in-from-bottom-4 w-full max-w-md animate-in border-l-4 duration-500",
-          config.accentBorder
+          config.accentBorder,
         )}
       >
         <CardHeader className="pb-4">
@@ -136,7 +136,7 @@ export function LinkStatusCard({ status, className }: LinkStatusCardProps) {
             <div
               className={cn(
                 "flex h-14 w-14 items-center justify-center rounded-xl",
-                config.iconBg
+                config.iconBg,
               )}
             >
               <Icon className={cn("h-7 w-7", config.iconColor)} />

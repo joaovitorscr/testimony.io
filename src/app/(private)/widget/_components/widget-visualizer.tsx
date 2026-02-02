@@ -135,7 +135,7 @@ export function WidgetVisualizer() {
 
   const isGridLayout = React.useMemo(
     () => widgetConfig?.displayLayout === "grid",
-    [widgetConfig?.displayLayout]
+    [widgetConfig?.displayLayout],
   );
 
   if (!widgetConfig) {

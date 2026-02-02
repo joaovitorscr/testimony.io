@@ -52,7 +52,7 @@ export function TestimonialForm({ token }: { token: string }) {
         loading: "Submitting testimonial...",
         success: "Testimonial submitted successfully!",
         error: "Failed to submit testimonial",
-      }
+      },
     );
   };
 

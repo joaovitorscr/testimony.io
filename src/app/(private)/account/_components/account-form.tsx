@@ -96,7 +96,7 @@ function ProfileCard({ user }: { user: Session["user"] }) {
       }
 
       setIsUpdating(false);
-      form.reset({ name: values.name  });
+      form.reset({ name: values.name });
       router.refresh();
     } catch (error) {
       form.setError("root", {

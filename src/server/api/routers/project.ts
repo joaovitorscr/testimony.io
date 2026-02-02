@@ -26,7 +26,7 @@ export const projectRouter = createTRPCRouter({
       z.object({
         name: z.string().min(3).max(50),
         slug: z.string().min(3).max(50),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { name, slug } = input;
@@ -151,7 +151,7 @@ export const projectRouter = createTRPCRouter({
       z.object({
         name: z.string().min(3).max(50),
         slug: z.string().min(3).max(50),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.activeProjectId) {

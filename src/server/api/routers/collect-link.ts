@@ -32,7 +32,7 @@ export const collectLinkRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().min(1, "Collect Link ID is required"),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id } = input;

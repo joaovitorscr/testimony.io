@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  BookOpenTextIcon,
+  HelpCircleIcon,
   LayoutIcon,
   LinkIcon,
   type LucideIcon,
@@ -49,6 +51,11 @@ const navMainItems: {
     title: "Collect Link",
     url: "/collect-link",
     icon: LinkIcon,
+  },
+  {
+    title: "Documentation",
+    url: "/documentation",
+    icon: BookOpenTextIcon,
   },
 ];
 
