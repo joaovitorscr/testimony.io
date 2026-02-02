@@ -27,7 +27,7 @@
   const embedDomain = window.location.origin; // This will be the origin of the iframe (e.g., http://localhost:3000)
 
   const input = { json: { widgetId, domain: embedDomain } };
-  const apiUrl = `http://localhost:3000/api/trpc/widget.getWidgetContent?input=${encodeURIComponent(
+  const apiUrl = `http://${window.location.hostname}:${window.location.port}/api/trpc/widget.getWidgetContent?input=${encodeURIComponent(
     JSON.stringify(input),
   )}`;
 
