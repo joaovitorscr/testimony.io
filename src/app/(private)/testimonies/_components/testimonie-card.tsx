@@ -87,6 +87,7 @@ export function TestimonieCard({
                 {testimony.customerName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
+
             <div className="space-y-0.5">
               <p className="font-semibold text-foreground text-sm">
                 {testimony.customerName}
