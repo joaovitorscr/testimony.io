@@ -2,7 +2,7 @@
 
 Testimony.io collects customer testimonials through one shareable link per
 project, lets the team approve them, and shows the approved ones in an
-embeddable widget.
+embeddable widget or through a public JSON API.
 
 ## Stack
 
@@ -19,7 +19,7 @@ embeddable widget.
   token before each page request.
 - **Convex Rate Limiter** (`@convex-dev/rate-limiter`, registered in
   `convex/convex.config.ts`) throttles the public collection form.
-- **Vercel** hosts Next.js and its CDN caches the embed;
+- **Vercel** hosts Next.js and its CDN caches the embed and the public API;
   **Convex Cloud** hosts the backend. See [deployment.md](./deployment.md).
 
 ## Data model
@@ -56,11 +56,12 @@ Public functions are limited to what anonymous visitors need:
 - `collect.getForm`, `collect.generateAvatarUploadUrl`, and `collect.submit`,
   keyed by the project slug and refused while the project is paused.
 - `widgets.getPublic`, which returns only approved testimonials and display
-  settings. They are public by design, so any site may embed a widget, with no
-  key or domain list. The widget id identifies a widget; it is not a secret.
+  settings. They are public by design, so any site may embed a widget or call
+  the public API, with no key or domain list. The widget id identifies a
+  widget; it is not a secret.
 
-The embed sits outside `src/proxy.ts`, so its responses never carry cookies
-and the CDN can cache them.
+The embed and `/api/v1/` sit outside `src/proxy.ts`, so their responses never
+carry cookies and the CDN can cache them.
 
 ## Dashboard
 
@@ -70,7 +71,7 @@ Three pages, in the order a new project uses them:
 | ------------ | --------------- | ------------------------------------------------------------------------- |
 | Testimonials | `/testimonials` | Review queue: Pending, Approved, Archived tabs. First run shows the link. |
 | Collect      | `/collect`      | The collection link, the "accept new testimonials" switch, the question.  |
-| Display      | `/display`      | Widget settings, live preview, and the embed snippet.                     |
+| Display      | `/display`      | Widget settings, live preview, the embed snippet, and the API example.    |
 
 `/` redirects to `/testimonials`. Project rename lives in the sidebar's
 Settings dialog. Widget settings are `layout` (grid or list), `order` (newest
@@ -127,6 +128,54 @@ snippet: an iframe of `/embed/<widgetId>` and `public/embed.js`.
   auto from `prefers-color-scheme`) and accent as CSS variables. The grid wraps
   cards to the available width.
 
+### Public API (v1)
+
+For developers who render testimonials with their own markup. Fetched on
+their server, the quotes are part of their page's HTML, which an iframe can't
+offer. The Display page shows the URL and a fetch example under the embed
+snippet.
+
+`GET /api/v1/widgets/<widgetId>` (`src/app/api/v1/widgets/[widgetId]/route.ts`)
+reads `widgets.getPublic` uncached and maps it in `src/lib/public-api.ts`:
+
+```json
+{
+  "testimonials": [
+    {
+      "id": "…",
+      "text": "…",
+      "name": "Ada Lovelace",
+      "title": "Founder",
+      "company": null,
+      "rating": 5,
+      "avatarUrl": null,
+      "createdAt": "2026-01-02T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+- Approved testimonials only, at most 100, in the widget's order (newest or
+  oldest first). No pagination or filters. An empty array means the widget has
+  nothing approved yet.
+- Optional fields are always present and `null` when blank. `avatarUrl` is an
+  opaque Convex storage URL: it can change, and stops working once the
+  testimonial is deleted, so don't copy it into another store.
+- An unknown or malformed id is `404 {"error":{"code":"widget_not_found"}}`. A
+  backend failure is `500 {"error":{"code":"internal_error"}}`, never cached.
+- `Access-Control-Allow-Origin: *` on every response. It is a plain `GET`, so
+  browsers send no preflight.
+- Caching is only the CDN, from the response's `Cache-Control`: 200s are fresh
+  for 60 seconds and then served stale for up to 60 more while one request
+  refreshes them, so a change shows within about two minutes. 404s are cached
+  for 60 seconds; a widget exists from the moment its project does.
+- The contract is `v1`: fields may be added, but never renamed, removed, or
+  given a new meaning. The mapping is the only place that knows both shapes,
+  and `src/lib/public-api.test.ts` pins it.
+- Out of scope until someone needs it: keys, pagination, an SDK or React
+  package, writes. A secret key becomes worth it only for non-public data,
+  such as reading pending testimonials or submitting from your own form.
+
 ## Decisions
 
 Choices made on purpose, with the reason, so they aren't undone by accident.
@@ -146,10 +195,11 @@ Revisit one only with a concrete user need.
   localhost, previews, and `no-referrer` sites, and made a new widget show
   nothing until configured. The widget id identifies a widget and is not a
   secret. Load is the CDN's job.
-- **An iframe, not a web component.** The iframe needs no code and isolates
-  styles; `embed.js` fixes its sizing. A web component would be a second
-  renderer and runtime to maintain.
-- **Cached, not live, on customer sites.** The embed refreshes about
+- **An iframe first, the API second.** The iframe needs no code and isolates
+  styles; `embed.js` fixes its sizing. The API serves developers who want the
+  quotes in their own HTML, for SEO and their own design. A web component or
+  an npm package would be a second renderer to maintain.
+- **Cached, not live, on customer sites.** The embed and the API refresh about
   every minute instead of holding a live subscription on every visitor's
   page. The dashboard stays live.
 - **No email, notifications, imports, analytics, or multiple widgets yet.**
@@ -167,6 +217,7 @@ src/
     (private)/          Dashboard, behind sign-in
     (public)/           Sign-in and the collection page
   app/(embed)/          Root layout and page of the embeddable widget
+  app/api/v1/           Public read API (lib/public-api.ts holds its contract)
   app/auth/             Convex Auth sign-in, refresh, and sign-out handlers
   components/           App components; components/ui is vendored shadcn
   hooks/, lib/          Client hooks and setup

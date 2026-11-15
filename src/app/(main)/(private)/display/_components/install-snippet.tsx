@@ -12,6 +12,17 @@ function embedSnippet(appUrl: string, widgetId: string) {
 <script src="${appUrl}/embed.js" async></script>`;
 }
 
+/** A server-side fetch of the public API, for rendering with the site's own markup. */
+function apiSnippet(appUrl: string, widgetId: string) {
+  return `// On your server, e.g. in a Next.js Server Component
+const res = await fetch("${appUrl}/api/v1/widgets/${widgetId}", {
+  next: { revalidate: 60 },
+});
+if (!res.ok) throw new Error(\`Testimonials: \${res.status}\`);
+const { testimonials } = await res.json();
+// [{ id, text, name, title, company, rating, avatarUrl, createdAt }]`;
+}
+
 /** A code block with a copy button. */
 function CodeBlock({ code, label }: { code: string; label: string }) {
   const { copied, copy } = useCopy();
@@ -60,6 +71,16 @@ export function InstallSnippet({ widgetId }: { widgetId: string }) {
           its style and scrolls.
         </li>
       </ul>
+
+      <div className="mt-8 flex flex-col gap-1">
+        <h3 className="font-medium text-fg-2">Or render them yourself</h3>
+        <p className="text-sm text-muted-foreground">
+          Fetch your approved testimonials as JSON and use your own components. Fetching on your
+          server puts the quotes in your page&apos;s HTML, where search engines see them. Up to 100,
+          in the order set above. Changes show within a few minutes.
+        </p>
+      </div>
+      <CodeBlock code={apiSnippet(appUrl, widgetId)} label="API example" />
     </section>
   );
 }

@@ -29,10 +29,10 @@ export default convexAuthNextjsProxy(async (request, { isAuthenticated }) => {
 });
 
 export const config = {
-  // Skip the /auth handlers (they set their own cookies), the public embed (it
-  // must stay cookie-free so the CDN caches it), Next internals, and static
-  // files.
+  // Skip the /auth handlers (they set their own cookies), the public embed and
+  // API (they must stay cookie-free so the CDN caches them), Next internals,
+  // and static files.
   matcher: [
-    "/((?!auth(?:/|$)|embed/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|js)$).*)",
+    "/((?!auth(?:/|$)|embed/|api/v1/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|js)$).*)",
   ],
 };

@@ -33,6 +33,7 @@ export async function listPublic(
       const { avatarUrl } = await withAvatarUrl(ctx, testimonial);
       return {
         _id: testimonial._id,
+        _creationTime: testimonial._creationTime,
         customerName: testimonial.customerName,
         customerCompany: testimonial.customerCompany,
         customerTitle: testimonial.customerTitle,
