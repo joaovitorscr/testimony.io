@@ -3,15 +3,21 @@
 import { api } from "@convex/_generated/api";
 import { useQuery } from "convex/react";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
-import { useProject } from "@/components/project-provider";
+
+import { useProject } from "@/components/project-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import WidgetConfigurator from "./widget-configurator";
+
+import { WidgetConfigurator } from "./widget-configurator";
 import { WidgetDomains } from "./widget-domains";
 import { WidgetVisualizer } from "./widget-visualizer";
 
 const availableTabs = ["configuration", "domains"] as const;
 type AvailableTabs = (typeof availableTabs)[number];
+
+function isTab(value: string): value is AvailableTabs {
+  return (availableTabs as readonly string[]).includes(value);
+}
 
 export function WidgetTabs() {
   const [currentTab, setCurrentTab] = useQueryState<AvailableTabs>(
@@ -39,7 +45,11 @@ export function WidgetTabs() {
       className="px-8 py-3"
       defaultValue="configuration"
       value={currentTab}
-      onValueChange={(value) => setCurrentTab(value as AvailableTabs)}
+      onValueChange={(value) => {
+        if (isTab(value)) {
+          void setCurrentTab(value);
+        }
+      }}
     >
       <TabsList>
         <TabsTrigger value="configuration">Configuration</TabsTrigger>

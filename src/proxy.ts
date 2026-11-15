@@ -1,4 +1,6 @@
-import { convexAuthNextjsProxy, nextjsProxyRedirect } from "@/lib/convexAuth";
+import { NextResponse } from "next/server";
+
+import { convexAuthNextjsProxy, nextjsProxyRedirect } from "@/lib/convex-auth";
 
 // Pages anyone can open. Everything else requires a signed-in user.
 const PUBLIC_PREFIXES = ["/sign-in", "/sign-up", "/c/", "/embed/"];
@@ -9,11 +11,10 @@ function isPublic(pathname: string) {
 
 export default convexAuthNextjsProxy(async (request, { isAuthenticated }) => {
   const { pathname } = request.nextUrl;
-  const isAuthPage =
-    pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up");
+  const isAuthPage = pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up");
 
   if (isPublic(pathname) && !isAuthPage) {
-    return;
+    return NextResponse.next();
   }
 
   const authed = await isAuthenticated();
@@ -24,6 +25,7 @@ export default convexAuthNextjsProxy(async (request, { isAuthenticated }) => {
   if (isAuthPage && authed) {
     return nextjsProxyRedirect(request, "/testimonies");
   }
+  return NextResponse.next();
 });
 
 export const config = {

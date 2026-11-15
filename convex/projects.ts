@@ -1,18 +1,10 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
+
 import type { Id } from "./_generated/dataModel";
-import {
-  type MutationCtx,
-  mutation,
-  type QueryCtx,
-  query,
-} from "./_generated/server";
-import {
-  normalizeSlug,
-  requireMember,
-  requireUserId,
-  SLUG_PATTERN,
-} from "./lib/access";
+import { type MutationCtx, mutation, type QueryCtx, query } from "./_generated/server";
+import { requireMember, requireUserId } from "./lib/access";
+import { normalizeSlug, SLUG_PATTERN } from "./lib/slug";
 
 export const DEFAULT_WIDGET_SETTINGS = {
   primaryColor: "#3B82F6",
@@ -32,21 +24,21 @@ async function listForUser(ctx: QueryCtx, userId: Id<"users">) {
     .withIndex("by_user", (q) => q.eq("userId", userId))
     .collect();
   const projects = await Promise.all(
-    memberships.map(async (m) => {
-      const project = await ctx.db.get("projects", m.projectId);
+    memberships.map(async (membership) => {
+      const project = await ctx.db.get("projects", membership.projectId);
       return (
         project && {
           _id: project._id,
           name: project.name,
           slug: project.slug,
-          role: m.role,
+          role: membership.role,
         }
       );
     }),
   );
   return projects
-    .filter((p) => p !== null)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .filter((project) => project !== null)
+    .toSorted((left, right) => left.name.localeCompare(right.name));
 }
 
 function validateNameAndSlug(name: string, slug: string) {
@@ -55,18 +47,12 @@ function validateNameAndSlug(name: string, slug: string) {
     throw new ConvexError("Project name must be between 3 and 50 characters");
   }
   if (slug.length < 3 || slug.length > 50 || !SLUG_PATTERN.test(slug)) {
-    throw new ConvexError(
-      "Slug must be 3-50 lowercase letters, numbers, or dashes",
-    );
+    throw new ConvexError("Slug must be 3-50 lowercase letters, numbers, or dashes");
   }
   return trimmedName;
 }
 
-async function slugTaken(
-  ctx: QueryCtx | MutationCtx,
-  slug: string,
-  exceptId?: Id<"projects">,
-) {
+async function slugTaken(ctx: QueryCtx | MutationCtx, slug: string, exceptId?: Id<"projects">) {
   const existing = await ctx.db
     .query("projects")
     .withIndex("by_slug", (q) => q.eq("slug", slug))
@@ -82,7 +68,7 @@ export const list = query({
     if (userId === null) {
       return [];
     }
-    return await listForUser(ctx, userId);
+    return listForUser(ctx, userId);
   },
 });
 
@@ -103,9 +89,7 @@ export const current = query({
       listForUser(ctx, userId),
     ]);
     return (
-      projects.find((p) => p._id === user?.activeProjectId) ??
-      projects[0] ??
-      null
+      projects.find((project) => project._id === user?.activeProjectId) ?? projects.at(0) ?? null
     );
   },
 });

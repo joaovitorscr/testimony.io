@@ -18,13 +18,8 @@ export function NavMain({
 }: {
   items: {
     title: string;
-    url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
+    url: Route;
+    icon: LucideIcon;
   }[];
 }) {
   const pathname = usePathname();
@@ -38,13 +33,9 @@ export function NavMain({
 
           return (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                tooltip={item.title}
-                isActive={isActive}
-                asChild
-              >
-                <Link href={item.url as Route}>
-                  {item.icon && <item.icon />}
+              <SidebarMenuButton tooltip={item.title} isActive={isActive} asChild>
+                <Link href={item.url}>
+                  <item.icon />
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>

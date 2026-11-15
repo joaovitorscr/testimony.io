@@ -7,14 +7,10 @@ import { Loader2Icon, PlusIcon, SparklesIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useProject } from "@/components/project-provider";
+
+import { useProject } from "@/components/project-context";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 const createLinkSchema = z.object({
@@ -41,8 +37,8 @@ export function CreateLinkCard() {
         description: values.description,
       });
       form.reset();
-      const url = `${window.location.origin}/c/${project.slug}?token=${token}`;
-      await navigator.clipboard.writeText(url).catch(() => undefined);
+      const url = `${globalThis.location.origin}/c/${project.slug}?token=${token}`;
+      await navigator.clipboard.writeText(url);
       toast.success("Collection link created and copied to clipboard");
     } catch {
       toast.error("Failed to create link");
@@ -51,21 +47,26 @@ export function CreateLinkCard() {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-primary/20 bg-linear-to-br from-primary/5 via-card to-accent/5 shadow-sm">
-      <div className="border-primary/10 border-b bg-primary/5 px-6 py-4">
+      <div className="border-b border-primary/10 bg-primary/5 px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="rounded-lg bg-primary/10 p-2">
             <SparklesIcon className="size-5 text-primary" />
           </div>
           <div>
             <h2 className="font-semibold">Create New Link</h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               Generate a unique link to send to your customer
             </p>
           </div>
         </div>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="p-6">
+      <form
+        className="p-6"
+        onSubmit={(event) => {
+          void form.handleSubmit(onSubmit)(event);
+        }}
+      >
         <FieldGroup className="flex flex-col gap-4 sm:flex-row sm:items-end">
           <Controller
             control={form.control}
@@ -74,9 +75,7 @@ export function CreateLinkCard() {
               <Field data-invalid={fieldState.invalid} className="flex-1">
                 <FieldLabel htmlFor="description" className="text-sm">
                   Description
-                  <span className="ml-1 text-muted-foreground/60">
-                    (optional)
-                  </span>
+                  <span className="ml-1 text-muted-foreground/60">(optional)</span>
                 </FieldLabel>
                 <Input
                   {...field}
@@ -86,9 +85,7 @@ export function CreateLinkCard() {
                   autoComplete="off"
                   className="bg-background/80"
                 />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />

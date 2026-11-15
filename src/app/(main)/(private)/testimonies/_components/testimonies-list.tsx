@@ -3,21 +3,18 @@
 import { api } from "@convex/_generated/api";
 import type { Id } from "@convex/_generated/dataModel";
 import { useMutation, usePaginatedQuery } from "convex/react";
-import {
-  CheckCircle2Icon,
-  ClockIcon,
-  Loader2Icon,
-  SparklesIcon,
-} from "lucide-react";
+import { CheckCircle2Icon, ClockIcon, Loader2Icon, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
-import { useProject } from "@/components/project-provider";
+
+import { useProject } from "@/components/project-context";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+
 import { TestimonieCard } from "./testimonie-card";
 
 type TestimonyFilter = "all" | "approved" | "pending" | "featured";
@@ -71,16 +68,20 @@ export function TestimoniesList() {
     }
   }, [inView, status, loadMore]);
 
-  const handleToggleFeatured = (id: Id<"testimonials">, value: boolean) => {
-    setFeatured({ id, value }).catch(() =>
-      toast.error("Failed to update featured status"),
-    );
+  const handleToggleFeatured = async (id: Id<"testimonials">, value: boolean) => {
+    try {
+      await setFeatured({ id, value });
+    } catch {
+      toast.error("Failed to update featured status");
+    }
   };
 
-  const handleToggleApproved = (id: Id<"testimonials">, value: boolean) => {
-    setApproved({ id, value }).catch(() =>
-      toast.error("Failed to update approval status"),
-    );
+  const handleToggleApproved = async (id: Id<"testimonials">, value: boolean) => {
+    try {
+      await setApproved({ id, value });
+    } catch {
+      toast.error("Failed to update approval status");
+    }
   };
 
   // Only show full loading state on initial load
@@ -99,16 +100,18 @@ export function TestimoniesList() {
           orientation={isMobile ? "vertical" : "horizontal"}
           className={cn(isMobile && "w-full")}
         >
-          {FILTERS.map((f) => (
+          {FILTERS.map((option) => (
             <Button
-              key={f.value}
-              variant={filter === f.value ? "default" : "outline"}
+              key={option.value}
+              variant={filter === option.value ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilter(f.value)}
+              onClick={() => {
+                setFilter(option.value);
+              }}
               className="gap-1.5"
             >
-              {f.icon}
-              {f.label}
+              {option.icon}
+              {option.label}
             </Button>
           ))}
         </ButtonGroup>
@@ -117,22 +120,17 @@ export function TestimoniesList() {
       {testimonies.length === 0 ? (
         <div className="flex h-64 flex-col items-center justify-center space-y-4">
           <div className="space-y-1 text-center">
-            <h2 className="font-medium text-lg text-muted-foreground">
-              {filter === "all"
-                ? "No Testimonies Found"
-                : `No ${filter} testimonies`}
+            <h2 className="text-lg font-medium text-muted-foreground">
+              {filter === "all" ? "No Testimonies Found" : `No ${filter} testimonies`}
             </h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               {filter === "all"
                 ? "No testimonies have been collected yet."
                 : `There are no ${filter} testimonies at the moment.`}
             </p>
           </div>
           {filter === "all" && (
-            <Link
-              className={buttonVariants({ variant: "default" })}
-              href="/collect-link"
-            >
+            <Link className={buttonVariants({ variant: "default" })} href="/collect-link">
               Start Collecting Testimonies
             </Link>
           )}
@@ -143,8 +141,12 @@ export function TestimoniesList() {
             <TestimonieCard
               key={testimony._id}
               testimony={testimony}
-              onToggleFeatured={handleToggleFeatured}
-              onToggleApproved={handleToggleApproved}
+              onToggleFeatured={(id, value) => {
+                void handleToggleFeatured(id, value);
+              }}
+              onToggleApproved={(id, value) => {
+                void handleToggleApproved(id, value);
+              }}
             />
           ))}
 
@@ -153,9 +155,7 @@ export function TestimoniesList() {
               <Loader2Icon className="size-6 animate-spin text-muted-foreground" />
             )}
             {status === "Exhausted" && testimonies.length > 0 && (
-              <p className="text-muted-foreground text-sm">
-                No more testimonies to load
-              </p>
+              <p className="text-sm text-muted-foreground">No more testimonies to load</p>
             )}
           </div>
         </div>

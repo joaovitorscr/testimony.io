@@ -12,7 +12,8 @@
     "module": "ESNext",
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "allowImportingTsExtensions": true
   },
   "include": ["./**/*"],
   "exclude": ["./_generated"]

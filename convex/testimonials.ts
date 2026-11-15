@@ -1,12 +1,8 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
+
 import type { Doc, Id } from "./_generated/dataModel";
-import {
-  type MutationCtx,
-  mutation,
-  type QueryCtx,
-  query,
-} from "./_generated/server";
+import { type MutationCtx, mutation, type QueryCtx, query } from "./_generated/server";
 import { requireMember } from "./lib/access";
 
 export const vFilter = v.union(
@@ -16,16 +12,30 @@ export const vFilter = v.union(
   v.literal("featured"),
 );
 
-export async function withAvatarUrl(
-  ctx: QueryCtx,
-  testimonial: Doc<"testimonials">,
-) {
+export async function withAvatarUrl(ctx: QueryCtx, testimonial: Doc<"testimonials">) {
   return {
     ...testimonial,
     avatarUrl: testimonial.avatarStorageId
       ? await ctx.storage.getUrl(testimonial.avatarStorageId)
       : null,
   };
+}
+
+type Filter = typeof vFilter.type;
+
+function filteredQuery(ctx: QueryCtx, projectId: Id<"projects">, filter: Filter) {
+  const testimonials = ctx.db.query("testimonials");
+  if (filter === "all") {
+    return testimonials.withIndex("by_project", (q) => q.eq("projectId", projectId));
+  }
+  if (filter === "featured") {
+    return testimonials.withIndex("by_project_and_featured", (q) =>
+      q.eq("projectId", projectId).eq("isFeatured", true),
+    );
+  }
+  return testimonials.withIndex("by_project_and_approved", (q) =>
+    q.eq("projectId", projectId).eq("isApproved", filter === "approved"),
+  );
 }
 
 export const list = query({
@@ -37,29 +47,14 @@ export const list = query({
   handler: async (ctx, { projectId, filter, paginationOpts }) => {
     await requireMember(ctx, projectId);
 
-    const base =
-      filter === "approved" || filter === "pending"
-        ? ctx.db
-            .query("testimonials")
-            .withIndex("by_project_and_approved", (q) =>
-              q
-                .eq("projectId", projectId)
-                .eq("isApproved", filter === "approved"),
-            )
-        : filter === "featured"
-          ? ctx.db
-              .query("testimonials")
-              .withIndex("by_project_and_featured", (q) =>
-                q.eq("projectId", projectId).eq("isFeatured", true),
-              )
-          : ctx.db
-              .query("testimonials")
-              .withIndex("by_project", (q) => q.eq("projectId", projectId));
-
-    const result = await base.order("desc").paginate(paginationOpts);
+    const result = await filteredQuery(ctx, projectId, filter)
+      .order("desc")
+      .paginate(paginationOpts);
     return {
       ...result,
-      page: await Promise.all(result.page.map((t) => withAvatarUrl(ctx, t))),
+      page: await Promise.all(
+        result.page.map(async (testimonial) => withAvatarUrl(ctx, testimonial)),
+      ),
     };
   },
 });
@@ -76,24 +71,7 @@ export const listApproved = query({
       )
       .order("desc")
       .take(100);
-    return await Promise.all(testimonials.map((t) => withAvatarUrl(ctx, t)));
-  },
-});
-
-export const counts = query({
-  args: { projectId: v.id("projects") },
-  handler: async (ctx, { projectId }) => {
-    await requireMember(ctx, projectId);
-    const all = await ctx.db
-      .query("testimonials")
-      .withIndex("by_project", (q) => q.eq("projectId", projectId))
-      .collect();
-    return {
-      all: all.length,
-      approved: all.filter((t) => t.isApproved).length,
-      pending: all.filter((t) => !t.isApproved).length,
-      featured: all.filter((t) => t.isFeatured).length,
-    };
+    return Promise.all(testimonials.map(async (testimonial) => withAvatarUrl(ctx, testimonial)));
   },
 });
 

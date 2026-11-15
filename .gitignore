@@ -47,3 +47,6 @@ next-env.d.ts
 /.clerk/
 
 generated/
+
+# test shard timings (restored from the CI cache)
+.test-timings.json

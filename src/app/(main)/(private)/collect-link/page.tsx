@@ -2,8 +2,10 @@
 
 import { api } from "@convex/_generated/api";
 import { useQuery } from "convex/react";
-import { useProject } from "@/components/project-provider";
+
+import { useProject } from "@/components/project-context";
 import { Skeleton } from "@/components/ui/skeleton";
+
 import { CreateLinkCard } from "./_components/create-link-card";
 import { LinksTable } from "./_components/links-table";
 import { StatsHeader } from "./_components/stats-header";

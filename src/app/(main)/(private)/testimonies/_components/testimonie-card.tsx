@@ -10,6 +10,7 @@ import {
   QuoteIcon,
   SparklesIcon,
 } from "lucide-react";
+
 import { RatingStars } from "@/components/rating-stars";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,9 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
-type Testimonial = FunctionReturnType<
-  typeof api.testimonials.list
->["page"][number];
+type Testimonial = FunctionReturnType<typeof api.testimonials.list>["page"][number];
 
 export function TestimonieCard({
   testimony,
@@ -36,10 +35,7 @@ export function TestimonieCard({
       {/* Status indicators */}
       <div className="absolute top-4 right-4 flex items-center gap-2">
         {testimony.isFeatured && (
-          <Badge
-            variant="default"
-            className="gap-1 bg-amber-500 hover:bg-amber-500"
-          >
+          <Badge variant="default" className="gap-1 bg-amber-500 hover:bg-amber-500">
             <SparklesIcon className="size-3" />
             Featured
           </Badge>
@@ -71,11 +67,11 @@ export function TestimonieCard({
         {/* Quote section */}
         <div className="mb-6">
           <QuoteIcon className="mb-3 size-8 text-primary/20" />
-          <p className="text-foreground leading-relaxed">{testimony.text}</p>
+          <p className="leading-relaxed text-foreground">{testimony.text}</p>
         </div>
 
         {/* Rating */}
-        {testimony.rating && (
+        {testimony.rating !== undefined && (
           <div className="mb-6">
             <RatingStars value={testimony.rating} />
           </div>
@@ -85,26 +81,19 @@ export function TestimonieCard({
         <div className="flex flex-col items-start justify-between border-t pt-4 lg:flex-row lg:items-end">
           <div className="flex items-center gap-3">
             <Avatar className="size-12 ring-2 ring-background">
-              <AvatarImage
-                src={testimony.avatarUrl ?? undefined}
-                alt={testimony.customerName}
-              />
+              <AvatarImage src={testimony.avatarUrl ?? undefined} alt={testimony.customerName} />
               <AvatarFallback className="bg-primary/10 font-semibold text-primary">
                 {testimony.customerName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
 
             <div className="space-y-0.5">
-              <p className="font-semibold text-foreground text-sm">
-                {testimony.customerName}
-              </p>
-              {testimony.customerTitle && (
-                <p className="text-muted-foreground text-xs">
-                  {testimony.customerTitle}
-                </p>
+              <p className="text-sm font-semibold text-foreground">{testimony.customerName}</p>
+              {testimony.customerTitle !== undefined && (
+                <p className="text-xs text-muted-foreground">{testimony.customerTitle}</p>
               )}
-              <div className="flex items-center gap-3 pt-1 text-muted-foreground text-xs">
-                {testimony.customerCompany && (
+              <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground">
+                {testimony.customerCompany !== undefined && (
                   <span className="flex items-center gap-1">
                     <BuildingIcon className="size-3" />
                     {testimony.customerCompany}
@@ -123,32 +112,32 @@ export function TestimonieCard({
             <div className="flex items-center gap-2">
               <Label
                 htmlFor={`featured-${testimony._id}`}
-                className="cursor-pointer text-muted-foreground text-xs"
+                className="cursor-pointer text-xs text-muted-foreground"
               >
                 Featured
               </Label>
               <Switch
                 id={`featured-${testimony._id}`}
                 checked={testimony.isFeatured}
-                onCheckedChange={(value) =>
-                  onToggleFeatured(testimony._id, value)
-                }
+                onCheckedChange={(value) => {
+                  onToggleFeatured(testimony._id, value);
+                }}
                 className="data-[state=checked]:bg-amber-500"
               />
             </div>
             <div className="flex items-center gap-2">
               <Label
                 htmlFor={`approved-${testimony._id}`}
-                className="cursor-pointer text-muted-foreground text-xs"
+                className="cursor-pointer text-xs text-muted-foreground"
               >
                 Approved
               </Label>
               <Switch
                 id={`approved-${testimony._id}`}
                 checked={testimony.isApproved}
-                onCheckedChange={(value) =>
-                  onToggleApproved(testimony._id, value)
-                }
+                onCheckedChange={(value) => {
+                  onToggleApproved(testimony._id, value);
+                }}
                 className="data-[state=checked]:bg-emerald-500"
               />
             </div>

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+
 import { env } from "@/env";
 
 export default function robots(): MetadataRoute.Robots {
@@ -9,13 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: [
-          "/api/",
-          "/account/",
-          "/testimonies/",
-          "/widget/",
-          "/collect-link/",
-        ],
+        disallow: ["/api/", "/account/", "/testimonies/", "/widget/", "/collect-link/"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

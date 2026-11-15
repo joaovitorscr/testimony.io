@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
+
 import { mutation, query } from "./_generated/server";
-import { randomToken, requireMember } from "./lib/access";
+import { randomToken, requireMember, trimToOptional } from "./lib/access";
 
 export const list = query({
   args: { projectId: v.id("projects") },
@@ -17,9 +18,9 @@ export const list = query({
       requests,
       stats: {
         total: requests.length,
-        active: requests.filter((r) => r.status === "active").length,
-        used: requests.filter((r) => r.status === "used").length,
-        cancelled: requests.filter((r) => r.status === "cancelled").length,
+        active: requests.filter((request) => request.status === "active").length,
+        used: requests.filter((request) => request.status === "used").length,
+        cancelled: requests.filter((request) => request.status === "cancelled").length,
       },
     };
   },
@@ -34,12 +35,11 @@ export const create = mutation({
     const { userId } = await requireMember(ctx, projectId);
     const user = await ctx.db.get("users", userId);
     const token = randomToken();
-    const trimmed = description?.trim();
     const id = await ctx.db.insert("requests", {
       projectId,
       token,
       status: "active",
-      description: trimmed ? trimmed.slice(0, 200) : undefined,
+      description: trimToOptional(description, 200),
       createdBy: user?.name ?? user?.email,
     });
     return { id, token };

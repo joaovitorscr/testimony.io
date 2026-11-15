@@ -2,84 +2,64 @@
 
 import { api } from "@convex/_generated/api";
 import type { Doc } from "@convex/_generated/dataModel";
+import { normalizeHost } from "@convex/lib/hosts";
 import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
 import { Globe, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { type KeyboardEvent, useState } from "react";
 import { toast } from "sonner";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-export function WidgetDomains({
-  widget: widgetConfig,
-}: {
-  widget: Doc<"widgets">;
-}) {
+export function WidgetDomains({ widget: widgetConfig }: { widget: Doc<"widgets"> }) {
   const [newDomain, setNewDomain] = useState("");
   const [isPending, setIsPending] = useState(false);
   const domains = widgetConfig.allowedDomains;
   const setAllowedDomains = useMutation(api.widgets.setAllowedDomains);
 
-  const updateDomains = async (args: {
-    widgetId: Doc<"widgets">["_id"];
-    domains: string[];
-  }) => {
+  const updateDomains = async (args: { widgetId: Doc<"widgets">["_id"]; domains: string[] }) => {
     setIsPending(true);
     try {
       await setAllowedDomains(args);
       setNewDomain("");
     } catch (error) {
-      toast.error(
-        error instanceof ConvexError
-          ? String(error.data)
-          : "Failed to update domains",
-      );
-    } finally {
-      setIsPending(false);
+      toast.error(error instanceof ConvexError ? String(error.data) : "Failed to update domains");
     }
+    setIsPending(false);
   };
 
   const handleAddDomain = () => {
     const trimmedDomain = newDomain.trim();
-    if (!trimmedDomain) return;
-
-    // Simple URL validation
-    try {
-      new URL(trimmedDomain);
-    } catch {
-      toast.error("Please enter a valid URL (e.g., https://example.com)");
+    const host = normalizeHost(trimmedDomain);
+    if (host === null) {
+      toast.error("Enter a domain or URL, e.g. example.com");
       return;
     }
 
-    if (domains.includes(trimmedDomain)) {
+    if (domains.some((domain) => normalizeHost(domain) === host)) {
       toast.error("This domain is already added");
       return;
     }
 
-    updateDomains({
+    void updateDomains({
       widgetId: widgetConfig._id,
       domains: [...domains, trimmedDomain],
     });
   };
 
   const handleRemoveDomain = (domainToRemove: string) => {
-    updateDomains({
+    void updateDomains({
       widgetId: widgetConfig._id,
-      domains: domains.filter((d) => d !== domainToRemove),
+      domains: domains.filter((domain) => domain !== domainToRemove),
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
       handleAddDomain();
     }
   };
@@ -92,8 +72,8 @@ export function WidgetDomains({
           Allowed Domains
         </CardTitle>
         <CardDescription>
-          Add the domains where your widget is allowed to be embedded. Only
-          these domains will be able to display your testimonials widget.
+          Add the domains where your widget is allowed to be embedded. Only these domains will be
+          able to display your testimonials widget.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -101,7 +81,9 @@ export function WidgetDomains({
           <Input
             placeholder="https://example.com"
             value={newDomain}
-            onChange={(e) => setNewDomain(e.target.value)}
+            onChange={(event) => {
+              setNewDomain(event.target.value);
+            }}
             onKeyDown={handleKeyDown}
             disabled={isPending}
           />
@@ -118,15 +100,13 @@ export function WidgetDomains({
         {domains.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {domains.map((domain) => (
-              <Badge
-                key={domain}
-                variant="secondary"
-                className="gap-1.5 py-1.5 pr-1.5 pl-3"
-              >
+              <Badge key={domain} variant="secondary" className="gap-1.5 py-1.5 pr-1.5 pl-3">
                 <span className="max-w-48 truncate">{domain}</span>
                 <button
                   type="button"
-                  onClick={() => handleRemoveDomain(domain)}
+                  onClick={() => {
+                    handleRemoveDomain(domain);
+                  }}
                   disabled={isPending}
                   className="rounded p-0.5 transition-colors hover:bg-muted-foreground/20"
                 >
@@ -136,7 +116,7 @@ export function WidgetDomains({
             ))}
           </div>
         ) : (
-          <p className="py-4 text-center text-muted-foreground text-sm">
+          <p className="py-4 text-center text-sm text-muted-foreground">
             No domains added yet. Add a domain to allow widget embedding.
           </p>
         )}

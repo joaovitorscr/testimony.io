@@ -2,12 +2,6 @@
 
 import { api } from "@convex/_generated/api";
 import type { Doc } from "@convex/_generated/dataModel";
-import {
-  type ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 import { useMutation } from "convex/react";
 import {
   BanIcon,
@@ -20,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,161 +32,99 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { env } from "@/env";
+
 import { EmptyState } from "./empty-state";
 
-type Token = Doc<"requests"> & { slug: string };
+type Request = Doc<"requests">;
 
-export function LinksTable({
-  requests,
-  slug,
-}: {
-  requests: Doc<"requests">[];
-  slug: string;
-}) {
-  const tokens: Token[] = requests.map((r) => ({ ...r, slug }));
+const dateFormat = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
 
-  if (tokens.length === 0) {
+/** Every collection link of the project, newest first. */
+export function LinksTable({ requests, slug }: { requests: Request[]; slug: string }) {
+  if (requests.length === 0) {
     return <EmptyState />;
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-lg">Link History</h2>
-        <Badge className="rounded-full bg-muted px-2.5 py-0.5 font-medium text-muted-foreground text-xs">
-          {tokens.length} {tokens.length === 1 ? "link" : "links"}
+        <h2 className="text-lg font-semibold">Link History</h2>
+        <Badge className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+          {requests.length} {requests.length === 1 ? "link" : "links"}
         </Badge>
       </div>
 
-      <LinksDataTable data={tokens} />
-    </div>
-  );
-}
-
-function LinksDataTable({ data }: { data: Token[] }) {
-  const columns: ColumnDef<Token>[] = [
-    {
-      accessorKey: "description",
-      header: "Description",
-      cell: ({ row }) => <DescriptionCell token={row.original} />,
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => (
-        <StatusBadge
-          used={row.original.status === "used"}
-          cancelled={row.original.status === "cancelled"}
-        />
-      ),
-    },
-    {
-      accessorKey: "_creationTime",
-      header: "Created",
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-sm">
-          {new Date(row.original._creationTime).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </span>
-      ),
-    },
-    {
-      id: "actions",
-      header: () => <span className="sr-only">Actions</span>,
-      cell: ({ row }) => <ActionsCell token={row.original} />,
-    },
-  ];
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  return (
-    <div className="overflow-hidden rounded-xl border border-border/60 bg-card/50">
-      <Table>
-        <TableHeader className="bg-muted/30">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="border-border/60 border-b hover:bg-transparent"
-            >
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className="font-medium text-muted-foreground text-xs uppercase tracking-wide"
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              ))}
+      <div className="overflow-hidden rounded-xl border border-border/60 bg-card/50">
+        <Table>
+          <TableHeader className="bg-muted/30">
+            <TableRow className="border-b border-border/60 hover:bg-transparent">
+              <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                Description
+              </TableHead>
+              <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                Status
+              </TableHead>
+              <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                Created
+              </TableHead>
+              <TableHead>
+                <span className="sr-only">Actions</span>
+              </TableHead>
             </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
+          </TableHeader>
+          <TableBody>
+            {requests.map((request) => (
               <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                key={request._id}
                 className="border-border/40 transition-colors hover:bg-muted/20"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-3">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                <TableCell className="py-3">
+                  <DescriptionCell request={request} />
+                </TableCell>
+                <TableCell className="py-3">
+                  <StatusBadge status={request.status} />
+                </TableCell>
+                <TableCell className="py-3 text-sm text-muted-foreground">
+                  {dateFormat.format(request._creationTime)}
+                </TableCell>
+                <TableCell className="py-3">
+                  {request.status === "active" && (
+                    <ActiveLinkActions request={request} slug={slug} />
+                  )}
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
 
-function DescriptionCell({ token }: { token: Token }) {
+function DescriptionCell({ request }: { request: Request }) {
   return (
     <div className="min-w-0">
       <div className="flex items-center gap-2">
         <LinkIcon className="size-4 shrink-0 text-muted-foreground/60" />
         <span className="truncate font-medium">
-          {token.description || (
+          {request.description ?? (
             <span className="text-muted-foreground italic">No description</span>
           )}
         </span>
       </div>
-      {token.createdBy && (
-        <p className="mt-0.5 text-muted-foreground text-xs">
-          by {token.createdBy}
-        </p>
+      {request.createdBy !== undefined && (
+        <p className="mt-0.5 text-xs text-muted-foreground">by {request.createdBy}</p>
       )}
     </div>
   );
 }
 
-function StatusBadge({
-  used,
-  cancelled,
-}: {
-  used: boolean;
-  cancelled: boolean;
-}) {
-  if (cancelled) {
+function StatusBadge({ status }: { status: Request["status"] }) {
+  if (status === "cancelled") {
     return (
       <Badge variant="destructive" className="font-medium">
         Cancelled
@@ -199,7 +132,7 @@ function StatusBadge({
     );
   }
 
-  if (used) {
+  if (status === "used") {
     return (
       <Badge variant="secondary" className="font-medium">
         Collected
@@ -217,59 +150,56 @@ function StatusBadge({
   );
 }
 
-function ActionsCell({ token }: { token: Token }) {
+function ActiveLinkActions({ request, slug }: { request: Request; slug: string }) {
   const [copied, setCopied] = useState(false);
-  const cancelRequest = useMutation(api.requests.cancel);
   const [isCancelling, setIsCancelling] = useState(false);
+  const cancelRequest = useMutation(api.requests.cancel);
+  const linkUrl = `${env.NEXT_PUBLIC_APP_URL}/c/${slug}?token=${request.token}`;
 
-  const isActive = token.status === "active";
-  const linkUrl = `${env.NEXT_PUBLIC_APP_URL}/c/${token.slug}?token=${token.token}`;
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(linkUrl);
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(linkUrl);
     setCopied(true);
     toast.success("Link copied to clipboard");
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const handleCancel = async () => {
     setIsCancelling(true);
     try {
-      await cancelRequest({ id: token._id });
+      await cancelRequest({ id: request._id });
       toast.success("Link cancelled");
     } catch {
       toast.error("Failed to cancel link");
-    } finally {
-      setIsCancelling(false);
     }
+    setIsCancelling(false);
   };
 
   return (
     <div className="flex items-center justify-end gap-1">
-      {isActive && (
-        <>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={copyToClipboard}
-            className="size-8"
-          >
-            {copied ? (
-              <CheckIcon className="size-4 text-emerald-500" />
-            ) : (
-              <CopyIcon className="size-4" />
-            )}
-            <span className="sr-only">Copy Link</span>
-          </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        onClick={() => {
+          void copyToClipboard();
+        }}
+      >
+        {copied ? (
+          <CheckIcon className="size-4 text-emerald-500" />
+        ) : (
+          <CopyIcon className="size-4" />
+        )}
+        <span className="sr-only">Copy Link</span>
+      </Button>
 
-          <Button variant="ghost" size="icon" asChild className="size-8">
-            <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLinkIcon className="size-4" />
-              <span className="sr-only">Open Link</span>
-            </a>
-          </Button>
-        </>
-      )}
+      <Button variant="ghost" size="icon" asChild className="size-8">
+        <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+          <ExternalLinkIcon className="size-4" />
+          <span className="sr-only">Open Link</span>
+        </a>
+      </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -279,24 +209,20 @@ function ActionsCell({ token }: { token: Token }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {isActive ? (
-            <DropdownMenuItem
-              onClick={handleCancel}
-              disabled={isCancelling}
-              className="text-destructive focus:text-destructive"
-            >
-              {isCancelling ? (
-                <Loader2Icon className="mr-2 size-4 animate-spin" />
-              ) : (
-                <BanIcon className="mr-2 size-4" />
-              )}
-              Cancel Link
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem disabled className="text-muted-foreground">
-              No actions available
-            </DropdownMenuItem>
-          )}
+          <DropdownMenuItem
+            disabled={isCancelling}
+            className="text-destructive focus:text-destructive"
+            onClick={() => {
+              void handleCancel();
+            }}
+          >
+            {isCancelling ? (
+              <Loader2Icon className="mr-2 size-4 animate-spin" />
+            ) : (
+              <BanIcon className="mr-2 size-4" />
+            )}
+            Cancel Link
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

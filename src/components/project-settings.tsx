@@ -2,235 +2,78 @@
 
 import { api } from "@convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useConvex, useMutation } from "convex/react";
+import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
-import * as React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { useDebounce } from "use-debounce";
-import z from "zod";
-import { useProject } from "./project-provider";
-import { Button } from "./ui/button";
+
+import { useProject } from "@/components/project-context";
+import { ProjectNameFields } from "@/components/project-name-fields";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
-import { Input } from "./ui/input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
-import { Spinner } from "./ui/spinner";
+} from "@/components/ui/dialog";
+import { FieldGroup } from "@/components/ui/field";
+import { useSlugAvailability } from "@/hooks/use-slug-availability";
+import { type ProjectNameValues, projectNameSchema } from "@/lib/project-schema";
 
-interface ProjectSettingsProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-const updateProjectPayloadSchema = z.object({
-  name: z.string().min(3).max(50),
-  slug: z.string().min(3).max(50),
-});
-
-type UpdateProjectPayload = z.infer<typeof updateProjectPayloadSchema>;
-
-export function ProjectSettings({ open, onOpenChange }: ProjectSettingsProps) {
+/** Rename the active project. Mount it only while open so it starts fresh. */
+export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
   const { project } = useProject();
-  const convex = useConvex();
   const updateProject = useMutation(api.projects.update);
 
-  const originalSlug = React.useRef(project.slug);
-
-  React.useEffect(() => {
-    originalSlug.current = project.slug;
-  }, [project.slug]);
-
-  const form = useForm<UpdateProjectPayload>({
-    resolver: zodResolver(updateProjectPayloadSchema),
+  const form = useForm<ProjectNameValues>({
+    resolver: zodResolver(projectNameSchema),
     mode: "onChange",
-    defaultValues: {
-      name: project.name,
-      slug: project.slug,
-    },
+    defaultValues: { name: project.name },
   });
+  const name = useWatch({ control: form.control, name: "name" });
+  const { slug, status } = useSlugAvailability(name, project._id);
 
-  const projectName = form.watch("name");
-  const [debouncedProjectName] = useDebounce(projectName, 500);
-  const [isCheckingSlug, setIsCheckingSlug] = React.useState(false);
-  const [slugValidated, setSlugValidated] = React.useState(true);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we don't need form as a dependency
-  React.useEffect(() => {
-    async function generateAndCheckSlug() {
-      if (!debouncedProjectName) {
-        form.setValue("slug", "");
-        setSlugValidated(false);
-        return;
-      }
-
-      setIsCheckingSlug(true);
-
-      const generatedSlug = debouncedProjectName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-
-      form.setValue("slug", generatedSlug);
-
-      // If the slug hasn't changed from the original, no need to validate
-      if (generatedSlug === originalSlug.current) {
-        setSlugValidated(true);
-        form.clearErrors("slug");
-        setIsCheckingSlug(false);
-        return;
-      }
-
-      // Only validate if the slug has changed
-      setSlugValidated(false);
-
-      try {
-        const available = await convex.query(api.projects.isSlugAvailable, {
-          slug: generatedSlug,
-          exceptProjectId: project._id,
-        });
-
-        if (!available) {
-          form.setError("slug", {
-            type: "manual",
-            message: "This project name is already taken",
-          });
-          setSlugValidated(false);
-        } else {
-          setSlugValidated(true);
-          form.clearErrors("slug");
-        }
-      } catch (error) {
-        console.error(error);
-        setSlugValidated(false);
-      } finally {
-        setIsCheckingSlug(false);
-      }
+  const onSubmit = async (values: ProjectNameValues) => {
+    try {
+      await updateProject({ projectId: project._id, name: values.name, slug });
+      toast.success("Project updated");
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(error instanceof ConvexError ? String(error.data) : "Failed to update project");
     }
-
-    generateAndCheckSlug();
-  }, [debouncedProjectName]);
-
-  const onSubmit = async (values: UpdateProjectPayload) => {
-    toast.promise(updateProject({ projectId: project._id, ...values }), {
-      loading: "Updating project...",
-      success: () => {
-        onOpenChange(false);
-        form.reset();
-        return "Project updated successfully";
-      },
-      error: (error) =>
-        error instanceof ConvexError
-          ? String(error.data)
-          : "Failed to update project",
-    });
-  };
-
-  const handleCloseDialog = (open: boolean) => {
-    if (open) {
-      originalSlug.current = project.slug;
-      form.reset({
-        name: project.name,
-        slug: project.slug,
-      });
-      setSlugValidated(true);
-    } else {
-      form.reset();
-      setSlugValidated(false);
-    }
-    setIsCheckingSlug(false);
-    onOpenChange(open);
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleCloseDialog}>
+    <Dialog open onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Project Settings</DialogTitle>
           <DialogDescription>
-            Update the name and slug of your project.
+            Rename your project. Collection links keep working after a rename.
           </DialogDescription>
         </DialogHeader>
-        <form id="update-project-form" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          id="update-project-form"
+          onSubmit={(event) => {
+            void form.handleSubmit(onSubmit)(event);
+          }}
+        >
           <FieldGroup>
-            <Controller
+            <ProjectNameFields
               control={form.control}
-              name="name"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="update-project-form-project-name">
-                    Project Name
-                  </FieldLabel>
-                  <InputGroup className="h-11">
-                    <InputGroupInput
-                      {...field}
-                      autoComplete="off"
-                      id="update-project-form-project-name"
-                      name="update-project-form-project-name"
-                      placeholder="My Awesome Project"
-                      required
-                      aria-invalid={fieldState.invalid}
-                      min={2}
-                    />
-                    {isCheckingSlug && (
-                      <InputGroupAddon align="inline-end">
-                        <Spinner />
-                      </InputGroupAddon>
-                    )}
-                  </InputGroup>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
+              idPrefix="update-project"
+              slug={slug}
+              status={status}
             />
-            <Controller
-              control={form.control}
-              name="slug"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="update-project-form-project-slug">
-                    Slug
-                  </FieldLabel>
-                  <Input
-                    disabled
-                    className="h-11"
-                    {...field}
-                    autoComplete="off"
-                    id="update-project-form-project-slug"
-                    name="update-project-form-project-slug"
-                    placeholder="my-awesome-project"
-                    required
-                    aria-invalid={fieldState.invalid}
-                    min={2}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                disabled={
-                  form.formState.isSubmitting ||
-                  !form.formState.isValid ||
-                  isCheckingSlug ||
-                  !slugValidated
-                }
-                size="lg"
-                className="flex-1"
-              >
-                {form.formState.isSubmitting ? "Updating..." : "Update Project"}
-              </Button>
-            </Field>
+            <Button
+              type="submit"
+              disabled={
+                form.formState.isSubmitting || !form.formState.isValid || status !== "available"
+              }
+            >
+              {form.formState.isSubmitting ? "Saving..." : "Save"}
+            </Button>
           </FieldGroup>
         </form>
       </DialogContent>

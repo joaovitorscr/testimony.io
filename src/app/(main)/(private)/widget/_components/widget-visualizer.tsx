@@ -4,14 +4,8 @@ import { api } from "@convex/_generated/api";
 import type { Doc } from "@convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { AlertCircleIcon } from "lucide-react";
-import * as React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { WidgetTestimonial } from "@/components/widgets/types";
 import { WidgetCard } from "@/components/widgets/widget-card";
@@ -79,53 +73,25 @@ const sampleTestimonials: (WidgetTestimonial & { _creationTime: number })[] = [
   },
 ];
 
-export function WidgetVisualizer({
-  widget: widgetConfig,
-}: {
-  widget: Doc<"widgets">;
-}) {
+export function WidgetVisualizer({ widget: widgetConfig }: { widget: Doc<"widgets"> }) {
   const testimonies =
     useQuery(api.testimonials.listApproved, {
       projectId: widgetConfig.projectId,
     }) ?? [];
 
-  const displayTestimonials = React.useMemo(() => {
-    const testimonials =
-      testimonies.length > 0 ? testimonies : sampleTestimonials;
-
-    if (widgetConfig?.displayOrder) {
-      const sorted = [...testimonials].sort((a, b) => {
-        const dateA = a._creationTime;
-        const dateB = b._creationTime;
-
-        if (widgetConfig.displayOrder === "newest") {
-          return dateB - dateA;
-        } else if (widgetConfig.displayOrder === "oldest") {
-          return dateA - dateB;
-        }
-
-        return 0;
-      });
-
-      return sorted;
-    }
-
-    return testimonials;
-  }, [testimonies, widgetConfig?.displayOrder]);
-
-  const isGridLayout = React.useMemo(
-    () => widgetConfig?.displayLayout === "grid",
-    [widgetConfig?.displayLayout],
+  const source = testimonies.length > 0 ? testimonies : sampleTestimonials;
+  const direction = widgetConfig.displayOrder === "newest" ? -1 : 1;
+  const displayTestimonials = source.toSorted(
+    (left, right) => direction * (left._creationTime - right._creationTime),
   );
+  const isGridLayout = widgetConfig.displayLayout === "grid";
 
   return (
     <section className="flex h-[calc(100vh-12rem)] flex-col">
       <Card className="flex h-full flex-col overflow-hidden">
         <CardHeader className="shrink-0">
           <CardTitle>Widget Visualizer</CardTitle>
-          <CardDescription>
-            Preview how your widget will appear on your website.
-          </CardDescription>
+          <CardDescription>Preview how your widget will appear on your website.</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden p-4">
           {testimonies.length === 0 && (
@@ -147,11 +113,7 @@ export function WidgetVisualizer({
               }}
             >
               {displayTestimonials.map((testimony) => (
-                <WidgetCard
-                  key={testimony._id}
-                  testimony={testimony}
-                  widgetConfig={widgetConfig}
-                />
+                <WidgetCard key={testimony._id} testimony={testimony} widgetConfig={widgetConfig} />
               ))}
             </div>
           </ScrollArea>

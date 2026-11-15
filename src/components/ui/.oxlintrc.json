@@ -1,0 +1,18 @@
+{
+  "$schema": "../../../node_modules/oxlint/configuration_schema.json",
+  // Vendored shadcn/ui components. `shadcn add` overwrites these files, so the
+  // rules below are upstream design choices we do not fork the code over.
+  "rules": {
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "typescript/no-unsafe-type-assertion": "off",
+    "typescript/no-base-to-string": "off",
+    "react/no-array-index-key": "off",
+    "react/purity": "off",
+    "eslint/no-shadow": "off",
+    "eslint/no-underscore-dangle": "off",
+    "import/no-named-as-default": "off",
+    "import/no-unassigned-import": "off"
+  }
+}

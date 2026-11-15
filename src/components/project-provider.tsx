@@ -2,31 +2,13 @@
 
 import { api } from "@convex/_generated/api";
 import { useQuery } from "convex/react";
-import type { FunctionReturnType } from "convex/server";
 import { Loader2Icon } from "lucide-react";
-import { createContext, type ReactNode, useContext } from "react";
+import type { ReactNode } from "react";
+
 import { OnboardingDialog } from "@/components/onboarding-dialog";
+import { ProjectContext } from "@/components/project-context";
 
-export type ProjectSummary = NonNullable<
-  FunctionReturnType<typeof api.projects.current>
->;
-
-type ProjectContextValue = {
-  project: ProjectSummary;
-  projects: ProjectSummary[];
-};
-
-const ProjectContext = createContext<ProjectContextValue | null>(null);
-
-export function useProject() {
-  const value = useContext(ProjectContext);
-  if (value === null) {
-    throw new Error("useProject must be used inside <ProjectProvider>");
-  }
-  return value;
-}
-
-export function FullPageSpinner() {
+function FullPageSpinner() {
   return (
     <main className="flex min-h-svh flex-1 items-center justify-center">
       <Loader2Icon className="size-8 animate-spin text-muted-foreground" />
@@ -49,14 +31,12 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   if (project === null) {
     return (
       <main className="min-h-svh flex-1 bg-linear-to-br from-primary/30 via-primary/10 to-primary/5">
-        <OnboardingDialog open={true} />
+        <OnboardingDialog open />
       </main>
     );
   }
 
   return (
-    <ProjectContext.Provider value={{ project, projects }}>
-      {children}
-    </ProjectContext.Provider>
+    <ProjectContext.Provider value={{ project, projects }}>{children}</ProjectContext.Provider>
   );
 }

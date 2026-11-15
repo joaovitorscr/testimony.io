@@ -23,6 +23,7 @@ import ReactCrop, {
   type PixelCrop,
   type ReactCropProps,
 } from "react-image-crop";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -86,12 +87,7 @@ const getCroppedPngImage = async (
   const blob = await response.blob();
 
   if (blob.size > maxImageSize) {
-    return await getCroppedPngImage(
-      imageSrc,
-      scaleFactor * 0.9,
-      pixelCrop,
-      maxImageSize,
-    );
+    return await getCroppedPngImage(imageSrc, scaleFactor * 0.9, pixelCrop, maxImageSize);
   }
 
   return croppedImageUrl;
@@ -107,10 +103,7 @@ interface ImageCropContextType {
   onCrop?: (croppedImage: string) => void;
   reactCropProps: Omit<ReactCropProps, "onChange" | "onComplete" | "children">;
   handleChange: (pixelCrop: PixelCrop, percentCrop: PercentCrop) => void;
-  handleComplete: (
-    pixelCrop: PixelCrop,
-    percentCrop: PercentCrop,
-  ) => Promise<void>;
+  handleComplete: (pixelCrop: PixelCrop, percentCrop: PercentCrop) => Promise<void>;
   onImageLoad: (e: SyntheticEvent<HTMLImageElement>) => void;
   applyCrop: () => Promise<void>;
   resetCrop: () => void;
@@ -152,9 +145,7 @@ export const ImageCrop = ({
 
   useEffect(() => {
     const reader = new FileReader();
-    reader.addEventListener("load", () =>
-      setImgSrc(reader.result?.toString() || ""),
-    );
+    reader.addEventListener("load", () => setImgSrc(reader.result?.toString() || ""));
     reader.readAsDataURL(file);
   }, [file]);
 
@@ -173,10 +164,7 @@ export const ImageCrop = ({
     onChange?.(pixelCrop, percentCrop);
   };
 
-  const handleComplete = async (
-    pixelCrop: PixelCrop,
-    percentCrop: PercentCrop,
-  ) => {
+  const handleComplete = async (pixelCrop: PixelCrop, percentCrop: PercentCrop) => {
     setCompletedCrop(pixelCrop);
     onComplete?.(pixelCrop, percentCrop);
   };
@@ -186,12 +174,7 @@ export const ImageCrop = ({
       return;
     }
 
-    const croppedImage = await getCroppedPngImage(
-      imgRef.current,
-      1,
-      completedCrop,
-      maxImageSize,
-    );
+    const croppedImage = await getCroppedPngImage(imgRef.current, 1, completedCrop, maxImageSize);
 
     onCrop?.(croppedImage);
   };
@@ -219,11 +202,7 @@ export const ImageCrop = ({
     resetCrop,
   };
 
-  return (
-    <ImageCropContext.Provider value={contextValue}>
-      {children}
-    </ImageCropContext.Provider>
-  );
+  return <ImageCropContext.Provider value={contextValue}>{children}</ImageCropContext.Provider>;
 };
 
 export interface ImageCropContentProps {
@@ -231,19 +210,9 @@ export interface ImageCropContentProps {
   className?: string;
 }
 
-export const ImageCropContent = ({
-  style,
-  className,
-}: ImageCropContentProps) => {
-  const {
-    imgSrc,
-    crop,
-    handleChange,
-    handleComplete,
-    onImageLoad,
-    imgRef,
-    reactCropProps,
-  } = useImageCrop();
+export const ImageCropContent = ({ style, className }: ImageCropContentProps) => {
+  const { imgSrc, crop, handleChange, handleComplete, onImageLoad, imgRef, reactCropProps } =
+    useImageCrop();
 
   const shadcnStyle = {
     "--rc-border-color": "var(--color-border)",
@@ -293,19 +262,14 @@ export const ImageCropApply = ({
 
   if (asChild) {
     return (
-      <Slot.Root onClick={handleClick} {...(props as any)}>
+      <Slot.Root onClick={handleClick} {...props}>
         {children}
       </Slot.Root>
     );
   }
 
   return (
-    <Button
-      onClick={handleClick}
-      size="icon"
-      variant="ghost"
-      {...(props as any)}
-    >
+    <Button onClick={handleClick} size="icon" variant="ghost" {...props}>
       {children ?? <CropIcon className="size-4" />}
     </Button>
   );
@@ -330,19 +294,14 @@ export const ImageCropReset = ({
 
   if (asChild) {
     return (
-      <Slot.Root onClick={handleClick} {...(props as any)}>
+      <Slot.Root onClick={handleClick} {...props}>
         {children}
       </Slot.Root>
     );
   }
 
   return (
-    <Button
-      onClick={handleClick}
-      size="icon"
-      variant="ghost"
-      {...(props as any)}
-    >
+    <Button onClick={handleClick} size="icon" variant="ghost" {...props}>
       {children ?? <RotateCcwIcon className="size-4" />}
     </Button>
   );
@@ -397,17 +356,10 @@ export function Demo() {
     <div className="fixed inset-0 flex items-center justify-center p-8">
       <div className="flex flex-col items-center gap-4">
         {!file ? (
-          <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-muted-foreground/25 border-dashed p-8 transition-colors hover:border-muted-foreground/50">
+          <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 transition-colors hover:border-muted-foreground/50">
             <UploadIcon className="size-8 text-muted-foreground" />
-            <span className="text-muted-foreground text-sm">
-              Click to upload an image
-            </span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            <span className="text-sm text-muted-foreground">Click to upload an image</span>
+            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
           </label>
         ) : (
           <div className="flex flex-col items-center gap-4">
@@ -420,14 +372,8 @@ export function Demo() {
             </ImageCrop>
             {croppedImage && (
               <div className="flex flex-col items-center gap-2">
-                <span className="text-muted-foreground text-sm">
-                  Cropped result:
-                </span>
-                <img
-                  src={croppedImage}
-                  alt="Cropped"
-                  className="max-w-32 rounded-lg"
-                />
+                <span className="text-sm text-muted-foreground">Cropped result:</span>
+                <img src={croppedImage} alt="Cropped" className="max-w-32 rounded-lg" />
               </div>
             )}
           </div>

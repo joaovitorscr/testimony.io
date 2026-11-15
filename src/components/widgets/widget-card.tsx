@@ -1,20 +1,25 @@
 import type { WidgetSettings, WidgetTestimonial } from "./types";
+import { WidgetAvatar } from "./widget-avatar";
 
-interface WidgetCardProps {
-  testimony: WidgetTestimonial;
-  widgetConfig: WidgetSettings;
-}
+const STARS = [1, 2, 3, 4, 5];
+
+const visuallyHidden = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  overflow: "hidden",
+  clip: "rect(0 0 0 0)",
+  whiteSpace: "nowrap",
+} as const;
 
 function StarIcon({
   filled,
   fillColor,
   strokeColor,
-  index,
 }: {
   filled: boolean;
   fillColor: string;
   strokeColor: string;
-  index: number;
 }) {
   return (
     <svg
@@ -26,23 +31,25 @@ function StarIcon({
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      aria-label={`Star ${index + 1}${filled ? " filled" : ""}`}
-      role="img"
+      aria-hidden="true"
     >
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
 }
 
-export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
-  const initials = testimony.customerName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-
-  const hasAvatar = testimony.avatarUrl;
+/** One testimonial, styled entirely inline so it renders the same anywhere. */
+export function WidgetCard({
+  testimony,
+  widgetConfig,
+}: {
+  testimony: WidgetTestimonial;
+  widgetConfig: WidgetSettings;
+}) {
+  const { rating } = testimony;
+  const subtitle = [testimony.customerTitle, testimony.customerCompany]
+    .filter((part) => part !== undefined && part !== "")
+    .join(" at ");
 
   return (
     <div
@@ -57,14 +64,13 @@ export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
         flexDirection: "column",
       }}
     >
-      {/* Rating */}
-      {widgetConfig.showRating && testimony.rating && (
+      {widgetConfig.showRating && rating !== undefined && (
         <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
-          {Array.from({ length: 5 }).map((_, i) => (
+          <span style={visuallyHidden}>Rated {rating} out of 5</span>
+          {STARS.map((star) => (
             <StarIcon
-              key={`star-${testimony._id}-${i}`}
-              index={i}
-              filled={i < (testimony.rating ?? 0)}
+              key={star}
+              filled={star <= rating}
               fillColor={widgetConfig.primaryColor}
               strokeColor={`color-mix(in srgb, ${widgetConfig.textColor} 30%, transparent)`}
             />
@@ -72,7 +78,6 @@ export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
         </div>
       )}
 
-      {/* Testimonial text */}
       <p
         style={{
           margin: "0 0 16px 0",
@@ -81,92 +86,29 @@ export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
           color: widgetConfig.textColor,
         }}
       >
-        "{testimony.text}"
+        &ldquo;{testimony.text}&rdquo;
       </p>
 
-      {/* Author info */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          marginTop: "auto",
-        }}
-      >
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "auto" }}>
         {widgetConfig.showAvatar && (
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              overflow: "hidden",
-              flexShrink: 0,
-              backgroundColor: widgetConfig.primaryColor,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {hasAvatar ? (
-              // biome-ignore lint: img element is required for widget embeddability in external apps
-              <img
-                src={testimony.avatarUrl ?? ""}
-                alt={testimony.customerName}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-                onError={(e) => {
-                  // Hide the image and show initials on error
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = "none";
-                  const parent = target.parentElement;
-                  if (parent) {
-                    const fallback = document.createElement("span");
-                    fallback.textContent = initials;
-                    fallback.style.cssText = `
-                      color: #fff;
-                      font-size: 12px;
-                      font-weight: 600;
-                    `;
-                    parent.appendChild(fallback);
-                  }
-                }}
-              />
-            ) : (
-              <span
-                style={{
-                  color: "#fff",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                }}
-              >
-                {initials}
-              </span>
-            )}
-          </div>
+          <WidgetAvatar
+            name={testimony.customerName}
+            url={testimony.avatarUrl}
+            color={widgetConfig.primaryColor}
+          />
         )}
         <div>
-          <div
-            style={{
-              fontWeight: 600,
-              fontSize: "14px",
-              color: widgetConfig.textColor,
-            }}
-          >
+          <div style={{ fontWeight: 600, fontSize: "14px", color: widgetConfig.textColor }}>
             {testimony.customerName}
           </div>
-          {(testimony.customerTitle || testimony.customerCompany) && (
+          {subtitle !== "" && (
             <div
               style={{
                 fontSize: "12px",
                 color: `color-mix(in srgb, ${widgetConfig.textColor} 60%, transparent)`,
               }}
             >
-              {testimony.customerTitle}
-              {testimony.customerTitle && testimony.customerCompany && " at "}
-              {testimony.customerCompany}
+              {subtitle}
             </div>
           )}
         </div>

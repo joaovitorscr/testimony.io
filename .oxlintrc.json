@@ -1,0 +1,173 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // Every category is an error. A rule is only turned off when it contradicts
+  // another enabled rule, a framework we use, or AGENTS.md; tuned rules keep
+  // running with options. docs/internals/tooling.md explains each group.
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "react",
+    "react-perf",
+    "nextjs",
+    "jsx-a11y",
+    "promise",
+    "node",
+    "jsdoc"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "error",
+    "perf": "error",
+    "style": "error",
+    "restriction": "error",
+    "nursery": "error"
+  },
+  "options": {
+    "typeAware": true
+  },
+  "ignorePatterns": ["convex/_generated/**", ".next/**", "next-env.d.ts"],
+  "rules": {
+    // Tuned instead of disabled.
+    "one-var": ["error", "never"],
+    "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+    "react/function-component-definition": [
+      "error",
+      { "namedComponents": "function-declaration", "unnamedComponents": "arrow-function" }
+    ],
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/only-export-components": [
+      "error",
+      {
+        "allowExportNames": ["metadata", "generateMetadata", "viewport", "size", "contentType"]
+      }
+    ],
+    "typescript/consistent-type-definitions": ["error", "type"],
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css", "./src/env"] }],
+    "no-console": ["error", { "allow": ["error", "warn"] }],
+    "no-void": ["error", { "allowAsStatement": true }], // pairs with no-floating-promises
+    "no-use-before-define": ["error", { "functions": false, "classes": true, "variables": true }],
+    "no-underscore-dangle": [
+      "error",
+      { "allow": ["_id", "_creationTime", "_storage", "_internal_dangerous_signIn"] }
+    ],
+    "id-length": ["error", { "min": 2, "properties": "never", "exceptions": ["_", "q", "v", "z"] }],
+    "new-cap": ["error", { "capIsNewExceptions": ["Plus_Jakarta_Sans", "Lora", "IBM_Plex_Mono"] }],
+    "capitalized-comments": ["error", "always", { "ignoreConsecutiveComments": true }],
+
+    // Complexity budgets sized for React components.
+    "max-lines-per-function": [
+      "error",
+      { "max": 150, "skipBlankLines": true, "skipComments": true }
+    ],
+    "max-statements": ["error", 20],
+    "max-lines": ["error", { "max": 300, "skipBlankLines": true, "skipComments": true }],
+    "import/max-dependencies": ["error", { "max": 20 }],
+    "unicorn/max-nested-calls": ["error", { "max": 5 }],
+
+    // Contradictory pairs: keep one side.
+    "import/consistent-type-specifier-style": "off", // typescript/no-import-type-side-effects decides
+    "import/no-named-export": "off", // named exports everywhere; no-default-export is on
+    "import/prefer-default-export": "off",
+    "import/group-exports": "off", // exports sit next to what they export
+    "import/exports-last": "off",
+    "no-ternary": "off", // no-nested-ternary stays on
+    "unicorn/no-nested-ternary": "off", // duplicate of no-nested-ternary
+    "unicorn/no-negated-condition": "off", // duplicate of no-negated-condition
+    "require-await": "off", // promise-function-async decides
+    "typescript/require-await": "off", // contradicts promise-function-async for ready values
+    "no-duplicate-imports": "off", // duplicate of import/no-duplicates
+    "sort-imports": "off", // oxfmt sorts imports
+    "unicorn/no-null": "off", // Convex returns null for missing documents
+    "no-undefined": "off", // TypeScript optional values are undefined
+    "node/no-top-level-await": "off", // unicorn/prefer-top-level-await decides
+
+    // Framework contradictions.
+    "react/react-in-jsx-scope": "off", // automatic JSX runtime
+    "react/jsx-props-no-spreading": "off", // shadcn and react-hook-form pass props through
+    "react/forbid-component-props": "off", // Tailwind styles components via className
+    "react/no-multi-comp": "off", // small helper components live next to their user
+    "react/jsx-no-literals": "off", // no i18n layer
+    "react-perf/jsx-no-new-function-as-prop": "off", // React Compiler memoizes
+    "react-perf/jsx-no-new-object-as-prop": "off",
+    "react-perf/jsx-no-new-array-as-prop": "off",
+    "react-perf/jsx-no-jsx-as-prop": "off",
+    "react/jsx-no-constructed-context-values": "off",
+    "no-undef": "off", // the type checker reports undefined names
+    "oxc/no-async-await": "off", // for runtimes without ES2017
+    "oxc/no-optional-chaining": "off", // for runtimes without ES2020
+    "oxc/no-rest-spread-properties": "off", // for runtimes without ES2018
+
+    // AGENTS.md: inferred types over annotations; comments describe usage.
+    "typescript/explicit-function-return-type": "off",
+    "typescript/explicit-module-boundary-types": "off",
+    "typescript/prefer-readonly-parameter-types": "off",
+    "jsdoc/require-param": "off",
+    "jsdoc/require-returns": "off",
+
+    // Noise without a real constraint behind it.
+    "sort-keys": "off", // key order carries meaning (schemas, form fields)
+    "no-magic-numbers": "off", // sizes, limits, and HTTP codes read better inline
+    "react/jsx-max-depth": "off" // depth follows the shadcn component structure
+  },
+  "overrides": [
+    {
+      // Next.js, Convex, and tool configs require default exports.
+      "files": [
+        "src/app/**/page.tsx",
+        "src/app/**/layout.tsx",
+        "src/app/**/icon.tsx",
+        "src/app/**/apple-icon.tsx",
+        "src/app/robots.ts",
+        "src/app/sitemap.ts",
+        "src/proxy.ts",
+        "convex/schema.ts",
+        "convex/convex.config.ts",
+        "convex/auth.config.ts",
+        "*.config.{js,mjs,ts}"
+      ],
+      "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": ["*.config.{js,mjs,ts}", "scripts/**"],
+      "rules": { "import/no-nodejs-modules": "off", "node/no-process-env": "off" }
+    },
+    {
+      // Next.js reads segment config statically and only accepts plain strings.
+      "files": ["src/proxy.ts"],
+      "rules": { "unicorn/prefer-string-raw": "off" }
+    },
+    {
+      // Ambient declarations must stay scripts for wildcard modules to work.
+      "files": ["**/*.d.ts"],
+      "rules": { "import/unambiguous": "off" }
+    },
+    {
+      // The one place in the app that reads process.env.
+      "files": ["src/env.ts"],
+      "rules": { "node/no-process-env": "off" }
+    },
+    {
+      // Convex functions import their generated code relatively; there is no
+      // path alias inside the Convex bundle.
+      "files": ["convex/**"],
+      "rules": { "import/no-relative-parent-imports": "off" }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "plugins": ["vitest"],
+      "rules": {
+        "vitest/no-importing-vitest-globals": "off", // prefer-importing-vitest-globals decides
+        "vitest/prefer-describe-function-title": "off", // contradicts valid-title
+        "vitest/prefer-to-be-truthy": "off", // prefer-strict-boolean-matchers decides
+        "vitest/prefer-to-be-falsy": "off",
+        "vitest/require-test-timeout": "off", // testTimeout in vitest.config.ts covers every test
+        "vitest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }],
+        "max-lines-per-function": "off", // describe blocks hold many tests
+        "max-statements": "off"
+      }
+    }
+  ]
+}

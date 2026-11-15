@@ -10,7 +10,9 @@ import {
 } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
-import * as React from "react";
+import { type ComponentProps, useState } from "react";
+
+import { ProjectSettings } from "@/components/project-settings";
 import { NavUser } from "@/components/sidebar/nav-user";
 import { ProjectSwitcher } from "@/components/sidebar/project-switcher";
 import {
@@ -26,7 +28,7 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { ProjectSettings } from "../project-settings";
+
 import { NavMain } from "./nav-main";
 
 const navMainItems: {
@@ -56,8 +58,8 @@ const navMainItems: {
   },
 ];
 
-export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const [projectSettingsOpen, setProjectSettingsOpen] = React.useState(false);
+export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
+  const [projectSettingsOpen, setProjectSettingsOpen] = useState(false);
 
   return (
     <>
@@ -93,7 +95,11 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
             <SidebarGroupLabel>Project Management</SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => setProjectSettingsOpen(true)}>
+                <SidebarMenuButton
+                  onClick={() => {
+                    setProjectSettingsOpen(true);
+                  }}
+                >
                   <SettingsIcon />
                   <span>Settings</span>
                 </SidebarMenuButton>
@@ -107,12 +113,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      {projectSettingsOpen && (
-        <ProjectSettings
-          open={projectSettingsOpen}
-          onOpenChange={setProjectSettingsOpen}
-        />
-      )}
+      {projectSettingsOpen && <ProjectSettings onOpenChange={setProjectSettingsOpen} />}
     </>
   );
 }

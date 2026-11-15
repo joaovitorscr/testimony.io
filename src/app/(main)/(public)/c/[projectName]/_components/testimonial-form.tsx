@@ -5,35 +5,18 @@ import type { Id } from "@convex/_generated/dataModel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
-import { Camera, Check, StarIcon, UserIcon, X } from "lucide-react";
-import { type ChangeEvent, useRef, useState } from "react";
+import { StarIcon } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import {
-  ImageCrop,
-  ImageCropApply,
-  ImageCropContent,
-  ImageCropReset,
-} from "@/components/ui/image-crop";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+
+import { AvatarPicker } from "./avatar-picker";
 
 const testimonialSchema = z.object({
   customerName: z.string().min(1, "Name is required"),
@@ -45,40 +28,37 @@ const testimonialSchema = z.object({
 
 type TestimonialFormValues = z.infer<typeof testimonialSchema>;
 
+function isStorageResponse(value: unknown): value is { storageId: Id<"_storage"> } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "storageId" in value &&
+    typeof value.storageId === "string"
+  );
+}
+
+/** Uploads a cropped data URL to a Convex upload URL and returns its storage id. */
 async function uploadAvatar(uploadUrl: string, dataUrl: string) {
-  const blob = await (await fetch(dataUrl)).blob();
+  const image = await fetch(dataUrl);
+  const blob = await image.blob();
   const response = await fetch(uploadUrl, {
     method: "POST",
-    headers: { "Content-Type": blob.type || "image/png" },
+    headers: { "Content-Type": blob.type === "" ? "image/png" : blob.type },
     body: blob,
   });
-  if (!response.ok) {
+  const body: unknown = await response.json();
+  if (!response.ok || !isStorageResponse(body)) {
     throw new Error("Avatar upload failed");
   }
-  const { storageId } = (await response.json()) as {
-    storageId: Id<"_storage">;
-  };
-  return storageId;
+  return body.storageId;
 }
 
 export function TestimonialForm({ token }: { token: string }) {
   const submitTestimonial = useMutation(api.collect.submit);
-  const generateAvatarUploadUrl = useMutation(
-    api.collect.generateAvatarUploadUrl,
-  );
+  const generateAvatarUploadUrl = useMutation(api.collect.generateAvatarUploadUrl);
   const [submitted, setSubmitted] = useState(false);
 
-  const [croppedImageForDisplay, setCroppedImageForDisplay] =
-    useState<string>("");
-
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const triggerFileSelect = () => {
-    fileInputRef.current?.click();
-  };
+  const [avatarDataUrl, setAvatarDataUrl] = useState("");
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(testimonialSchema),
@@ -92,24 +72,12 @@ export function TestimonialForm({ token }: { token: string }) {
     },
   });
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      setSelectedFile(file);
-      setIsDialogOpen(true);
-
-      event.target.value = "";
-    }
-  };
-
   const onSubmit = async (values: TestimonialFormValues) => {
     try {
-      let avatarStorageId: Id<"_storage"> | undefined;
-      if (croppedImageForDisplay) {
-        const uploadUrl = await generateAvatarUploadUrl({ token });
-        avatarStorageId = await uploadAvatar(uploadUrl, croppedImageForDisplay);
-      }
+      const avatarStorageId =
+        avatarDataUrl === ""
+          ? undefined
+          : await uploadAvatar(await generateAvatarUploadUrl({ token }), avatarDataUrl);
       await submitTestimonial({ token, ...values, avatarStorageId });
       setSubmitted(true);
     } catch (error) {
@@ -122,113 +90,24 @@ export function TestimonialForm({ token }: { token: string }) {
     }
   };
 
-  const handleCropComplete = (croppedImageBase64: string) => {
-    setCroppedImageForDisplay(croppedImageBase64);
-    setIsDialogOpen(false);
-    setSelectedFile(null);
-  };
-
-  const handleDialogClose = (open: boolean) => {
-    setIsDialogOpen(open);
-
-    if (!open) {
-      setSelectedFile(null);
-    }
-  };
-
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 p-8 text-center">
-        <h2 className="font-bold text-2xl">Thank You!</h2>
-        <p className="text-muted-foreground">
-          Your testimonial has been received.
-        </p>
+        <h2 className="text-2xl font-bold">Thank You!</h2>
+        <p className="text-muted-foreground">Your testimonial has been received.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+    <form
+      className="w-full space-y-6"
+      onSubmit={(event) => {
+        void form.handleSubmit(onSubmit)(event);
+      }}
+    >
       <FieldGroup>
-        <div>
-          <div className="flex flex-col items-start gap-2">
-            <Label>Picture (Optional)</Label>
-            <div className="relative inline-block">
-              <Avatar className="size-20">
-                <AvatarImage
-                  src={croppedImageForDisplay}
-                  alt="Testimonial Avatar"
-                />
-                <AvatarFallback>
-                  <UserIcon />
-                </AvatarFallback>
-              </Avatar>
-              <Button
-                type="button"
-                size="sm"
-                className="absolute right-0 bottom-0 size-8 rounded-full p-0"
-                onClick={triggerFileSelect}
-              >
-                <Camera className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          <Input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg, image/png, image/gif, image/webp"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Crop your profile picture</DialogTitle>
-                <DialogDescription>
-                  Adjust the crop area and click apply when you're done.
-                </DialogDescription>
-              </DialogHeader>
-
-              {selectedFile && (
-                <div className="py-4">
-                  <ImageCrop
-                    aspect={1}
-                    circularCrop
-                    file={selectedFile}
-                    maxImageSize={400 * 400}
-                    onCrop={handleCropComplete}
-                  >
-                    <div className="my-8 flex flex-col items-center justify-center">
-                      <ImageCropContent />
-                    </div>
-                    <div className="flex items-center justify-between gap-2 pt-4">
-                      <ImageCropApply asChild>
-                        <Button variant="outline" size="icon">
-                          <Check />
-                        </Button>
-                      </ImageCropApply>
-                      <ImageCropReset asChild>
-                        <Button variant="outline" size="sm">
-                          Reset
-                        </Button>
-                      </ImageCropReset>
-                      <Button
-                        onClick={() => setIsDialogOpen(false)}
-                        size="icon"
-                        type="button"
-                        variant="outline"
-                      >
-                        <X className="size-4" />
-                      </Button>
-                    </div>
-                  </ImageCrop>
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
+        <AvatarPicker value={avatarDataUrl} onChange={setAvatarDataUrl} />
 
         {/* Rating */}
         <Controller
@@ -242,18 +121,14 @@ export function TestimonialForm({ token }: { token: string }) {
                   <button
                     key={star}
                     type="button"
-                    onClick={() => field.onChange(star)}
+                    onClick={() => {
+                      field.onChange(star);
+                    }}
                     className={`rounded-full p-1 transition-colors ${
-                      field.value >= star
-                        ? "text-primary"
-                        : "text-muted-foreground/30"
+                      field.value >= star ? "text-primary" : "text-muted-foreground/30"
                     }`}
                   >
-                    <StarIcon
-                      className={`h-8 w-8 ${
-                        field.value >= star ? "fill-primary" : ""
-                      }`}
-                    />
+                    <StarIcon className={`h-8 w-8 ${field.value >= star ? "fill-primary" : ""}`} />
                   </button>
                 ))}
               </div>
@@ -268,12 +143,7 @@ export function TestimonialForm({ token }: { token: string }) {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="text">Your Testimonial</FieldLabel>
-              <Textarea
-                {...field}
-                id="text"
-                placeholder="Share your experience..."
-                rows={4}
-              />
+              <Textarea {...field} id="text" placeholder="Share your experience..." rows={4} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -297,9 +167,7 @@ export function TestimonialForm({ token }: { token: string }) {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="customerTitle">
-                  Job Title (Optional)
-                </FieldLabel>
+                <FieldLabel htmlFor="customerTitle">Job Title (Optional)</FieldLabel>
                 <Input {...field} id="customerTitle" placeholder="CEO" />
               </Field>
             )}
@@ -310,14 +178,8 @@ export function TestimonialForm({ token }: { token: string }) {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="customerCompany">
-                  Company (Optional)
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="customerCompany"
-                  placeholder="Acme Inc."
-                />
+                <FieldLabel htmlFor="customerCompany">Company (Optional)</FieldLabel>
+                <Input {...field} id="customerCompany" placeholder="Acme Inc." />
               </Field>
             )}
           />

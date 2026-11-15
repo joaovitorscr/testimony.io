@@ -1,4 +1,5 @@
 import { StarIcon } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 export function RatingStars({ value }: { value: number }) {
@@ -9,15 +10,11 @@ export function RatingStars({ value }: { value: number }) {
           key={star}
           className={cn(
             "size-4 transition-colors",
-            star <= value
-              ? "fill-amber-400 text-amber-400"
-              : "fill-muted text-muted",
+            star <= value ? "fill-amber-400 text-amber-400" : "fill-muted text-muted",
           )}
         />
       ))}
-      <span className="ml-2 font-medium text-muted-foreground text-sm">
-        {value}/5
-      </span>
+      <span className="ml-2 text-sm font-medium text-muted-foreground">{value}/5</span>
     </div>
   );
 }

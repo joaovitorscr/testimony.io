@@ -1,11 +1,11 @@
 "use client";
 
-import { api } from "@convex/_generated/api";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { api } from "@convex/_generated/api";
 import { useQuery } from "convex/react";
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
-import type { Route } from "next";
 import { useRouter } from "next/navigation";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -34,11 +34,13 @@ export function NavUser() {
     return <Skeleton className="h-10 w-full" />;
   }
 
-  if (user === null) return null;
+  if (user === null) {
+    return null;
+  }
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/sign-in" as Route);
+    router.push("/sign-in");
   };
 
   return (
@@ -52,9 +54,7 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
-                <AvatarFallback className="rounded-lg">
-                  {user.name?.charAt(0)}
-                </AvatarFallback>
+                <AvatarFallback className="rounded-lg">{user.name?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -73,9 +73,7 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
-                  <AvatarFallback className="rounded-lg">
-                    {user.name?.charAt(0)}
-                  </AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{user.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -85,13 +83,21 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/account")}>
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push("/account");
+                }}
+              >
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
+            <DropdownMenuItem
+              onClick={() => {
+                void handleSignOut();
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>

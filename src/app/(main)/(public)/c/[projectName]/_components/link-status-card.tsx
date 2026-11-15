@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  CheckCircle2Icon,
-  ClockIcon,
-  LinkIcon,
-  XCircleIcon,
-} from "lucide-react";
+import { CheckCircle2Icon, ClockIcon, LinkIcon, XCircleIcon } from "lucide-react";
 import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,10 +17,10 @@ import { cn } from "@/lib/utils";
 
 type LinkStatus = "invalid" | "not-found" | "cancelled" | "used" | "expired";
 
-interface LinkStatusCardProps {
+type LinkStatusCardProps = {
   status: LinkStatus;
   className?: string;
-}
+};
 
 const statusConfig: Record<
   LinkStatus,
@@ -109,17 +105,14 @@ export function LinkStatusCard({ status, className }: LinkStatusCardProps) {
     >
       <Card
         className={cn(
-          "fade-in-0 slide-in-from-bottom-4 w-full max-w-md animate-in border-l-4 duration-500",
+          "w-full max-w-md animate-in border-l-4 duration-500 fade-in-0 slide-in-from-bottom-4",
           config.accentBorder,
         )}
       >
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
             <div
-              className={cn(
-                "flex h-14 w-14 items-center justify-center rounded-xl",
-                config.iconBg,
-              )}
+              className={cn("flex h-14 w-14 items-center justify-center rounded-xl", config.iconBg)}
             >
               <Icon className={cn("h-7 w-7", config.iconColor)} />
             </div>
@@ -135,10 +128,9 @@ export function LinkStatusCard({ status, className }: LinkStatusCardProps) {
 
         <CardContent className="pb-4">
           <div className="rounded-lg bg-muted/50 p-4">
-            <p className="text-muted-foreground text-sm">
-              <span className="font-medium text-foreground">Need help?</span>{" "}
-              Contact the person who sent you this invitation link for
-              assistance.
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Need help?</span> Contact the person who
+              sent you this invitation link for assistance.
             </p>
           </div>
         </CardContent>

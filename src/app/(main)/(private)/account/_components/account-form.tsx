@@ -4,10 +4,10 @@ import { api } from "@convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
-import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
+import { z } from "zod";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +40,6 @@ export function AccountForm({ user }: { user: User }) {
 }
 
 function ProfileCard({ user }: { user: User }) {
-  const [isUpdating, setIsUpdating] = React.useState(false);
   const updateProfile = useMutation(api.users.updateProfile);
 
   const form = useForm<ProfileFormValues>({
@@ -52,53 +51,35 @@ function ProfileCard({ user }: { user: User }) {
   });
 
   const onSubmit = async (values: ProfileFormValues) => {
-    setIsUpdating(true);
-
-    const nameChanged = values.name !== user.name;
-
     try {
-      if (nameChanged) {
-        await updateProfile({ name: values.name });
-      }
-
-      setIsUpdating(false);
+      await updateProfile({ name: values.name });
       form.reset({ name: values.name });
       toast.success("Profile updated");
-    } catch (error) {
-      form.setError("root", {
-        message: error instanceof Error ? error.message : "An error occurred",
-      });
-      setIsUpdating(false);
+    } catch {
       toast.error("Failed to update profile");
     }
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form
+      onSubmit={(event) => {
+        void form.handleSubmit(onSubmit)(event);
+      }}
+    >
       <Card>
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>
-            Update your display name. Your email and avatar come from your
-            Google or GitHub account.
+            Update your display name. Your email and avatar come from your Google or GitHub account.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>
-            {form.formState.errors.root && (
-              <Field orientation="horizontal" className="justify-center">
-                <FieldError errors={[form.formState.errors.root]} />
-              </Field>
-            )}
-
             <Field orientation="horizontal" className="items-center gap-6">
               <Avatar className="size-16 border-2 border-border">
-                <AvatarImage
-                  src={user.image ?? undefined}
-                  alt={user.name ?? "User"}
-                />
-                <AvatarFallback className="font-semibold text-xl">
-                  {user.name?.charAt(0)?.toUpperCase() || "U"}
+                <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
+                <AvatarFallback className="text-xl font-semibold">
+                  {(user.name ?? "U").charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
 
@@ -116,9 +97,7 @@ function ProfileCard({ user }: { user: User }) {
                         placeholder="Your name"
                         aria-invalid={fieldState.invalid}
                       />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                   )}
                 />
@@ -127,11 +106,8 @@ function ProfileCard({ user }: { user: User }) {
           </FieldGroup>
         </CardContent>
         <CardFooter className="border-t pt-6">
-          <Button
-            type="submit"
-            disabled={isUpdating || !form.formState.isDirty}
-          >
-            {isUpdating ? (
+          <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
+            {form.formState.isSubmitting ? (
               <>
                 <Spinner />
                 <span>Saving...</span>

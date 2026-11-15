@@ -1,28 +1,18 @@
 import { ConvexError, v } from "convex/values";
+
 import { mutation, query } from "./_generated/server";
 import { requireMember } from "./lib/access";
+import { normalizeHost } from "./lib/hosts";
 import { widgetSettingsFields } from "./schema";
 import { withAvatarUrl } from "./testimonials";
 
 const vSettings = v.object(widgetSettingsFields);
 
-/** Hostname without `www.`, or null when the input is not a URL/domain. */
-export function normalizeHost(input: string): string | null {
-  const value = input.trim();
-  if (value.length === 0) return null;
-  try {
-    const url = new URL(value.includes("://") ? value : `https://${value}`);
-    return url.hostname.replace(/^www\./, "").toLowerCase() || null;
-  } catch {
-    return null;
-  }
-}
-
 export const get = query({
   args: { projectId: v.id("projects") },
   handler: async (ctx, { projectId }) => {
     await requireMember(ctx, projectId);
-    return await ctx.db
+    return ctx.db
       .query("widgets")
       .withIndex("by_project", (q) => q.eq("projectId", projectId))
       .unique();
@@ -38,12 +28,8 @@ export const updateSettings = mutation({
       throw new ConvexError("Widget not found");
     }
     await requireMember(ctx, widget.projectId);
-    const hex = /^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/;
-    for (const color of [
-      settings.primaryColor,
-      settings.backgroundColor,
-      settings.textColor,
-    ]) {
+    const hex = /^#[\da-f]{6}(?:[\da-f]{2})?$/iu;
+    for (const color of [settings.primaryColor, settings.backgroundColor, settings.textColor]) {
       if (!hex.test(color)) {
         throw new ConvexError(`Invalid color: ${color}`);
       }
@@ -75,7 +61,7 @@ export const setAllowedDomains = mutation({
       }
     }
     await ctx.db.patch("widgets", widgetId, {
-      allowedDomains: [...new Set(domains.map((d) => d.trim()))],
+      allowedDomains: [...new Set(domains.map((domain) => domain.trim()))],
     });
     return null;
   },
@@ -89,7 +75,7 @@ export const getPublic = query({
   args: { widgetId: v.string(), origin: v.optional(v.string()) },
   handler: async (ctx, { widgetId, origin }) => {
     const id = ctx.db.normalizeId("widgets", widgetId);
-    const widget = id ? await ctx.db.get("widgets", id) : null;
+    const widget = id === null ? null : await ctx.db.get("widgets", id);
     if (widget === null) {
       return { status: "not-found" } as const;
     }
@@ -97,7 +83,7 @@ export const getPublic = query({
     if (widget.allowedDomains.length === 0) {
       return { status: "no-domains" } as const;
     }
-    const embedHost = origin ? normalizeHost(origin) : null;
+    const embedHost = origin === undefined ? null : normalizeHost(origin);
     const allowed = widget.allowedDomains.some(
       (domain) => embedHost !== null && normalizeHost(domain) === embedHost,
     );
@@ -118,15 +104,15 @@ export const getPublic = query({
       status: "ok",
       settings,
       testimonials: await Promise.all(
-        testimonials.map(async (t) => {
-          const { avatarUrl } = await withAvatarUrl(ctx, t);
+        testimonials.map(async (testimonial) => {
+          const { avatarUrl } = await withAvatarUrl(ctx, testimonial);
           return {
-            _id: t._id,
-            customerName: t.customerName,
-            customerCompany: t.customerCompany,
-            customerTitle: t.customerTitle,
-            rating: t.rating,
-            text: t.text,
+            _id: testimonial._id,
+            customerName: testimonial.customerName,
+            customerCompany: testimonial.customerCompany,
+            customerTitle: testimonial.customerTitle,
+            rating: testimonial.rating,
+            text: testimonial.text,
             avatarUrl,
           };
         }),

@@ -2,6 +2,7 @@ import { vGithubProfile } from "@convex-dev/auth/methods/github/server";
 import { vGoogleProfile } from "@convex-dev/auth/methods/google/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
+
 import { internalMutation, mutation, query } from "./_generated/server";
 import { requireUserId } from "./lib/access";
 
@@ -41,7 +42,7 @@ export const createUser = internalMutation({
   handler: async (ctx, { method }) => {
     const fields = profileFields(method);
 
-    if (fields.email && fields.emailVerified) {
+    if (fields.email !== undefined && fields.emailVerified) {
       const existing = await ctx.db
         .query("users")
         .withIndex("by_email", (q) => q.eq("email", fields.email))
@@ -52,7 +53,7 @@ export const createUser = internalMutation({
       }
     }
 
-    return await ctx.db.insert("users", {
+    return ctx.db.insert("users", {
       ...fields,
       email: fields.emailVerified ? fields.email : undefined,
       lastSignedInAt: Date.now(),

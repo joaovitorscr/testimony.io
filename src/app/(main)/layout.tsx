@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Lora, Plus_Jakarta_Sans } from "next/font/google";
-import { Suspense } from "react";
-import "../../styles/globals.css";
-
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+import "@/styles/globals.css";
+
+import { Suspense } from "react";
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { env } from "@/env";
-import { ConvexAuthNextjsServerProvider } from "@/lib/convexAuth";
+import { ConvexAuthNextjsServerProvider } from "@/lib/convex-auth";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",

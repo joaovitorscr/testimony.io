@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  CheckCircle2Icon,
-  LinkIcon,
-  SparklesIcon,
-  XCircleIcon,
-} from "lucide-react";
+import { CheckCircle2Icon, LinkIcon, SparklesIcon, XCircleIcon } from "lucide-react";
+
 export function StatsHeader({
   stats,
 }: {
@@ -14,7 +10,7 @@ export function StatsHeader({
   return (
     <header className="px-8 py-4">
       <div className="mb-6">
-        <h2 className="font-bold text-3xl tracking-tight">Collection Links</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Collection Links</h2>
         <p className="mt-1 text-muted-foreground">
           Generate unique links to collect testimonials from your customers
         </p>
@@ -86,20 +82,12 @@ function StatCard({
     <div
       className={`flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm ${variantStyles[variant]}`}
     >
-      <div
-        className={`rounded-lg bg-background/80 p-2.5 shadow-sm ${iconStyles[variant]}`}
-      >
+      <div className={`rounded-lg bg-background/80 p-2.5 shadow-sm ${iconStyles[variant]}`}>
         {icon}
       </div>
       <div>
-        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          {label}
-        </p>
-        <p
-          className={`font-bold text-2xl tabular-nums ${valueStyles[variant]}`}
-        >
-          {value}
-        </p>
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
+        <p className={`text-2xl font-bold tabular-nums ${valueStyles[variant]}`}>{value}</p>
       </div>
     </div>
   );

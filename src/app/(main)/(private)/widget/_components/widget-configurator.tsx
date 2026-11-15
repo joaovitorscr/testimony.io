@@ -2,8 +2,6 @@
 
 import { api } from "@convex/_generated/api";
 import type { Doc } from "@convex/_generated/dataModel";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Chrome } from "@uiw/react-color";
 import { useMutation } from "convex/react";
 import {
   ArrowDownIcon,
@@ -18,121 +16,77 @@ import {
   UserIcon,
 } from "lucide-react";
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
-import z from "zod";
-import { Button } from "@/components/ui/button";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Field,
-  FieldContent,
   FieldDescription,
-  FieldError,
   FieldGroup,
-  FieldLabel,
   FieldLegend,
   FieldSeparator,
   FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import type { WidgetSettings } from "@/components/widgets/types";
 
-export const widgetConfigFormSchema = z.object({
-  primaryColor: z.string(),
-  backgroundColor: z.string(),
-  textColor: z.string(),
-  displayLayout: z.enum(["list", "grid"]),
-  displayOrder: z.enum(["newest", "oldest"]),
-  showRating: z.boolean(),
-  showAvatar: z.boolean(),
-  gridColumns: z.number().min(1).max(6),
-  gridGap: z.number().min(0).max(48),
-});
+import {
+  type ChoiceOption,
+  ChoiceField,
+  ColorField,
+  SliderField,
+  SwitchField,
+} from "./widget-fields";
 
-export type WidgetConfigForm = z.infer<typeof widgetConfigFormSchema>;
-
-const displayLayoutOptions = [
-  {
-    id: "list",
-    title: "List",
-    description: "Show testimonials in a list.",
-    icon: ListIcon,
-  },
-  {
-    id: "grid",
-    title: "Grid",
-    description: "Show testimonials in a grid.",
-    icon: LayoutGridIcon,
-  },
+const layoutOptions: ChoiceOption[] = [
+  { id: "list", title: "List", description: "Show testimonials in a list.", icon: ListIcon },
+  { id: "grid", title: "Grid", description: "Show testimonials in a grid.", icon: LayoutGridIcon },
 ];
 
-const displayOrderOptions = [
-  {
-    id: "newest",
-    title: "Newest",
-    description: "Display testimonials from newest to oldest.",
-    icon: ArrowUpIcon,
-  },
-  {
-    id: "oldest",
-    title: "Oldest",
-    description: "Display testimonials from oldest to newest.",
-    icon: ArrowDownIcon,
-  },
+const orderOptions: ChoiceOption[] = [
+  { id: "newest", title: "Newest", description: "Newest testimonials first.", icon: ArrowUpIcon },
+  { id: "oldest", title: "Oldest", description: "Oldest testimonials first.", icon: ArrowDownIcon },
 ];
 
-export default function WidgetConfigurator({
-  widget: widgetConfig,
-}: {
-  widget: Doc<"widgets">;
-}) {
-  const form = useForm<WidgetConfigForm>({
-    resolver: zodResolver(widgetConfigFormSchema),
+/** Widget settings form. Every change is saved after a short pause. */
+export function WidgetConfigurator({ widget }: { widget: Doc<"widgets"> }) {
+  const form = useForm<WidgetSettings>({
     defaultValues: {
-      primaryColor: widgetConfig.primaryColor,
-      backgroundColor: widgetConfig.backgroundColor,
-      textColor: widgetConfig.textColor,
-      displayLayout: widgetConfig.displayLayout,
-      displayOrder: widgetConfig.displayOrder,
-      showRating: widgetConfig.showRating,
-      showAvatar: widgetConfig.showAvatar,
-      gridColumns: widgetConfig.gridColumns,
-      gridGap: widgetConfig.gridGap,
+      primaryColor: widget.primaryColor,
+      backgroundColor: widget.backgroundColor,
+      textColor: widget.textColor,
+      displayLayout: widget.displayLayout,
+      displayOrder: widget.displayOrder,
+      showRating: widget.showRating,
+      showAvatar: widget.showAvatar,
+      gridColumns: widget.gridColumns,
+      gridGap: widget.gridGap,
     },
   });
-
   const updateSettings = useMutation(api.widgets.updateSettings);
 
-  const onSubmit = () => {
-    updateSettings({
-      widgetId: widgetConfig._id,
-      settings: form.getValues(),
-    }).catch(() => toast.error("Failed to save widget settings"));
-  };
+  const save = useDebouncedCallback(async (settings: WidgetSettings) => {
+    try {
+      await updateSettings({ widgetId: widget._id, settings });
+    } catch {
+      toast.error("Failed to save widget settings");
+    }
+  }, 600);
 
-  const triggerDebouncedUpdateWidgetConfig = useDebouncedCallback(
-    onSubmit,
-    600,
+  useEffect(
+    () =>
+      form.subscribe({
+        formState: { values: true },
+        callback: ({ values }) => {
+          void save(values);
+        },
+      }),
+    [form, save],
   );
 
-  // Watch all form values and trigger debounced update on change
-  useEffect(() => {
-    const subscription = form.watch(() => {
-      triggerDebouncedUpdateWidgetConfig();
-    });
-    return () => subscription.unsubscribe();
-  }, [form, triggerDebouncedUpdateWidgetConfig]);
+  const { control } = form;
 
   return (
     <section className="flex h-[calc(100vh-12rem)] flex-col">
@@ -150,233 +104,35 @@ export default function WidgetConfigurator({
                       <PaletteIcon />
                       Widget Colors
                     </FieldLegend>
-                    <FieldDescription>
-                      Choose the colors of your widget.
-                    </FieldDescription>
+                    <FieldDescription>Choose the colors of your widget.</FieldDescription>
                     <FieldGroup>
-                      <Controller
-                        control={form.control}
-                        name="primaryColor"
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="themeColor">
-                              Primary Color
-                            </FieldLabel>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  type="button"
-                                  id="themeColor"
-                                >
-                                  <div
-                                    className={cn("size-4 rounded-full")}
-                                    style={{
-                                      backgroundColor: field.value,
-                                    }}
-                                  />
-                                  {field.value}
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <Chrome
-                                  style={{
-                                    backgroundColor: "var(--background)",
-                                  }}
-                                  color={field.value}
-                                  onChange={(color) => {
-                                    field.onChange(color.hex);
-                                  }}
-                                />
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </Field>
-                        )}
-                      />
-                      <Controller
-                        control={form.control}
+                      <ColorField control={control} name="primaryColor" label="Primary Color" />
+                      <ColorField
+                        control={control}
                         name="backgroundColor"
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="themeColor">
-                              Background Color
-                            </FieldLabel>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  type="button"
-                                  id="themeColor"
-                                >
-                                  <div
-                                    className={cn("size-4 rounded-full")}
-                                    style={{
-                                      backgroundColor: field.value,
-                                    }}
-                                  />
-                                  {field.value}
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <Chrome
-                                  style={{
-                                    backgroundColor: "var(--background)",
-                                  }}
-                                  color={field.value}
-                                  onChange={(color) => {
-                                    field.onChange(color.hex);
-                                  }}
-                                />
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </Field>
-                        )}
+                        label="Background Color"
                       />
-                      <Controller
-                        control={form.control}
-                        name="textColor"
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="themeColor">
-                              Text Color
-                            </FieldLabel>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  type="button"
-                                  id="themeColor"
-                                >
-                                  <div
-                                    className={cn("size-4 rounded-full")}
-                                    style={{
-                                      backgroundColor: field.value,
-                                    }}
-                                  />
-                                  {field.value}
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <Chrome
-                                  style={{
-                                    backgroundColor: "var(--background)",
-                                  }}
-                                  color={field.value}
-                                  onChange={(color) => {
-                                    field.onChange(color.hex);
-                                  }}
-                                />
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </Field>
-                        )}
-                      />
+                      <ColorField control={control} name="textColor" label="Text Color" />
                     </FieldGroup>
                   </FieldSet>
-
                   <Separator orientation="vertical" />
-
-                  <Controller
-                    control={form.control}
+                  <ChoiceField
+                    control={control}
                     name="displayOrder"
-                    render={({ field, fieldState }) => (
-                      <FieldSet data-invalid={fieldState.invalid}>
-                        <FieldLegend className="flex flex-row gap-2">
-                          <ArrowUpDownIcon />
-                          Display Order
-                        </FieldLegend>
-                        <FieldDescription>
-                          Choose the order in which your testimonials are
-                          displayed.
-                        </FieldDescription>
-                        <RadioGroup
-                          name={field.name}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          aria-invalid={fieldState.invalid}
-                        >
-                          {displayOrderOptions.map((option) => (
-                            <FieldLabel
-                              key={option.id}
-                              htmlFor={`form-widget-configurator-displayOrder-${option.id}`}
-                            >
-                              <Field
-                                orientation="horizontal"
-                                data-invalid={fieldState.invalid}
-                              >
-                                <FieldContent className="flex-row items-center gap-4">
-                                  <option.icon />
-                                  <div className="flex flex-col gap-2">
-                                    <FieldTitle>{option.title}</FieldTitle>
-                                    <FieldDescription>
-                                      {option.description}
-                                    </FieldDescription>
-                                  </div>
-                                </FieldContent>
-                                <RadioGroupItem
-                                  value={option.id}
-                                  id={`form-widget-configurator-displayOrder-${option.id}`}
-                                  aria-invalid={fieldState.invalid}
-                                />
-                              </Field>
-                            </FieldLabel>
-                          ))}
-                        </RadioGroup>
-                      </FieldSet>
-                    )}
+                    legend="Display Order"
+                    description="Choose the order in which your testimonials are displayed."
+                    icon={ArrowUpDownIcon}
+                    options={orderOptions}
                   />
                 </div>
                 <FieldSeparator />
-                <Controller
-                  control={form.control}
+                <ChoiceField
+                  control={control}
                   name="displayLayout"
-                  render={({ field, fieldState }) => (
-                    <FieldSet>
-                      <FieldLegend className="flex flex-row gap-2">
-                        <LayoutGridIcon />
-                        Display Layout
-                      </FieldLegend>
-                      <FieldDescription>
-                        Choose how you want to display your testimonials.
-                      </FieldDescription>
-                      <RadioGroup
-                        name={field.name}
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        aria-invalid={fieldState.invalid}
-                      >
-                        {displayLayoutOptions.map((option) => (
-                          <FieldLabel
-                            key={option.id}
-                            htmlFor={`form-widget-configurator-displayLayout-${option.id}`}
-                          >
-                            <Field
-                              orientation="horizontal"
-                              data-invalid={fieldState.invalid}
-                            >
-                              <FieldContent className="flex-row items-center gap-4">
-                                <option.icon />
-                                <div className="flex flex-col gap-1">
-                                  <FieldTitle>{option.title}</FieldTitle>
-                                  <FieldDescription>
-                                    {option.description}
-                                  </FieldDescription>
-                                </div>
-                              </FieldContent>
-                              <RadioGroupItem
-                                value={option.id}
-                                id={`form-widget-configurator-displayLayout-${option.id}`}
-                                aria-invalid={fieldState.invalid}
-                              />
-                            </Field>
-                          </FieldLabel>
-                        ))}
-                      </RadioGroup>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </FieldSet>
-                  )}
+                  legend="Display Layout"
+                  description="Choose how you want to display your testimonials."
+                  icon={LayoutGridIcon}
+                  options={layoutOptions}
                 />
                 <FieldSeparator />
                 <FieldSet>
@@ -384,68 +140,21 @@ export default function WidgetConfigurator({
                     <EyeIcon />
                     Visibility Options
                   </FieldLegend>
-                  <FieldDescription>
-                    Choose which elements you want to display in your widget.
-                  </FieldDescription>
+                  <FieldDescription>Choose which elements your widget shows.</FieldDescription>
                   <FieldGroup>
-                    <Controller
-                      control={form.control}
+                    <SwitchField
+                      control={control}
                       name="showRating"
-                      render={({ field, fieldState }) => (
-                        <Field
-                          orientation="horizontal"
-                          data-invalid={fieldState.invalid}
-                        >
-                          <FieldContent>
-                            <FieldLabel htmlFor="form-widget-configuration-show-rating">
-                              <StarIcon /> Show Rating
-                            </FieldLabel>
-                            <FieldDescription>
-                              Show the rating the for each testimonial.
-                            </FieldDescription>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </FieldContent>
-                          <Switch
-                            id="form-widget-configuration-show-rating"
-                            name={field.name}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            aria-invalid={fieldState.invalid}
-                          />
-                        </Field>
-                      )}
+                      label="Show Rating"
+                      description="Show the star rating of each testimonial."
+                      icon={StarIcon}
                     />
-                    <Controller
-                      control={form.control}
+                    <SwitchField
+                      control={control}
                       name="showAvatar"
-                      render={({ field, fieldState }) => (
-                        <Field
-                          orientation="horizontal"
-                          data-invalid={fieldState.invalid}
-                        >
-                          <FieldContent>
-                            <FieldLabel htmlFor="form-widget-configuration-show-avatar">
-                              <UserIcon /> Show Avatar
-                            </FieldLabel>
-                            <FieldDescription>
-                              Show the avatar of the customer for each
-                              testimonial.
-                            </FieldDescription>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </FieldContent>
-                          <Switch
-                            id="form-widget-configuration-show-avatar"
-                            name={field.name}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            aria-invalid={fieldState.invalid}
-                          />
-                        </Field>
-                      )}
+                      label="Show Avatar"
+                      description="Show the customer's photo or initials."
+                      icon={UserIcon}
                     />
                   </FieldGroup>
                 </FieldSet>
@@ -459,80 +168,27 @@ export default function WidgetConfigurator({
                     Configure the grid layout for your testimonials.
                   </FieldDescription>
                   <FieldGroup>
-                    <Controller
-                      control={form.control}
+                    <SliderField
+                      control={control}
                       name="gridColumns"
-                      render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor="form-widget-configuration-grid-columns">
-                            Columns
-                          </FieldLabel>
-                          <FieldDescription>
-                            Number of columns to display (1-6).
-                          </FieldDescription>
-                          <div className="relative pt-6">
-                            <Slider
-                              id="form-widget-configuration-grid-columns"
-                              min={1}
-                              max={6}
-                              step={1}
-                              value={[field.value]}
-                              onValueChange={(value) =>
-                                field.onChange(value[0])
-                              }
-                            />
-                            <div
-                              className="-translate-x-1/2 -top-2 absolute rounded bg-primary px-2 py-1 text-primary-foreground text-xs"
-                              style={{ left: `${(field.value / 6) * 100}%` }}
-                            >
-                              {field.value} columns
-                            </div>
-                          </div>
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      )}
+                      label="Columns"
+                      description="Number of columns to display (1-6)."
+                      min={1}
+                      max={6}
+                      unit=" columns"
                     />
-                    <Controller
-                      control={form.control}
+                    <SliderField
+                      control={control}
                       name="gridGap"
-                      render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor="form-widget-configuration-grid-gap">
-                            Gap
-                          </FieldLabel>
-                          <FieldDescription>
-                            Space between testimonial cards (0-48px).
-                          </FieldDescription>
-                          <div className="relative pt-6">
-                            <Slider
-                              id="form-widget-configuration-grid-gap"
-                              min={0}
-                              max={48}
-                              step={1}
-                              value={[field.value]}
-                              onValueChange={(value) =>
-                                field.onChange(value[0])
-                              }
-                            />
-                            <div
-                              className="-translate-x-1/2 -top-2 absolute rounded bg-primary px-2 py-1 text-primary-foreground text-xs"
-                              style={{ left: `${(field.value / 48) * 100}%` }}
-                            >
-                              {field.value}px
-                            </div>
-                          </div>
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      )}
+                      label="Gap"
+                      description="Space between testimonial cards (0-48px)."
+                      min={0}
+                      max={48}
+                      unit="px"
                     />
                   </FieldGroup>
                 </FieldSet>
               </FieldGroup>
-              <ScrollBar orientation="vertical" />
             </form>
           </ScrollArea>
         </CardContent>
