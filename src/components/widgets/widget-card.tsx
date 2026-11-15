@@ -1,11 +1,8 @@
-import type {
-  Testimonial,
-  WidgetConfig,
-} from "../../../generated/prisma/client";
+import type { WidgetSettings, WidgetTestimonial } from "./types";
 
 interface WidgetCardProps {
-  testimony: Testimonial;
-  widgetConfig: WidgetConfig;
+  testimony: WidgetTestimonial;
+  widgetConfig: WidgetSettings;
 }
 
 function StarIcon({
@@ -45,7 +42,7 @@ export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
     .toUpperCase()
     .slice(0, 2);
 
-  const hasAvatar = testimony.customerAvatarUrl;
+  const hasAvatar = testimony.avatarUrl;
 
   return (
     <div
@@ -65,7 +62,7 @@ export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
         <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <StarIcon
-              key={`star-${testimony.id}-${i}`}
+              key={`star-${testimony._id}-${i}`}
               index={i}
               filled={i < (testimony.rating ?? 0)}
               fillColor={widgetConfig.primaryColor}
@@ -113,7 +110,7 @@ export function WidgetCard({ testimony, widgetConfig }: WidgetCardProps) {
             {hasAvatar ? (
               // biome-ignore lint: img element is required for widget embeddability in external apps
               <img
-                src={testimony.customerAvatarUrl ?? ""}
+                src={testimony.avatarUrl ?? ""}
                 alt={testimony.customerName}
                 style={{
                   width: "100%",

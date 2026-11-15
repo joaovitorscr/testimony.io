@@ -22,152 +22,80 @@
 
 ## ✨ Features
 
-- 📝 **Collect Testimonials** - Create shareable links to collect testimonials from your customers
-- 🎨 **Customizable Widget** - Embed a beautiful, customizable widget on your website
+- 📝 **Collect Testimonials** - Create single-use links to collect testimonials from your customers
+- 🎨 **Customizable Widget** - Embed a customizable widget on your website
 - 👥 **Multi-Project Support** - Manage testimonials for multiple projects/products
-- ✅ **Approval Workflow** - Review and approve testimonials before displaying them
+- ✅ **Approval Workflow** - Only approved testimonials appear in your widget
 - ⭐ **Rating System** - Collect star ratings alongside text testimonials
-- 🔒 **Secure Authentication** - Powered by Better Auth with social login support
-- 🌐 **Domain Whitelisting** - Control which domains can embed your widget
-- 📊 **Dashboard** - Clean, modern dashboard to manage all your testimonials
+- 🔒 **One-click sign-in** - Google and GitHub via Convex Auth
+- 🌐 **Domain Allowlist** - Control which domains can embed your widget
+- ⚡ **Realtime dashboard** - New testimonials appear instantly
 
 <br />
 
 ## 🛠️ Tech Stack
 
-<table>
-  <tr>
-    <td><strong>Framework</strong></td>
-    <td>Next.js 16 (App Router)</td>
-  </tr>
-  <tr>
-    <td><strong>Language</strong></td>
-    <td>TypeScript</td>
-  </tr>
-  <tr>
-    <td><strong>Styling</strong></td>
-    <td>Tailwind CSS 4</td>
-  </tr>
-  <tr>
-    <td><strong>UI Components</strong></td>
-    <td>Radix UI + shadcn/ui</td>
-  </tr>
-  <tr>
-    <td><strong>Database</strong></td>
-    <td>PostgreSQL</td>
-  </tr>
-  <tr>
-    <td><strong>ORM</strong></td>
-    <td>Prisma</td>
-  </tr>
-  <tr>
-    <td><strong>Authentication</strong></td>
-    <td>Better Auth</td>
-  </tr>
-  <tr>
-    <td><strong>API Layer</strong></td>
-    <td>tRPC</td>
-  </tr>
-  <tr>
-    <td><strong>State Management</strong></td>
-    <td>TanStack Query</td>
-  </tr>
-  <tr>
-    <td><strong>Forms</strong></td>
-    <td>React Hook Form + Zod</td>
-  </tr>
-  <tr>
-    <td><strong>Animations</strong></td>
-    <td>Motion (Framer Motion) + GSAP</td>
-  </tr>
-  <tr>
-    <td><strong>Package Manager</strong></td>
-    <td>Bun</td>
-  </tr>
-  <tr>
-    <td><strong>Linting</strong></td>
-    <td>Biome</td>
-  </tr>
-</table>
+| | |
+|---|---|
+| **Framework** | Next.js 16 (App Router) |
+| **Backend & database** | [Convex](https://convex.dev) (queries, mutations, file storage) |
+| **Authentication** | [Convex Auth](https://docs.convex.dev/auth/convex-auth) 2 (Google + GitHub OAuth, SSR cookies) |
+| **Styling / UI** | Tailwind CSS 4, Radix UI + shadcn/ui |
+| **Forms** | React Hook Form + Zod |
+| **Hosting** | Vercel (frontend) + Convex Cloud (backend) |
+| **Tooling** | Bun, Biome, TypeScript |
 
 <br />
 
 ## 🚀 Getting Started
 
-### Prerequisites
-
-Make sure you have the following installed:
-
-- [Bun](https://bun.sh/) (v1.3.5 or higher)
-- [Docker](https://docs.docker.com/engine/install/) or [Podman](https://podman.io/getting-started/installation)
-
-### Installation
-
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/your-username/testimony.io.git
-cd testimony.io
-```
-
-2. **Install dependencies**
-
 ```bash
 bun install
+bun run dev   # runs `convex dev` and `next dev` together
 ```
 
-3. **Set up environment variables**
+The first `convex dev` run asks you to log in and pick a project, then writes
+`CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL` to `.env.local`.
+
+### OAuth setup
+
+Create a Google OAuth client and a GitHub OAuth app. Use these callback URLs,
+where `<site>` is your deployment's `CONVEX_SITE_URL`
+(`npx convex env get CONVEX_SITE_URL`):
+
+- Google: `<site>/oauth/google/callback`
+- GitHub: `<site>/oauth/github/callback`
+
+Then set them on the Convex deployment:
 
 ```bash
-cp .env.example .env
+npx convex env set AUTH_GOOGLE_CLIENT_ID ...
+npx convex env set AUTH_GOOGLE_CLIENT_SECRET ...
+npx convex env set AUTH_GITHUB_CLIENT_ID ...
+npx convex env set AUTH_GITHUB_CLIENT_SECRET ...
+# Comma-separated frontend origins allowed as OAuth redirect targets
+npx convex env set SITE_URL http://localhost:3000
 ```
-
-Edit the `.env` file with your configuration (see [Environment Variables](#-environment-variables)).
-
-4. **Start the database**
-
-```bash
-./start-database.sh
-```
-
-This script will automatically start a PostgreSQL container using Docker or Podman.
-
-5. **Run database migrations**
-
-```bash
-bun run db:generate
-```
-
-6. **Start the development server**
-
-```bash
-bun run dev
-```
-
-The app will be available at [http://localhost:3000](http://localhost:3000) 🎉
 
 <br />
 
 ## 🔑 Environment Variables
 
-Create a `.env` file in the root directory with the following variables:
+| Where | Variable | Description |
+|---|---|---|
+| Next.js | `NEXT_PUBLIC_CONVEX_URL` | Convex deployment URL (written by `convex dev`, set by `convex deploy` on Vercel) |
+| Next.js | `NEXT_PUBLIC_APP_URL` | Public URL of the app (defaults to `http://localhost:3000` in dev) |
+| Vercel | `CONVEX_DEPLOY_KEY` | Production deploy key, so Vercel builds also deploy the Convex backend |
+| Convex | `AUTH_GOOGLE_CLIENT_ID` / `_SECRET` | Google OAuth credentials |
+| Convex | `AUTH_GITHUB_CLIENT_ID` / `_SECRET` | GitHub OAuth credentials |
+| Convex | `SITE_URL` | Allowed OAuth redirect origins, comma-separated |
 
-```env
-# Database
-DATABASE_URL="postgresql://postgres:password@localhost:5432/testimony"
+<br />
 
-# Authentication
-BETTER_AUTH_SECRET="your-secret-key"
+## 🚢 Deploying
 
-# App URL
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ Yes |
-| `BETTER_AUTH_SECRET` | Secret key for authentication (required in production) | ⚠️ Production |
-| `NEXT_PUBLIC_APP_URL` | Public URL of the app | ❌ No (defaults to localhost:3000) |
+Vercel runs `npx convex deploy --cmd 'next build'` (see `vercel.json`), which
+pushes the Convex functions to production and builds Next.js against them.
 
 <br />
 
@@ -175,24 +103,18 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
 ```
 testimony.io/
-├── prisma/                 # Database schema and migrations
-├── public/                 # Static assets and widget files
-│   └── widget/             # Embeddable widget files
-├── src/
-│   ├── app/                # Next.js App Router
-│   │   ├── (private)/      # Authenticated routes (dashboard)
-│   │   ├── (public)/       # Public routes (auth, collect links)
-│   │   └── api/            # API routes (tRPC, auth)
-│   ├── components/         # React components
-│   │   ├── ui/             # shadcn/ui components
-│   │   └── widgets/        # Widget components
-│   ├── hooks/              # Custom React hooks
-│   ├── lib/                # Utility functions
-│   ├── server/             # Server-side code
-│   │   ├── api/            # tRPC routers
-│   │   └── better-auth/    # Authentication config
-│   └── trpc/               # tRPC client setup
-└── start-database.sh       # Database startup script
+├── convex/                 # Backend: schema, queries, mutations, auth
+├── public/                 # Static assets
+└── src/
+    ├── app/
+    │   ├── (main)/         # App root layout
+    │   │   ├── (private)/  # Dashboard (signed in)
+    │   │   └── (public)/   # Sign-in and collection pages
+    │   ├── (embed)/        # Minimal root layout for the embeddable widget
+    │   └── auth/           # Convex Auth sign-in/refresh/sign-out handlers
+    ├── components/         # React components (ui/ is shadcn)
+    ├── lib/                # Convex Auth setup, utilities
+    └── proxy.ts            # Auth redirects
 ```
 
 <br />
@@ -201,29 +123,24 @@ testimony.io/
 
 | Command | Description |
 |---------|-------------|
-| `bun run dev` | Start development server |
-| `bun run build` | Build for production |
-| `bun run start` | Start production server |
-| `bun run lint` | Run Biome linter |
+| `bun run dev` | Start Convex and Next.js dev servers |
+| `bun run build` | Build Next.js for production |
+| `bun run typecheck` | Typecheck the app and the Convex functions |
+| `bun run lint` | Run Biome |
 | `bun run format` | Format code with Biome |
-| `bun run db:generate` | Generate Prisma migrations |
-| `bun run db:migrate` | Deploy migrations to database |
-| `bun run db:push` | Push schema changes to database |
-| `bun run db:studio` | Open Prisma Studio |
 
 <br />
 
 ## 🔌 Widget Embed Example
 
-Once you've configured your widget, you can embed it on any website:
+Add your site under **Widget → Domains**, then embed:
 
 ```html
 <iframe
-  src="https://your-domain.com/widget/testimonies-widget.html?widgetId=YOUR_WIDGET_ID"
-  title="Testimonial Widget"
+  src="https://your-domain.com/embed/YOUR_WIDGET_ID"
+  title="Testimonials"
   width="100%"
-  height="600px"
-  frameborder="0"
-  scrolling="no"
-/>
+  height="600"
+  style="border: 0"
+></iframe>
 ```

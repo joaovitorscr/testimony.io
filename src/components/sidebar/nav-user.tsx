@@ -1,5 +1,8 @@
 "use client";
 
+import { api } from "@convex/_generated/api";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useQuery } from "convex/react";
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
@@ -19,32 +22,23 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { authClient } from "@/server/better-auth/client";
 import { Skeleton } from "../ui/skeleton";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { useSession } = authClient;
   const router = useRouter();
+  const { signOut } = useAuthActions();
+  const user = useQuery(api.users.me);
 
-  const { data: session, isPending } = useSession();
-
-  if (isPending) {
+  if (user === undefined) {
     return <Skeleton className="h-10 w-full" />;
   }
 
-  if (!session) return null;
+  if (user === null) return null;
 
-  const { user } = session;
-
-  const handleSignOut = () => {
-    authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/sign-in" as Route);
-        },
-      },
-    });
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/sign-in" as Route);
   };
 
   return (
@@ -80,7 +74,7 @@ export function NavUser() {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.image ?? ""} alt={user.name ?? ""} />
                   <AvatarFallback className="rounded-lg">
-                    {user.name.charAt(0)}
+                    {user.name?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">

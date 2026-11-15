@@ -16,6 +16,12 @@ export default {
         destination: "/testimonies",
         permanent: false,
       },
+      {
+        // OAuth sign-in creates the account on first use.
+        source: "/sign-up/:path*",
+        destination: "/sign-in",
+        permanent: false,
+      },
     ];
   },
   images: {

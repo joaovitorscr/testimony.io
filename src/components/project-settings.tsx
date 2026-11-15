@@ -1,14 +1,15 @@
 "use client";
 
+import { api } from "@convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useConvex, useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import z from "zod";
-import { checkSlugAvailability } from "@/server/actions/check-slug";
-import { api } from "@/trpc/react";
+import { useProject } from "./project-provider";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -35,10 +36,9 @@ const updateProjectPayloadSchema = z.object({
 type UpdateProjectPayload = z.infer<typeof updateProjectPayloadSchema>;
 
 export function ProjectSettings({ open, onOpenChange }: ProjectSettingsProps) {
-  const [project] = api.project.currentProject.useSuspenseQuery();
-  const utils = api.useUtils();
-  const updateProjectMutation = api.project.update.useMutation();
-  const router = useRouter();
+  const { project } = useProject();
+  const convex = useConvex();
+  const updateProject = useMutation(api.projects.update);
 
   const originalSlug = React.useRef(project.slug);
 
@@ -90,9 +90,12 @@ export function ProjectSettings({ open, onOpenChange }: ProjectSettingsProps) {
       setSlugValidated(false);
 
       try {
-        const result = await checkSlugAvailability(generatedSlug);
+        const available = await convex.query(api.projects.isSlugAvailable, {
+          slug: generatedSlug,
+          exceptProjectId: project._id,
+        });
 
-        if (result.success && !result.available) {
+        if (!available) {
           form.setError("slug", {
             type: "manual",
             message: "This project name is already taken",
@@ -114,17 +117,17 @@ export function ProjectSettings({ open, onOpenChange }: ProjectSettingsProps) {
   }, [debouncedProjectName]);
 
   const onSubmit = async (values: UpdateProjectPayload) => {
-    toast.promise(updateProjectMutation.mutateAsync(values), {
+    toast.promise(updateProject({ projectId: project._id, ...values }), {
       loading: "Updating project...",
       success: () => {
         onOpenChange(false);
-        utils.project.currentProject.invalidate();
         form.reset();
-        router.refresh();
-
         return "Project updated successfully";
       },
-      error: "Failed to update project",
+      error: (error) =>
+        error instanceof ConvexError
+          ? String(error.data)
+          : "Failed to update project",
     });
   };
 

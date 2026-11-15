@@ -1,8 +1,11 @@
 "use client";
 
+import { api } from "@convex/_generated/api";
+import type { Id } from "@convex/_generated/dataModel";
+import { useMutation } from "convex/react";
 import { ChevronsUpDown, Folder, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import * as React from "react";
+import { useProject } from "@/components/project-provider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,28 +20,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { setActiveProjectId } from "@/server/better-auth/server";
-import type { Project } from "../../../generated/prisma/client";
 import { OnboardingDialog } from "../onboarding-dialog";
 
-export function ProjectSwitcher({
-  projects,
-  activeProjectId,
-}: {
-  projects: Pick<Project, "id" | "name" | "slug">[];
-  activeProjectId?: string;
-}) {
+export function ProjectSwitcher() {
   const { isMobile } = useSidebar();
-  const router = useRouter();
+  const { project: activeProject, projects } = useProject();
+  const setActive = useMutation(api.projects.setActive);
 
   const [showNewProjectDialog, setShowNewProjectDialog] = React.useState(false);
 
-  const activeProject =
-    projects.find((p) => p.id === activeProjectId) || projects[0];
-
-  const handleSetActiveProject = async (projectId: string) => {
-    await setActiveProjectId(projectId);
-    router.refresh();
+  const handleSetActiveProject = async (projectId: Id<"projects">) => {
+    await setActive({ projectId });
   };
 
   return (
@@ -72,9 +64,9 @@ export function ProjectSwitcher({
             </DropdownMenuLabel>
             {projects.map((project) => (
               <DropdownMenuItem
-                key={project.id}
-                disabled={project.id === activeProjectId}
-                onClick={() => handleSetActiveProject(project.id)}
+                key={project._id}
+                disabled={project._id === activeProject._id}
+                onClick={() => handleSetActiveProject(project._id)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">

@@ -1,9 +1,11 @@
 "use client";
 
+import { api } from "@convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useConvex, useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { Quote } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,9 +25,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { checkSlugAvailability } from "@/server/actions/check-slug";
-import { setActiveProjectId } from "@/server/better-auth/server";
-import { api } from "@/trpc/react";
 import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
 
 const createProjectPayloadSchema = z.object({
@@ -49,7 +48,7 @@ export function OnboardingDialog({
   handleOpen?: (open: boolean) => void;
 }) {
   const [step, setStep] = useState<"choice" | "create-project">("choice");
-  const router = useRouter();
+  const convex = useConvex();
 
   const form = useForm<CreateProjectPayload>({
     resolver: zodResolver(createProjectPayloadSchema),
@@ -85,9 +84,11 @@ export function OnboardingDialog({
       form.setValue("slug", generatedSlug);
 
       try {
-        const result = await checkSlugAvailability(generatedSlug);
+        const available = await convex.query(api.projects.isSlugAvailable, {
+          slug: generatedSlug,
+        });
 
-        if (result.success && !result.available) {
+        if (!available) {
           form.setError("slug", {
             type: "manual",
             message: "This project name is already taken",
@@ -106,29 +107,25 @@ export function OnboardingDialog({
     }
 
     generateAndCheckSlug();
-  }, [debouncedProjectName, form]);
+  }, [debouncedProjectName, form, convex]);
 
-  const mutation = api.project.create.useMutation();
+  const createProject = useMutation(api.projects.create);
 
   const onSubmit = async (values: CreateProjectPayload) => {
     try {
-      const result = await mutation.mutateAsync(values);
-
-      if (result.success) {
-        toast.success("Project created successfully");
-        router.refresh();
-
-        if (handleOpen) {
-          handleOpen(false);
-        }
-
-        setActiveProjectId(result.project?.id ?? "");
-      } else {
-        toast.error("Failed to create project");
-      }
+      // The project becomes the active one; the dashboard re-renders live.
+      await createProject(values);
+      toast.success("Project created successfully");
+      form.reset();
+      setStep("choice");
+      handleOpen?.(false);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create project");
+      toast.error(
+        error instanceof ConvexError
+          ? String(error.data)
+          : "Failed to create project",
+      );
     }
   };
 

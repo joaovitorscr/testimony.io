@@ -1,13 +1,10 @@
 import type React from "react";
-import type {
-  Testimonial,
-  WidgetConfig,
-} from "../../../generated/prisma/client";
+import type { WidgetSettings, WidgetTestimonial } from "./types";
 import { WidgetCard } from "./widget-card";
 
 interface TestimonialWidgetProps {
-  testimonies: Testimonial[];
-  widgetConfig: WidgetConfig;
+  testimonies: WidgetTestimonial[];
+  widgetConfig: WidgetSettings;
 }
 
 const TestimonialWidget: React.FC<TestimonialWidgetProps> = ({
@@ -57,7 +54,7 @@ const TestimonialWidget: React.FC<TestimonialWidgetProps> = ({
     >
       {testimonies.map((testimony) => (
         <WidgetCard
-          key={testimony.id}
+          key={testimony._id}
           testimony={testimony}
           widgetConfig={widgetConfig}
         />

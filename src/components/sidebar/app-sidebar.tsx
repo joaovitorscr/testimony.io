@@ -2,7 +2,6 @@
 
 import {
   BookOpenTextIcon,
-  HelpCircleIcon,
   LayoutIcon,
   LinkIcon,
   type LucideIcon,
@@ -27,8 +26,6 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { api } from "@/trpc/react";
-import type { Project } from "../../../generated/prisma/client";
 import { ProjectSettings } from "../project-settings";
 import { NavMain } from "./nav-main";
 
@@ -59,20 +56,8 @@ const navMainItems: {
   },
 ];
 
-export function AppSidebar({
-  projects,
-  activeProjectId,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & {
-  projects: Pick<Project, "id" | "name" | "slug">[];
-  activeProjectId?: string;
-}) {
+export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const [projectSettingsOpen, setProjectSettingsOpen] = React.useState(false);
-  const utils = api.useUtils();
-
-  React.useEffect(() => {
-    void utils.project.currentProject.prefetch();
-  }, [utils.project.currentProject]);
 
   return (
     <>
@@ -99,10 +84,7 @@ export function AppSidebar({
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <ProjectSwitcher
-            projects={projects}
-            activeProjectId={activeProjectId}
-          />
+          <ProjectSwitcher />
         </SidebarHeader>
         <SidebarSeparator />
         <SidebarContent>
@@ -125,14 +107,12 @@ export function AppSidebar({
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      <React.Suspense fallback={null}>
-        {projectSettingsOpen && (
-          <ProjectSettings
-            open={projectSettingsOpen}
-            onOpenChange={setProjectSettingsOpen}
-          />
-        )}
-      </React.Suspense>
+      {projectSettingsOpen && (
+        <ProjectSettings
+          open={projectSettingsOpen}
+          onOpenChange={setProjectSettingsOpen}
+        />
+      )}
     </>
   );
 }

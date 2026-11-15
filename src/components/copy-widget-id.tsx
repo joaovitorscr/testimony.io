@@ -1,8 +1,10 @@
 "use client";
 
+import { api } from "@convex/_generated/api";
+import { useQuery } from "convex/react";
 import { CopyIcon } from "lucide-react";
 import { toast } from "sonner";
-import { api } from "@/trpc/react";
+import { useProject } from "@/components/project-provider";
 import {
   InputGroup,
   InputGroupAddon,
@@ -12,12 +14,13 @@ import {
 import { Label } from "./ui/label";
 
 export function CopyWidgetId() {
-  const [widgetConfig] = api.widget.getWidgetConfig.useSuspenseQuery();
+  const { project } = useProject();
+  const widgetConfig = useQuery(api.widgets.get, { projectId: project._id });
 
   const copyToClipboard = () => {
-    if (!widgetConfig?.id) return;
+    if (!widgetConfig?._id) return;
 
-    navigator.clipboard.writeText(widgetConfig.id);
+    navigator.clipboard.writeText(widgetConfig._id);
     toast.success("Widget ID copied to clipboard");
   };
 
@@ -27,7 +30,7 @@ export function CopyWidgetId() {
     <div className="flex flex-col items-start gap-2">
       <Label>Widget ID</Label>
       <InputGroup className="w-64">
-        <InputGroupInput value={widgetConfig.id} disabled />
+        <InputGroupInput value={widgetConfig._id} disabled />
         <InputGroupAddon align="inline-end">
           <InputGroupButton onClick={copyToClipboard}>
             <CopyIcon />
