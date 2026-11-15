@@ -4,10 +4,9 @@ import { cn } from "@/lib/utils";
 
 /*
  * CSS-painted film stills. Colour in the UI lives only here (DESIGN.md):
- * ink is a plain dark panel, night the street with an ember doorway, the rest quieter frames.
+ * night is the hero street with an ember doorway, the rest are quieter frames.
  */
 const STILLS = {
-  ink: ["linear-gradient(180deg, #161616 0%, var(--night) 100%)"],
   night: [
     "radial-gradient(ellipse 9% 22% at 71% 52%, color-mix(in srgb, var(--ember) 95%, white) 0%, var(--ember) 35%, transparent 100%)",
     "radial-gradient(ellipse 30% 45% at 71% 55%, color-mix(in srgb, var(--ember) 45%, transparent), transparent 70%)",
