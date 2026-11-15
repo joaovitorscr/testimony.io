@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Lora, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import "@/styles/globals.css";
@@ -11,20 +11,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { env } from "@/env";
 import { ConvexAuthNextjsServerProvider } from "@/lib/convex-auth";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
-});
-
-const loraSerif = Lora({
-  variable: "--font-lora-serif",
-  subsets: ["latin"],
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "800"],
 });
 
 const siteUrl = env.NEXT_PUBLIC_APP_URL;
@@ -100,9 +90,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${plusJakartaSans.variable} ${loraSerif.variable} ${ibmPlexMono.variable} dark antialiased`}
-      >
+      <body className={`${interTight.variable} antialiased`}>
         <Suspense>
           <ConvexAuthNextjsServerProvider>
             <NuqsAdapter>
