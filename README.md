@@ -35,99 +35,48 @@
 
 ## 🛠️ Tech Stack
 
-| | |
-|---|---|
-| **Framework** | Next.js 16 (App Router) |
-| **Backend & database** | [Convex](https://convex.dev) (queries, mutations, file storage) |
-| **Authentication** | [Convex Auth](https://docs.convex.dev/auth/convex-auth) 2 (Google + GitHub OAuth, SSR cookies) |
-| **Styling / UI** | Tailwind CSS 4, Radix UI + shadcn/ui |
-| **Forms** | React Hook Form + Zod |
-| **Hosting** | Vercel (frontend) + Convex Cloud (backend) |
-| **Tooling** | Bun, Biome, TypeScript |
+|                        |                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| **Framework**          | Next.js 16 (App Router, React Compiler)                                       |
+| **Backend & database** | [Convex](https://convex.dev) (queries, mutations, file storage)               |
+| **Authentication**     | [Convex Auth](https://docs.convex.dev/auth/convex-auth) 2 (Google and GitHub) |
+| **Styling / UI**       | Tailwind CSS 4, shadcn/ui                                                     |
+| **Hosting**            | Vercel (frontend) and Convex Cloud (backend)                                  |
+| **Tooling**            | pnpm, oxlint, oxfmt, Vitest + convex-test, `bun check` in CI                  |
 
 <br />
 
 ## 🚀 Getting Started
 
 ```bash
-bun install
-bun run dev   # runs `convex dev` and `next dev` together
+pnpm install
+pnpm dev   # runs `convex dev` and `next dev` together
 ```
 
-The first `convex dev` run asks you to log in and pick a project, then writes
-`CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL` to `.env.local`.
-
-### OAuth setup
-
-Create a Google OAuth client and a GitHub OAuth app. Use these callback URLs,
-where `<site>` is your deployment's `CONVEX_SITE_URL`
-(`npx convex env get CONVEX_SITE_URL`):
-
-- Google: `<site>/oauth/google/callback`
-- GitHub: `<site>/oauth/github/callback`
-
-Then set them on the Convex deployment:
-
-```bash
-npx convex env set AUTH_GOOGLE_CLIENT_ID ...
-npx convex env set AUTH_GOOGLE_CLIENT_SECRET ...
-npx convex env set AUTH_GITHUB_CLIENT_ID ...
-npx convex env set AUTH_GITHUB_CLIENT_SECRET ...
-# Comma-separated frontend origins allowed as OAuth redirect targets
-npx convex env set SITE_URL http://localhost:3000
-```
+The first `convex dev` asks you to log in and pick a project, then writes
+`.env.local`. Sign-in needs Google and GitHub OAuth apps; see
+[docs/internals/deployment.md](docs/internals/deployment.md).
 
 <br />
 
-## 🔑 Environment Variables
+## 📜 Scripts
 
-| Where | Variable | Description |
-|---|---|---|
-| Next.js | `NEXT_PUBLIC_CONVEX_URL` | Convex deployment URL (written by `convex dev`, set by `convex deploy` on Vercel) |
-| Next.js | `NEXT_PUBLIC_APP_URL` | Public URL of the app (defaults to `http://localhost:3000` in dev) |
-| Vercel | `CONVEX_DEPLOY_KEY` | Production deploy key, so Vercel builds also deploy the Convex backend |
-| Convex | `AUTH_GOOGLE_CLIENT_ID` / `_SECRET` | Google OAuth credentials |
-| Convex | `AUTH_GITHUB_CLIENT_ID` / `_SECRET` | GitHub OAuth credentials |
-| Convex | `SITE_URL` | Allowed OAuth redirect origins, comma-separated |
-
-<br />
-
-## 🚢 Deploying
-
-Vercel runs `npx convex deploy --cmd 'next build'` (see `vercel.json`), which
-pushes the Convex functions to production and builds Next.js against them.
+| Command                             | Description                                     |
+| ----------------------------------- | ----------------------------------------------- |
+| `pnpm dev`                          | Convex and Next.js dev servers                  |
+| `pnpm build`                        | Production build                                |
+| `pnpm lint` / `pnpm lint:fix`       | oxlint with every category on                   |
+| `pnpm format` / `pnpm format:check` | oxfmt                                           |
+| `pnpm typecheck`                    | TypeScript for the app and the Convex functions |
+| `pnpm test` / `pnpm test:watch`     | Vitest                                          |
 
 <br />
 
-## 📁 Project Structure
+## 📚 Documentation
 
-```
-testimony.io/
-├── convex/                 # Backend: schema, queries, mutations, auth
-├── public/                 # Static assets
-└── src/
-    ├── app/
-    │   ├── (main)/         # App root layout
-    │   │   ├── (private)/  # Dashboard (signed in)
-    │   │   └── (public)/   # Sign-in and collection pages
-    │   ├── (embed)/        # Minimal root layout for the embeddable widget
-    │   └── auth/           # Convex Auth sign-in/refresh/sign-out handlers
-    ├── components/         # React components (ui/ is shadcn)
-    ├── lib/                # Convex Auth setup, utilities
-    └── proxy.ts            # Auth redirects
-```
-
-<br />
-
-## 📜 Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start Convex and Next.js dev servers |
-| `bun run build` | Build Next.js for production |
-| `bun run typecheck` | Typecheck the app and the Convex functions |
-| `bun run lint` | Run Biome |
-| `bun run format` | Format code with Biome |
+- [Architecture](docs/internals/architecture.md): data model, access control, collection and embed flows, code layout
+- [Tooling and CI](docs/internals/tooling.md): lint policy, type checking, tests, the sharded CI pipeline
+- [Deployment](docs/internals/deployment.md): Vercel, Convex, environment variables, OAuth setup
 
 <br />
 
@@ -137,7 +86,7 @@ Add your site under **Widget → Domains**, then embed:
 
 ```html
 <iframe
-  src="https://your-domain.com/embed/YOUR_WIDGET_ID"
+  src="https://testimony-io.vercel.app/embed/YOUR_WIDGET_ID"
   title="Testimonials"
   width="100%"
   height="600"
