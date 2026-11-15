@@ -16,11 +16,13 @@ import { useRouter } from "next/navigation";
 import { type ComponentProps, type SVGProps, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { FieldError } from "@/components/ui/field";
+import { FieldError, FieldSeparator } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { Google } from "@/components/ui/svgs/google";
 import { cn } from "@/lib/utils";
+
+import { DevPasswordForm } from "./dev-password-form";
 
 type FlowError = ReturnType<typeof useGoogleOauth>["flowError"];
 
@@ -53,7 +55,11 @@ function GithubMark(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function LoginForm({ className, ...props }: ComponentProps<"div">) {
+export function LoginForm({
+  devPassword,
+  className,
+  ...props
+}: ComponentProps<"div"> & { devPassword: boolean }) {
   const router = useRouter();
   const { isLoading, isAuthenticated } = useConvexAuth();
   const { signIn: signInWithGoogle } = useSignInWithGoogle(api.auth);
@@ -131,6 +137,13 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
             Continue with GitHub
           </Button>
         </div>
+
+        {devPassword && (
+          <>
+            <FieldSeparator>or</FieldSeparator>
+            <DevPasswordForm disabled={busy} />
+          </>
+        )}
 
         <p className="type-caption text-muted-foreground">
           New here? Your account is created automatically the first time you sign in.

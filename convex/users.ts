@@ -1,19 +1,25 @@
 import { vGithubProfile } from "@convex-dev/auth/methods/github/server";
 import { vGoogleProfile } from "@convex-dev/auth/methods/google/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 
-import { internalMutation, mutation, query } from "./_generated/server";
+import { components, internal } from "./_generated/api";
+import { env, internalMutation, mutation, query } from "./_generated/server";
 import { requireUserId } from "./lib/access";
 
 const vMethod = v.union(
   v.object({ name: v.literal("google"), profile: vGoogleProfile }),
   v.object({ name: v.literal("github"), profile: vGithubProfile }),
+  v.object({ name: v.literal("usernamePassword"), profile: v.object({}) }),
 );
 
 type Method = typeof vMethod.type;
 
 function profileFields(method: Method) {
+  if (method.name === "usernamePassword") {
+    // The profile is empty; fillDevProfile copies the email over after sign-up.
+    return { name: undefined, email: undefined, emailVerified: false, image: undefined };
+  }
   const { profile } = method;
   if (method.name === "google") {
     return {
@@ -53,11 +59,32 @@ export const createUser = internalMutation({
       }
     }
 
-    return ctx.db.insert("users", {
+    const userId = await ctx.db.insert("users", {
       ...fields,
       email: fields.emailVerified ? fields.email : undefined,
       lastSignedInAt: Date.now(),
     });
+    if (method.name === "usernamePassword") {
+      // The method stores the username only after this callback returns.
+      await ctx.scheduler.runAfter(0, internal.users.fillDevProfile, { userId });
+    }
+    return userId;
+  },
+});
+
+/**
+ * Copies a development account's username, which is its email, onto the user.
+ * The email stays unverified, so OAuth sign-ins never link to this account.
+ */
+export const fillDevProfile = internalMutation({
+  args: { userId: v.id("users") },
+  returns: v.null(),
+  handler: async (ctx, { userId }) => {
+    const email = await ctx.runQuery(components.authUsername.public.getUsername, { userId });
+    if (email !== null) {
+      await ctx.db.patch("users", userId, { email, name: email.split("@")[0] });
+    }
+    return null;
   },
 });
 
@@ -65,6 +92,10 @@ export const onSignIn = internalMutation({
   args: { method: vMethod, userId: v.id("users") },
   returns: v.null(),
   handler: async (ctx, { method, userId }) => {
+    if (method.name === "usernamePassword" && env.AUTH_DEV_PASSWORD !== "true") {
+      // Throwing also rolls back the user that createUser just made.
+      throw new ConvexError("Email and password sign-in is turned off on this deployment.");
+    }
     const user = await ctx.db.get("users", userId);
     if (user === null) {
       return null;

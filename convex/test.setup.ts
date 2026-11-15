@@ -1,4 +1,6 @@
 /// <reference types="vite/client" />
+import { registerPassword } from "@convex-dev/auth/components/password/test";
+import { registerUsername } from "@convex-dev/auth/components/username/test";
 import { registerCore, sessionIdentity } from "@convex-dev/auth/test";
 import { convexTest } from "convex-test";
 
@@ -20,6 +22,8 @@ const modules = import.meta.glob([
 export function setupBackend() {
   const backend = convexTest(schema, modules);
   registerCore(backend);
+  registerPassword(backend);
+  registerUsername(backend);
   return backend;
 }
 

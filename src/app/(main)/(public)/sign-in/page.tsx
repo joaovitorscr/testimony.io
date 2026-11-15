@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { MediaFrame } from "@/components/media-frame";
 import { RatingStars } from "@/components/rating-stars";
+import { env } from "@/env";
 
 import { LoginForm } from "./_components/login-form";
 
@@ -54,7 +55,7 @@ export default function LoginPage() {
           </a>
         </p>
       </MediaFrame>
-      <LoginForm className="md:px-6 md:py-2" />
+      <LoginForm devPassword={env.NODE_ENV === "development"} className="md:px-6 md:py-2" />
     </main>
   );
 }

@@ -9,6 +9,11 @@ export const auth = setupConvexAuthServer({
   convexUrl: env.NEXT_PUBLIC_CONVEX_URL,
   refreshSession: api.auth.refreshSession,
   signOut: api.auth.signOut,
-  signIn: [api.auth.completeSignInWithGoogle, api.auth.completeSignInWithGithub],
+  signIn: [
+    api.auth.completeSignInWithGoogle,
+    api.auth.completeSignInWithGithub,
+    api.auth.signInWithUsernamePassword,
+    api.auth.signUpWithUsernamePassword,
+  ],
   cookieOptions: { secure: env.NODE_ENV === "production" },
 });

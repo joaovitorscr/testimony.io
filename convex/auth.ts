@@ -1,5 +1,6 @@
 import { setupGithub } from "@convex-dev/auth/methods/github/server";
 import { setupGoogle } from "@convex-dev/auth/methods/google/server";
+import { setupUsernamePassword } from "@convex-dev/auth/methods/username-password/server";
 import { setupConvexAuth } from "@convex-dev/auth/server";
 
 import { components, internal } from "./_generated/api";
@@ -28,3 +29,10 @@ export const { startSignInWithGithub, completeSignInWithGithub } = setupGithub(a
   component: components.authGithub,
   allowedRedirectOrigins,
 }).attachUserCallbacks(userCallbacks);
+
+// Development only: the username is the email. users.onSignIn rejects these
+// sign-ins unless the deployment sets AUTH_DEV_PASSWORD.
+export const { signUpWithUsernamePassword, signInWithUsernamePassword } = setupUsernamePassword(
+  auth,
+  { component: components.authPassword, usernameComponent: components.authUsername },
+).attachUserCallbacks(userCallbacks);

@@ -10,7 +10,9 @@ the approved ones in an embeddable widget.
 - **Convex** is the backend: database, queries, mutations, and file storage.
   Every dashboard query is a live subscription, so the UI updates without
   refetching.
-- **Convex Auth 2** signs users in with Google or GitHub. Sessions use the SSR
+- **Convex Auth 2** signs users in with Google or GitHub. Development
+  deployments can also turn on email + password (see
+  [deployment.md](./deployment.md#local-development)). Sessions use the SSR
   setup: the refresh token lives in an `httpOnly` cookie set by the route
   handlers under `src/app/auth/`, and `src/proxy.ts` refreshes the access
   token before each page request.

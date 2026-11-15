@@ -20,6 +20,7 @@ deploy key) and `NEXT_PUBLIC_APP_URL`.
 | Convex                | `AUTH_GOOGLE_CLIENT_ID`, `AUTH_GOOGLE_CLIENT_SECRET` | Google OAuth app                                                   |
 | Convex                | `AUTH_GITHUB_CLIENT_ID`, `AUTH_GITHUB_CLIENT_SECRET` | GitHub OAuth app                                                   |
 | Convex                | `SITE_URL`                                           | Comma-separated frontend origins allowed as OAuth redirect targets |
+| Convex (dev only)     | `AUTH_DEV_PASSWORD`                                  | `true` turns on email + password sign-in. Never set it on prod     |
 
 `convex/convex.config.ts` declares the Convex variables; a deploy fails while a
 required one is missing.
@@ -47,3 +48,19 @@ pnpm dev          # convex dev + next dev
 The first `convex dev` asks you to log in and pick the project, then writes
 `.env.local`. Set the OAuth variables on your dev deployment with
 `npx convex env set`.
+
+### Email + password
+
+For agents and contributors without OAuth apps, development deployments can
+sign in with an email and password:
+
+```bash
+npx convex env set AUTH_DEV_PASSWORD true
+```
+
+`next dev` then shows the form on `/sign-in`; a new email creates its account
+on first sign-in. The email is stored unverified, so these accounts never merge
+with an OAuth account. Production builds hide the form, and the backend rejects
+password sign-ins on any deployment without the variable. The OAuth variables
+are still required to push functions; without real OAuth apps, set them to any
+placeholder value.
