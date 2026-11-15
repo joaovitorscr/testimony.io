@@ -11,6 +11,8 @@
 import type * as auth from "../auth.js";
 import type * as collect from "../collect.js";
 import type * as lib_access from "../lib/access.js";
+import type * as lib_hosts from "../lib/hosts.js";
+import type * as lib_slug from "../lib/slug.js";
 import type * as projects from "../projects.js";
 import type * as requests from "../requests.js";
 import type * as testimonials from "../testimonials.js";
@@ -27,6 +29,8 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   collect: typeof collect;
   "lib/access": typeof lib_access;
+  "lib/hosts": typeof lib_hosts;
+  "lib/slug": typeof lib_slug;
   projects: typeof projects;
   requests: typeof requests;
   testimonials: typeof testimonials;
