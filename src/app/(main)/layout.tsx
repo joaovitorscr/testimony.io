@@ -14,7 +14,7 @@ import { ConvexAuthNextjsServerProvider } from "@/lib/convex-auth";
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "800"],
+  weight: ["400", "500", "600"],
 });
 
 const siteUrl = env.NEXT_PUBLIC_APP_URL;
