@@ -28,7 +28,15 @@
   "options": {
     "typeAware": true
   },
-  "ignorePatterns": ["convex/_generated/**", ".next/**", "next-env.d.ts"],
+  // Agent skills are third-party, installed from skills-lock.json.
+  "ignorePatterns": [
+    "convex/_generated/**",
+    ".next/**",
+    "next-env.d.ts",
+    ".agents/**",
+    ".claude/**",
+    "agent/**"
+  ],
   "rules": {
     // Tuned instead of disabled.
     "one-var": ["error", "never"],

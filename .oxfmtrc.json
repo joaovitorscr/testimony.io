@@ -5,5 +5,12 @@
     "stylesheet": "./src/styles/globals.css",
     "functions": ["cn", "cva"]
   },
-  "ignorePatterns": ["convex/_generated/**", "pnpm-lock.yaml"]
+  "ignorePatterns": [
+    "convex/_generated/**",
+    "pnpm-lock.yaml",
+    ".agents/**",
+    ".claude/**",
+    "agent/**",
+    "skills-lock.json"
+  ]
 }
