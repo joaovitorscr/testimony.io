@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, Check, UserIcon, X } from "lucide-react";
+import { Camera, UserIcon } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
   ImageCrop,
   ImageCropApply,
@@ -19,7 +20,6 @@ import {
   ImageCropReset,
 } from "@/components/ui/image-crop";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 /** Optional profile picture: pick a file, crop it to a circle, keep a data URL. */
 export function AvatarPicker({
@@ -45,30 +45,29 @@ export function AvatarPicker({
   };
 
   return (
-    <div>
-      <div className="flex flex-col items-start gap-2">
-        <Label>Picture (Optional)</Label>
-        <div className="relative inline-block">
-          <Avatar className="size-20">
-            <AvatarImage src={value} alt="Your picture" />
-            <AvatarFallback>
-              <UserIcon />
-            </AvatarFallback>
-          </Avatar>
-          <Button
-            type="button"
-            size="sm"
-            className="absolute right-0 bottom-0 size-8 rounded-full p-0"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Camera className="h-4 w-4" />
-            <span className="sr-only">Choose a picture</span>
-          </Button>
-        </div>
+    <Field>
+      <FieldLabel htmlFor="avatar">Picture (optional)</FieldLabel>
+      <div className="flex items-center gap-4">
+        <Avatar className="size-16">
+          <AvatarImage src={value} alt="Your picture" />
+          <AvatarFallback>
+            <UserIcon className="size-6 text-fg-faint" />
+          </AvatarFallback>
+        </Avatar>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Camera data-icon="inline-start" />
+          {value === "" ? "Choose a picture" : "Change picture"}
+        </Button>
       </div>
 
       <Input
         ref={fileInputRef}
+        id="avatar"
         type="file"
         accept="image/jpeg, image/png, image/gif, image/webp"
         onChange={handleFileChange}
@@ -92,42 +91,36 @@ export function AvatarPicker({
           </DialogHeader>
 
           {selectedFile !== null && (
-            <div className="py-4">
-              <ImageCrop
-                aspect={1}
-                circularCrop
-                file={selectedFile}
-                maxImageSize={400 * 400}
-                onCrop={(dataUrl) => {
-                  onChange(dataUrl);
-                  closeDialog();
-                }}
-              >
-                <div className="my-8 flex flex-col items-center justify-center">
-                  <ImageCropContent />
-                </div>
-                <div className="flex items-center justify-between gap-2 pt-4">
-                  <ImageCropApply asChild>
-                    <Button variant="outline" size="icon">
-                      <Check />
-                      <span className="sr-only">Apply</span>
-                    </Button>
-                  </ImageCropApply>
-                  <ImageCropReset asChild>
-                    <Button variant="outline" size="sm">
-                      Reset
-                    </Button>
-                  </ImageCropReset>
-                  <Button onClick={closeDialog} size="icon" type="button" variant="outline">
-                    <X className="size-4" />
-                    <span className="sr-only">Cancel</span>
+            <ImageCrop
+              aspect={1}
+              circularCrop
+              file={selectedFile}
+              maxImageSize={400 * 400}
+              onCrop={(dataUrl) => {
+                onChange(dataUrl);
+                closeDialog();
+              }}
+            >
+              <div className="flex justify-center py-4">
+                <ImageCropContent />
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <ImageCropReset asChild>
+                  <Button variant="ghost" size="sm">
+                    Reset
                   </Button>
-                </div>
-              </ImageCrop>
-            </div>
+                </ImageCropReset>
+                <Button onClick={closeDialog} size="sm" type="button" variant="secondary">
+                  Cancel
+                </Button>
+                <ImageCropApply asChild>
+                  <Button size="sm">Apply</Button>
+                </ImageCropApply>
+              </div>
+            </ImageCrop>
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </Field>
   );
 }

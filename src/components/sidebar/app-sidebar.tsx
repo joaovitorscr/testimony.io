@@ -64,23 +64,18 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
-        <SidebarHeader className="gap-8 pt-4">
+        <SidebarHeader className="gap-6 pt-4">
           <SidebarMenu>
-            <SidebarMenuItem className="grid place-items-center">
+            <SidebarMenuItem className="flex h-8 items-center px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+              <span className="text-xl type-wordmark text-foreground group-data-[collapsible=icon]:hidden">
+                testimony.io
+              </span>
               <Image
-                className="col-start-1 row-start-1 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0"
-                src="/branding_white.svg"
+                className="hidden size-6 group-data-[collapsible=icon]:block"
+                src="/logo_black.svg"
                 alt="Testimony.io"
-                width={180}
-                height={120}
-                priority
-              />
-              <Image
-                className="col-start-1 row-start-1 opacity-0 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-100"
-                src="/logo_white.svg"
-                alt="Testimony.io"
-                width={32}
-                height={32}
+                width={24}
+                height={24}
                 priority
               />
             </SidebarMenuItem>
@@ -96,6 +91,8 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  tooltip="Settings"
+                  className="text-muted-foreground transition-[width,height,padding,color,background-color]"
                   onClick={() => {
                     setProjectSettingsOpen(true);
                   }}

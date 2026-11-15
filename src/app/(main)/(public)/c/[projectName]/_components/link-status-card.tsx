@@ -1,146 +1,70 @@
 "use client";
 
-import { CheckCircle2Icon, ClockIcon, LinkIcon, XCircleIcon } from "lucide-react";
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
+import { MediaFrame, type Still } from "@/components/media-frame";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 type LinkStatus = "invalid" | "not-found" | "cancelled" | "used" | "expired";
 
-type LinkStatusCardProps = {
-  status: LinkStatus;
-  className?: string;
-};
-
-const statusConfig: Record<
-  LinkStatus,
-  {
-    icon: React.ComponentType<{ className?: string }>;
-    title: string;
-    description: string;
-    badge: string;
-    badgeVariant: "default" | "secondary" | "destructive" | "outline";
-    iconBg: string;
-    iconColor: string;
-    accentBorder: string;
-  }
-> = {
+const statusConfig: Record<LinkStatus, { still: Still; title: string; description: string }> = {
   invalid: {
-    icon: LinkIcon,
-    title: "Invalid Link",
+    still: "night",
+    title: "Invalid link",
     description:
       "This link is missing a valid token. Please check that you have the complete URL or request a new invitation link.",
-    badge: "Invalid",
-    badgeVariant: "destructive",
-    iconBg: "bg-red-100 dark:bg-red-950/50",
-    iconColor: "text-red-600 dark:text-red-400",
-    accentBorder: "border-l-red-500",
   },
   "not-found": {
-    icon: XCircleIcon,
-    title: "Link Not Found",
+    still: "night",
+    title: "Link not found",
     description:
       "This invitation link doesn't exist or may have been removed. Please contact the sender for a new link.",
-    badge: "Not Found",
-    badgeVariant: "destructive",
-    iconBg: "bg-red-100 dark:bg-red-950/50",
-    iconColor: "text-red-600 dark:text-red-400",
-    accentBorder: "border-l-red-500",
   },
   cancelled: {
-    icon: XCircleIcon,
-    title: "Link Cancelled",
+    still: "moss",
+    title: "Link cancelled",
     description:
       "This invitation link has been cancelled by the sender. If you believe this is an error, please reach out to them directly.",
-    badge: "Cancelled",
-    badgeVariant: "secondary",
-    iconBg: "bg-slate-100 dark:bg-slate-800",
-    iconColor: "text-slate-600 dark:text-slate-400",
-    accentBorder: "border-l-slate-400",
   },
   used: {
-    icon: CheckCircle2Icon,
-    title: "Already Submitted",
+    still: "dusk",
+    title: "Already submitted",
     description:
       "A testimonial has already been submitted using this link. Each invitation link can only be used once.",
-    badge: "Used",
-    badgeVariant: "default",
-    iconBg: "bg-emerald-100 dark:bg-emerald-950/50",
-    iconColor: "text-emerald-600 dark:text-emerald-400",
-    accentBorder: "border-l-emerald-500",
   },
   expired: {
-    icon: ClockIcon,
-    title: "Link Expired",
+    still: "sky",
+    title: "Link expired",
     description:
       "This invitation link has passed its expiration date. Please request a new invitation link from the sender.",
-    badge: "Expired",
-    badgeVariant: "secondary",
-    iconBg: "bg-amber-100 dark:bg-amber-950/50",
-    iconColor: "text-amber-600 dark:text-amber-400",
-    accentBorder: "border-l-amber-500",
   },
 };
 
-export function LinkStatusCard({ status, className }: LinkStatusCardProps) {
+/** Full-page message for a collection link that can't take a testimonial. */
+export function LinkStatusCard({ status, className }: { status: LinkStatus; className?: string }) {
   const config = statusConfig[status];
-  const Icon = config.icon;
 
   return (
-    <div
+    <main
       className={cn(
-        "flex min-h-screen items-center justify-center bg-linear-to-br from-muted/30 via-background to-muted/50 p-4",
+        "mx-auto flex min-h-svh w-full max-w-120 flex-col justify-center gap-8 px-5 py-16",
         className,
       )}
     >
-      <Card
-        className={cn(
-          "w-full max-w-md animate-in border-l-4 duration-500 fade-in-0 slide-in-from-bottom-4",
-          config.accentBorder,
-        )}
-      >
-        <CardHeader className="pb-4">
-          <div className="flex items-start justify-between">
-            <div
-              className={cn("flex h-14 w-14 items-center justify-center rounded-xl", config.iconBg)}
-            >
-              <Icon className={cn("h-7 w-7", config.iconColor)} />
-            </div>
-            <Badge variant={config.badgeVariant} className="shrink-0">
-              {config.badge}
-            </Badge>
-          </div>
-          <CardTitle className="mt-4 text-xl">{config.title}</CardTitle>
-          <CardDescription className="text-base leading-relaxed">
-            {config.description}
-          </CardDescription>
-        </CardHeader>
+      <MediaFrame still={config.still} className="aspect-video" aria-hidden="true" />
 
-        <CardContent className="pb-4">
-          <div className="rounded-lg bg-muted/50 p-4">
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Need help?</span> Contact the person who
-              sent you this invitation link for assistance.
-            </p>
-          </div>
-        </CardContent>
+      <div className="flex flex-col gap-3">
+        <h1 className="type-hero">{config.title}</h1>
+        <p className="text-fg-2">{config.description}</p>
+        <p className="text-sm text-muted-foreground">
+          Need help? Contact the person who sent you this invitation link.
+        </p>
+      </div>
 
-        <CardFooter className="flex-col gap-2 sm:flex-row">
-          <Button variant="outline" className="w-full sm:w-auto" asChild>
-            <Link href="/">Go to Homepage</Link>
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+      <Button variant="secondary" size="sm" className="self-start" asChild>
+        <Link href="/">Go to homepage</Link>
+      </Button>
+    </main>
   );
 }

@@ -3,50 +3,33 @@
 import { api } from "@convex/_generated/api";
 import type { Id } from "@convex/_generated/dataModel";
 import { useMutation, usePaginatedQuery } from "convex/react";
-import { CheckCircle2Icon, ClockIcon, Loader2Icon, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 
+import { MediaFrame } from "@/components/media-frame";
 import { useProject } from "@/components/project-context";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 
 import { TestimonieCard } from "./testimonie-card";
 
 type TestimonyFilter = "all" | "approved" | "pending" | "featured";
 
-const FILTERS: {
-  label: string;
-  value: TestimonyFilter;
-  icon: React.ReactNode;
-}[] = [
-  { label: "All", value: "all", icon: null },
-  {
-    label: "Approved",
-    value: "approved",
-    icon: <CheckCircle2Icon className="size-3.5" />,
-  },
-  {
-    label: "Pending",
-    value: "pending",
-    icon: <ClockIcon className="size-3.5" />,
-  },
-  {
-    label: "Featured",
-    value: "featured",
-    icon: <SparklesIcon className="size-3.5" />,
-  },
+const FILTERS: { label: string; value: TestimonyFilter }[] = [
+  { label: "All", value: "all" },
+  { label: "Approved", value: "approved" },
+  { label: "Pending", value: "pending" },
+  { label: "Featured", value: "featured" },
 ];
+
+const GRID = "grid gap-x-4 gap-y-10 md:grid-cols-2 xl:grid-cols-3";
 
 export function TestimoniesList() {
   const [filter, setFilter] = useState<TestimonyFilter>("all");
   const { ref, inView } = useInView();
-
-  const isMobile = useIsMobile();
 
   const { project } = useProject();
   const {
@@ -84,78 +67,82 @@ export function TestimoniesList() {
     }
   };
 
-  // Only show full loading state on initial load
-  if (status === "LoadingFirstPage") {
-    return (
-      <section className="flex h-full flex-1 flex-col items-center justify-center">
-        <Loader2Icon className="size-8 animate-spin text-muted-foreground" />
-      </section>
-    );
-  }
-
   return (
-    <section className="flex-1 space-y-6">
-      <div className="flex items-center justify-between">
-        <ButtonGroup
-          orientation={isMobile ? "vertical" : "horizontal"}
-          className={cn(isMobile && "w-full")}
-        >
-          {FILTERS.map((option) => (
-            <Button
-              key={option.value}
-              variant={filter === option.value ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setFilter(option.value);
-              }}
-              className="gap-1.5"
-            >
-              {option.icon}
-              {option.label}
-            </Button>
-          ))}
-        </ButtonGroup>
-      </div>
+    <section className="flex flex-1 flex-col gap-8">
+      <nav aria-label="Filter testimonies" className="flex flex-wrap items-center gap-1">
+        {FILTERS.map((option) => (
+          <Button
+            key={option.value}
+            variant={filter === option.value ? "secondary" : "ghost"}
+            size="sm"
+            aria-pressed={filter === option.value}
+            onClick={() => {
+              setFilter(option.value);
+            }}
+            className={filter === option.value ? undefined : "text-muted-foreground"}
+          >
+            {option.label}
+          </Button>
+        ))}
+      </nav>
 
-      {testimonies.length === 0 ? (
-        <div className="flex h-64 flex-col items-center justify-center space-y-4">
-          <div className="space-y-1 text-center">
-            <h2 className="text-lg font-medium text-muted-foreground">
-              {filter === "all" ? "No Testimonies Found" : `No ${filter} testimonies`}
+      {status === "LoadingFirstPage" && (
+        <div className={GRID}>
+          {[1, 2, 3].map((key) => (
+            <div key={key} className="flex flex-col gap-4 border-t pt-5">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-10 w-40" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {status !== "LoadingFirstPage" && testimonies.length === 0 && (
+        <div className="flex max-w-sm flex-col gap-6 py-6">
+          <MediaFrame still="dusk" className="aspect-video w-full" />
+          <div className="flex flex-col gap-2">
+            <h2 className="type-title text-fg-2">
+              {filter === "all" ? "No testimonies yet" : `No ${filter} testimonies`}
             </h2>
             <p className="text-sm text-muted-foreground">
               {filter === "all"
-                ? "No testimonies have been collected yet."
+                ? "Send a collection link to a customer and their words will show up here."
                 : `There are no ${filter} testimonies at the moment.`}
             </p>
           </div>
           {filter === "all" && (
-            <Link className={buttonVariants({ variant: "default" })} href="/collect-link">
-              Start Collecting Testimonies
+            <Link
+              className={buttonVariants({ size: "sm", className: "w-fit" })}
+              href="/collect-link"
+            >
+              Create a collection link
             </Link>
           )}
         </div>
-      ) : (
-        <div className="space-y-4">
-          {testimonies.map((testimony) => (
-            <TestimonieCard
-              key={testimony._id}
-              testimony={testimony}
-              onToggleFeatured={(id, value) => {
-                void handleToggleFeatured(id, value);
-              }}
-              onToggleApproved={(id, value) => {
-                void handleToggleApproved(id, value);
-              }}
-            />
-          ))}
+      )}
+
+      {status !== "LoadingFirstPage" && testimonies.length > 0 && (
+        <div className="flex flex-col gap-10">
+          <div className={GRID}>
+            {testimonies.map((testimony) => (
+              <TestimonieCard
+                key={testimony._id}
+                testimony={testimony}
+                onToggleFeatured={(id, value) => {
+                  void handleToggleFeatured(id, value);
+                }}
+                onToggleApproved={(id, value) => {
+                  void handleToggleApproved(id, value);
+                }}
+              />
+            ))}
+          </div>
 
           <div ref={ref} className="flex justify-center py-4">
-            {status === "LoadingMore" && (
-              <Loader2Icon className="size-6 animate-spin text-muted-foreground" />
-            )}
-            {status === "Exhausted" && testimonies.length > 0 && (
-              <p className="text-sm text-muted-foreground">No more testimonies to load</p>
+            {status === "LoadingMore" && <Spinner className="text-muted-foreground" />}
+            {status === "Exhausted" && (
+              <p className="type-caption text-muted-foreground">No more testimonies to load</p>
             )}
           </div>
         </div>

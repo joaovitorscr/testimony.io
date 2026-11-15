@@ -10,17 +10,8 @@ import { z } from "zod";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 
 type User = NonNullable<FunctionReturnType<typeof api.users.me>>;
@@ -32,14 +23,10 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function AccountForm({ user }: { user: User }) {
-  return (
-    <div className="flex flex-col gap-6">
-      <ProfileCard user={user} />
-    </div>
-  );
+  return <ProfileSection user={user} />;
 }
 
-function ProfileCard({ user }: { user: User }) {
+function ProfileSection({ user }: { user: User }) {
   const updateProfile = useMutation(api.users.updateProfile);
 
   const form = useForm<ProfileFormValues>({
@@ -62,62 +49,56 @@ function ProfileCard({ user }: { user: User }) {
 
   return (
     <form
+      className="flex flex-col gap-6"
       onSubmit={(event) => {
         void form.handleSubmit(onSubmit)(event);
       }}
     >
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile Information</CardTitle>
-          <CardDescription>
-            Update your display name. Your email and avatar come from your Google or GitHub account.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FieldGroup>
-            <Field orientation="horizontal" className="items-center gap-6">
-              <Avatar className="size-16 border-2 border-border">
-                <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
-                <AvatarFallback className="text-xl font-semibold">
-                  {(user.name ?? "U").charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+      <div className="flex flex-col gap-2">
+        <h2 className="type-title text-fg-2">Profile</h2>
+        <p className="text-sm text-muted-foreground">
+          Update your display name. Your email and avatar come from your Google or GitHub account.
+        </p>
+      </div>
+      <FieldGroup>
+        <Field orientation="horizontal" className="items-center gap-6">
+          <Avatar className="size-16">
+            <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
+            <AvatarFallback className="text-xl">
+              {(user.name ?? "U").charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
 
-              <div className="flex flex-1 flex-col gap-4">
-                <Controller
-                  control={form.control}
-                  name="name"
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <Label htmlFor="name">Name</Label>
-                      <Input
-                        {...field}
-                        id="name"
-                        type="text"
-                        placeholder="Your name"
-                        aria-invalid={fieldState.invalid}
-                      />
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
+          <Controller
+            control={form.control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="name">Name</FieldLabel>
+                <Input
+                  {...field}
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  aria-invalid={fieldState.invalid}
                 />
-              </div>
-            </Field>
-          </FieldGroup>
-        </CardContent>
-        <CardFooter className="border-t pt-6">
-          <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
-            {form.formState.isSubmitting ? (
-              <>
-                <Spinner />
-                <span>Saving...</span>
-              </>
-            ) : (
-              "Save Changes"
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
             )}
+          />
+        </Field>
+        <FieldSeparator />
+        <Field orientation="horizontal">
+          <Button
+            type="submit"
+            size="sm"
+            disabled={form.formState.isSubmitting || !form.formState.isDirty}
+          >
+            {form.formState.isSubmitting && <Spinner data-icon="inline-start" />}
+            {form.formState.isSubmitting ? "Saving..." : "Save changes"}
           </Button>
-        </CardFooter>
-      </Card>
+        </Field>
+      </FieldGroup>
     </form>
   );
 }

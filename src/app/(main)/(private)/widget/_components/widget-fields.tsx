@@ -46,7 +46,10 @@ export function ColorField<Values extends FieldValues>({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" type="button" id={`widget-${name}`}>
-                <div className="size-4 rounded-full" style={{ backgroundColor: field.value }} />
+                <div
+                  className="size-4 rounded-full ring-1 ring-border"
+                  style={{ backgroundColor: field.value }}
+                />
                 {field.value}
               </Button>
             </DropdownMenuTrigger>
@@ -78,12 +81,10 @@ export function ChoiceField<Values extends FieldValues>({
   name,
   legend,
   description,
-  icon: Icon,
   options,
 }: FieldProps<Values> & {
   legend: string;
   description: string;
-  icon: LucideIcon;
   options: ChoiceOption[];
 }) {
   return (
@@ -92,10 +93,7 @@ export function ChoiceField<Values extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FieldSet>
-          <FieldLegend className="flex flex-row gap-2">
-            <Icon />
-            {legend}
-          </FieldLegend>
+          <FieldLegend>{legend}</FieldLegend>
           <FieldDescription>{description}</FieldDescription>
           <RadioGroup
             name={field.name}
@@ -108,7 +106,7 @@ export function ChoiceField<Values extends FieldValues>({
               <FieldLabel key={option.id} htmlFor={`widget-${name}-${option.id}`}>
                 <Field orientation="horizontal">
                   <FieldContent className="flex-row items-center gap-4">
-                    <option.icon />
+                    <option.icon className="text-muted-foreground" />
                     <div className="flex flex-col gap-1">
                       <FieldTitle>{option.title}</FieldTitle>
                       <FieldDescription>{option.description}</FieldDescription>
@@ -130,8 +128,7 @@ export function SwitchField<Values extends FieldValues>({
   name,
   label,
   description,
-  icon: Icon,
-}: FieldProps<Values> & { label: string; description: string; icon: LucideIcon }) {
+}: FieldProps<Values> & { label: string; description: string }) {
   return (
     <Controller
       control={control}
@@ -139,9 +136,7 @@ export function SwitchField<Values extends FieldValues>({
       render={({ field }) => (
         <Field orientation="horizontal">
           <FieldContent>
-            <FieldLabel htmlFor={`widget-${name}`}>
-              <Icon /> {label}
-            </FieldLabel>
+            <FieldLabel htmlFor={`widget-${name}`}>{label}</FieldLabel>
             <FieldDescription>{description}</FieldDescription>
           </FieldContent>
           <Switch
@@ -193,7 +188,7 @@ export function SliderField<Values extends FieldValues>({
               }}
             />
             <div
-              className="absolute -top-2 -translate-x-1/2 rounded bg-primary px-2 py-1 text-xs text-primary-foreground"
+              className="absolute -top-2 -translate-x-1/2 rounded-sm bg-primary px-2 py-1 text-xs text-primary-foreground"
               style={{ left: `${((field.value - min) / (max - min)) * 100}%` }}
             >
               {field.value}

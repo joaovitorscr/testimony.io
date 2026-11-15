@@ -5,13 +5,13 @@ import type { Doc } from "@convex/_generated/dataModel";
 import { normalizeHost } from "@convex/lib/hosts";
 import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
-import { Globe, Plus, Trash2 } from "lucide-react";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 import { type KeyboardEvent, useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 export function WidgetDomains({ widget: widgetConfig }: { widget: Doc<"widgets"> }) {
@@ -65,20 +65,16 @@ export function WidgetDomains({ widget: widgetConfig }: { widget: Doc<"widgets">
   };
 
   return (
-    <Card className="max-w-xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Globe className="size-5" />
-          Allowed Domains
-        </CardTitle>
-        <CardDescription>
+    <FieldGroup className="max-w-xl">
+      <Field>
+        <FieldLabel htmlFor="widget-new-domain">Allowed domains</FieldLabel>
+        <FieldDescription>
           Add the domains where your widget is allowed to be embedded. Only these domains will be
           able to display your testimonials widget.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </FieldDescription>
         <div className="flex gap-2">
           <Input
+            id="widget-new-domain"
             placeholder="https://example.com"
             value={newDomain}
             onChange={(event) => {
@@ -87,40 +83,37 @@ export function WidgetDomains({ widget: widgetConfig }: { widget: Doc<"widgets">
             onKeyDown={handleKeyDown}
             disabled={isPending}
           />
-          <Button
-            onClick={handleAddDomain}
-            disabled={isPending || !newDomain.trim()}
-            size="icon"
-            variant="outline"
-          >
-            <Plus className="size-4" />
+          <Button onClick={handleAddDomain} disabled={isPending || !newDomain.trim()}>
+            <PlusIcon data-icon="inline-start" />
+            Add
           </Button>
         </div>
+      </Field>
 
-        {domains.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {domains.map((domain) => (
-              <Badge key={domain} variant="secondary" className="gap-1.5 py-1.5 pr-1.5 pl-3">
-                <span className="max-w-48 truncate">{domain}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleRemoveDomain(domain);
-                  }}
-                  disabled={isPending}
-                  className="rounded p-0.5 transition-colors hover:bg-muted-foreground/20"
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-        ) : (
-          <p className="py-4 text-center text-sm text-muted-foreground">
-            No domains added yet. Add a domain to allow widget embedding.
-          </p>
-        )}
-      </CardContent>
-    </Card>
+      {domains.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {domains.map((domain) => (
+            <Badge key={domain} variant="secondary" className="gap-1.5 py-1.5 pr-1.5 pl-3">
+              <span className="max-w-48 truncate">{domain}</span>
+              <button
+                type="button"
+                aria-label={`Remove ${domain}`}
+                onClick={() => {
+                  handleRemoveDomain(domain);
+                }}
+                disabled={isPending}
+                className="rounded-sm p-0.5 transition-colors duration-150 hover:bg-muted-foreground/20"
+              >
+                <Trash2Icon className="size-3.5" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          No domains added yet. Add a domain to allow widget embedding.
+        </p>
+      )}
+    </FieldGroup>
   );
 }

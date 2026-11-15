@@ -24,6 +24,8 @@ export function NavMain({
 }) {
   const pathname = usePathname();
 
+  // Inactive items sit muted; hover and the active page lift to ink on the pale accent.
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -33,7 +35,12 @@ export function NavMain({
 
           return (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} isActive={isActive} asChild>
+              <SidebarMenuButton
+                tooltip={item.title}
+                isActive={isActive}
+                className="text-muted-foreground transition-[width,height,padding,color,background-color] data-[active=true]:text-foreground"
+                asChild
+              >
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>

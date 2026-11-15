@@ -19,6 +19,10 @@ function isTab(value: string): value is AvailableTabs {
   return (availableTabs as readonly string[]).includes(value);
 }
 
+// Tab rail: grey 24px titles, the active one darker.
+const railTrigger =
+  "h-auto flex-none rounded-none border-0 p-0 type-title text-fg-faint transition-colors duration-150 hover:text-fg-2 data-[state=active]:bg-transparent data-[state=active]:text-fg-2";
+
 export function WidgetTabs() {
   const [currentTab, setCurrentTab] = useQueryState<AvailableTabs>(
     "t",
@@ -29,9 +33,9 @@ export function WidgetTabs() {
 
   if (widget === undefined) {
     return (
-      <div className="grid grid-cols-1 gap-6 px-8 py-3 lg:grid-cols-2">
-        <Skeleton className="h-96 w-full" />
-        <Skeleton className="h-96 w-full" />
+      <div className="flex flex-col gap-6 px-5 pb-16 md:px-8">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-96 w-full rounded-xl" />
       </div>
     );
   }
@@ -42,7 +46,7 @@ export function WidgetTabs() {
 
   return (
     <Tabs
-      className="px-8 py-3"
+      className="gap-6 px-5 pb-16 md:px-8"
       defaultValue="configuration"
       value={currentTab}
       onValueChange={(value) => {
@@ -51,21 +55,26 @@ export function WidgetTabs() {
         }
       }}
     >
-      <TabsList>
-        <TabsTrigger value="configuration">Configuration</TabsTrigger>
-        <TabsTrigger value="domains">Domains</TabsTrigger>
+      <TabsList className="h-auto w-full justify-start gap-4 rounded-none bg-transparent p-0">
+        <TabsTrigger value="configuration" className={railTrigger}>
+          Configuration
+        </TabsTrigger>
+        <span aria-hidden className="h-px flex-1 bg-border" />
+        <TabsTrigger value="domains" className={railTrigger}>
+          Domains
+        </TabsTrigger>
       </TabsList>
-      <TabsContent value="configuration">
-        <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-2">
-          <WidgetConfigurator key={widget._id} widget={widget} />
-          <WidgetVisualizer widget={widget} />
-        </div>
-      </TabsContent>
-      <TabsContent value="domains">
-        <div className="py-6">
+      <div className="rounded-xl border p-4 md:p-6">
+        <TabsContent value="configuration">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <WidgetConfigurator key={widget._id} widget={widget} />
+            <WidgetVisualizer widget={widget} />
+          </div>
+        </TabsContent>
+        <TabsContent value="domains">
           <WidgetDomains widget={widget} />
-        </div>
-      </TabsContent>
+        </TabsContent>
+      </div>
     </Tabs>
   );
 }

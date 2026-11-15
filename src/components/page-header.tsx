@@ -16,11 +16,12 @@ export function PageHeader() {
   }
 
   return (
-    <header className="flex h-10 w-full items-center justify-between bg-sidebar px-5 shadow-sm">
+    <header className="flex h-12 w-full items-center justify-between border-b px-3">
       <Button variant="ghost" size="sm" onClick={toggleSidebar}>
-        <MenuIcon />
-        <p>Open Menu</p>
+        <MenuIcon data-icon="inline-start" />
+        Menu
       </Button>
+      <span className="px-2 text-lg type-wordmark text-foreground">testimony.io</span>
     </header>
   );
 }

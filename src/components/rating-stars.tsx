@@ -9,12 +9,12 @@ export function RatingStars({ value }: { value: number }) {
         <StarIcon
           key={star}
           className={cn(
-            "size-4 transition-colors",
-            star <= value ? "fill-amber-400 text-amber-400" : "fill-muted text-muted",
+            "size-3.5",
+            star <= value ? "fill-foreground text-foreground" : "fill-fg-faint text-fg-faint",
           )}
         />
       ))}
-      <span className="ml-2 text-sm font-medium text-muted-foreground">{value}/5</span>
+      <span className="ml-1.5 type-caption text-muted-foreground tabular-nums">{value}/5</span>
     </div>
   );
 }

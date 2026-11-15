@@ -3,7 +3,7 @@
 import { api } from "@convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
-import { Loader2Icon, PlusIcon, SparklesIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { useProject } from "@/components/project-context";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
 const createLinkSchema = z.object({
   description: z.string().optional(),
@@ -46,23 +47,15 @@ export function CreateLinkCard() {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-primary/20 bg-linear-to-br from-primary/5 via-card to-accent/5 shadow-sm">
-      <div className="border-b border-primary/10 bg-primary/5 px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-primary/10 p-2">
-            <SparklesIcon className="size-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="font-semibold">Create New Link</h2>
-            <p className="text-sm text-muted-foreground">
-              Generate a unique link to send to your customer
-            </p>
-          </div>
-        </div>
+    <section className="flex max-w-2xl flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <h2 className="type-title text-fg-2">New link</h2>
+        <p className="text-sm text-muted-foreground">
+          Generate a unique link to send to your customer. It is copied to your clipboard.
+        </p>
       </div>
 
       <form
-        className="p-6"
         onSubmit={(event) => {
           void form.handleSubmit(onSubmit)(event);
         }}
@@ -73,9 +66,9 @@ export function CreateLinkCard() {
             name="description"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="flex-1">
-                <FieldLabel htmlFor="description" className="text-sm">
+                <FieldLabel htmlFor="description">
                   Description
-                  <span className="ml-1 text-muted-foreground/60">(optional)</span>
+                  <span className="text-muted-foreground">(optional)</span>
                 </FieldLabel>
                 <Input
                   {...field}
@@ -83,28 +76,22 @@ export function CreateLinkCard() {
                   id="description"
                   placeholder="e.g. Feedback request for John from Acme Inc."
                   autoComplete="off"
-                  className="bg-background/80"
                 />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
 
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-            size="lg"
-            className="shrink-0 gap-2 px-6"
-          >
+          <Button type="submit" disabled={form.formState.isSubmitting} className="shrink-0">
             {form.formState.isSubmitting ? (
-              <Loader2Icon className="size-4 animate-spin" />
+              <Spinner data-icon="inline-start" />
             ) : (
-              <PlusIcon className="size-4" />
+              <PlusIcon data-icon="inline-start" />
             )}
-            Create Link
+            Create link
           </Button>
         </FieldGroup>
       </form>
-    </div>
+    </section>
   );
 }

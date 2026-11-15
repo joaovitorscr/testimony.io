@@ -3,15 +3,7 @@
 import { api } from "@convex/_generated/api";
 import type { Doc } from "@convex/_generated/dataModel";
 import { useMutation } from "convex/react";
-import {
-  BanIcon,
-  CheckIcon,
-  CopyIcon,
-  ExternalLinkIcon,
-  LinkIcon,
-  Loader2Icon,
-  MoreHorizontalIcon,
-} from "lucide-react";
+import { BanIcon, CheckIcon, CopyIcon, ExternalLinkIcon, MoreHorizontalIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -23,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -50,104 +43,78 @@ export function LinksTable({ requests, slug }: { requests: Request[]; slug: stri
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Link History</h2>
-        <Badge className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+    <section className="flex flex-col gap-6">
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="type-title text-fg-2">Link history</h2>
+        <span className="text-sm text-muted-foreground tabular-nums">
           {requests.length} {requests.length === 1 ? "link" : "links"}
-        </Badge>
+        </span>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border/60 bg-card/50">
-        <Table>
-          <TableHeader className="bg-muted/30">
-            <TableRow className="border-b border-border/60 hover:bg-transparent">
-              <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Description
-              </TableHead>
-              <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Status
-              </TableHead>
-              <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Created
-              </TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="pl-0 text-xs font-normal text-muted-foreground">
+              Description
+            </TableHead>
+            <TableHead className="text-xs font-normal text-muted-foreground">Status</TableHead>
+            <TableHead className="text-xs font-normal text-muted-foreground">Created</TableHead>
+            <TableHead className="pr-0">
+              <span className="sr-only">Actions</span>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {requests.map((request) => (
+            <TableRow key={request._id} className="hover:bg-transparent">
+              <TableCell className="py-3 pl-0">
+                <DescriptionCell request={request} />
+              </TableCell>
+              <TableCell className="py-3">
+                <StatusBadge status={request.status} />
+              </TableCell>
+              <TableCell className="py-3 text-muted-foreground tabular-nums">
+                {dateFormat.format(request._creationTime)}
+              </TableCell>
+              <TableCell className="py-3 pr-0">
+                {request.status === "active" && <ActiveLinkActions request={request} slug={slug} />}
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {requests.map((request) => (
-              <TableRow
-                key={request._id}
-                className="border-border/40 transition-colors hover:bg-muted/20"
-              >
-                <TableCell className="py-3">
-                  <DescriptionCell request={request} />
-                </TableCell>
-                <TableCell className="py-3">
-                  <StatusBadge status={request.status} />
-                </TableCell>
-                <TableCell className="py-3 text-sm text-muted-foreground">
-                  {dateFormat.format(request._creationTime)}
-                </TableCell>
-                <TableCell className="py-3">
-                  {request.status === "active" && (
-                    <ActiveLinkActions request={request} slug={slug} />
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+          ))}
+        </TableBody>
+      </Table>
+    </section>
   );
 }
 
 function DescriptionCell({ request }: { request: Request }) {
   return (
-    <div className="min-w-0">
-      <div className="flex items-center gap-2">
-        <LinkIcon className="size-4 shrink-0 text-muted-foreground/60" />
-        <span className="truncate font-medium">
-          {request.description ?? (
-            <span className="text-muted-foreground italic">No description</span>
-          )}
-        </span>
-      </div>
+    <div className="flex min-w-0 flex-col gap-0.5">
+      <span className="truncate">
+        {request.description ?? <span className="text-muted-foreground">No description</span>}
+      </span>
       {request.createdBy !== undefined && (
-        <p className="mt-0.5 text-xs text-muted-foreground">by {request.createdBy}</p>
+        <span className="type-caption text-muted-foreground">by {request.createdBy}</span>
       )}
     </div>
   );
 }
 
+/** Ink for links still out in the world, pale once collected, outlined and muted once cancelled. */
 function StatusBadge({ status }: { status: Request["status"] }) {
   if (status === "cancelled") {
     return (
-      <Badge variant="destructive" className="font-medium">
+      <Badge variant="outline" className="text-muted-foreground">
         Cancelled
       </Badge>
     );
   }
 
   if (status === "used") {
-    return (
-      <Badge variant="secondary" className="font-medium">
-        Collected
-      </Badge>
-    );
+    return <Badge variant="secondary">Collected</Badge>;
   }
 
-  return (
-    <Badge
-      variant="outline"
-      className="border-emerald-500/30 bg-emerald-500/10 font-medium text-emerald-700 hover:bg-emerald-500/20 dark:text-emerald-400"
-    >
-      Active
-    </Badge>
-  );
+  return <Badge>Active</Badge>;
 }
 
 function ActiveLinkActions({ request, slug }: { request: Request; slug: string }) {
@@ -180,48 +147,39 @@ function ActiveLinkActions({ request, slug }: { request: Request; slug: string }
     <div className="flex items-center justify-end gap-1">
       <Button
         variant="ghost"
-        size="icon"
-        className="size-8"
+        size="icon-sm"
         onClick={() => {
           void copyToClipboard();
         }}
       >
-        {copied ? (
-          <CheckIcon className="size-4 text-emerald-500" />
-        ) : (
-          <CopyIcon className="size-4" />
-        )}
-        <span className="sr-only">Copy Link</span>
+        {copied ? <CheckIcon /> : <CopyIcon />}
+        <span className="sr-only">Copy link</span>
       </Button>
 
-      <Button variant="ghost" size="icon" asChild className="size-8">
+      <Button variant="ghost" size="icon-sm" asChild>
         <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-          <ExternalLinkIcon className="size-4" />
-          <span className="sr-only">Open Link</span>
+          <ExternalLinkIcon />
+          <span className="sr-only">Open link</span>
         </a>
       </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8">
-            <MoreHorizontalIcon className="size-4" />
+          <Button variant="ghost" size="icon-sm">
+            <MoreHorizontalIcon />
             <span className="sr-only">More actions</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
+            variant="destructive"
             disabled={isCancelling}
-            className="text-destructive focus:text-destructive"
             onClick={() => {
               void handleCancel();
             }}
           >
-            {isCancelling ? (
-              <Loader2Icon className="mr-2 size-4 animate-spin" />
-            ) : (
-              <BanIcon className="mr-2 size-4" />
-            )}
-            Cancel Link
+            {isCancelling ? <Spinner /> : <BanIcon />}
+            Cancel link
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

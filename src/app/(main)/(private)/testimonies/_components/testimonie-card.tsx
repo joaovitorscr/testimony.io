@@ -2,25 +2,16 @@ import type { api } from "@convex/_generated/api";
 import type { Id } from "@convex/_generated/dataModel";
 import type { FunctionReturnType } from "convex/server";
 import { format } from "date-fns";
-import {
-  BuildingIcon,
-  CalendarIcon,
-  CheckCircle2Icon,
-  ClockIcon,
-  QuoteIcon,
-  SparklesIcon,
-} from "lucide-react";
 
 import { RatingStars } from "@/components/rating-stars";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
 
 type Testimonial = FunctionReturnType<typeof api.testimonials.list>["page"][number];
 
+/** One quote in the testimonies grid: rating and status, the words, who said it, then its toggles. */
 export function TestimonieCard({
   testimony,
   onToggleFeatured,
@@ -30,120 +21,72 @@ export function TestimonieCard({
   onToggleFeatured: (id: Id<"testimonials">, value: boolean) => void;
   onToggleApproved: (id: Id<"testimonials">, value: boolean) => void;
 }) {
+  const role = [testimony.customerTitle, testimony.customerCompany]
+    .filter((part) => part !== undefined && part !== "")
+    .join(", ");
+
   return (
-    <Card className="group relative overflow-hidden border-border bg-card transition-all hover:shadow-md">
-      {/* Status indicators */}
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        {testimony.isFeatured && (
-          <Badge variant="default" className="gap-1 bg-amber-500 hover:bg-amber-500">
-            <SparklesIcon className="size-3" />
-            Featured
+    <article className="flex flex-col gap-5 border-t pt-5">
+      <div className="flex min-h-5 items-center justify-between gap-3">
+        {testimony.rating === undefined ? <span /> : <RatingStars value={testimony.rating} />}
+        <div className="flex items-center gap-1.5">
+          {testimony.isFeatured && <Badge variant="outline">Featured</Badge>}
+          <Badge variant={testimony.isApproved ? "outline" : "secondary"}>
+            {testimony.isApproved ? "Approved" : "Pending"}
           </Badge>
-        )}
-        <Badge
-          variant={testimony.isApproved ? "default" : "secondary"}
-          className={cn(
-            "gap-1",
-            testimony.isApproved
-              ? "bg-emerald-500 hover:bg-emerald-500"
-              : "bg-muted text-muted-foreground",
-          )}
-        >
-          {testimony.isApproved ? (
-            <>
-              <CheckCircle2Icon className="size-3" />
-              Approved
-            </>
-          ) : (
-            <>
-              <ClockIcon className="size-3" />
-              Pending
-            </>
-          )}
-        </Badge>
+        </div>
       </div>
 
-      <CardContent className="px-6">
-        {/* Quote section */}
-        <div className="mb-6">
-          <QuoteIcon className="mb-3 size-8 text-primary/20" />
-          <p className="leading-relaxed text-foreground">{testimony.text}</p>
+      <blockquote className="text-pretty text-foreground">{testimony.text}</blockquote>
+
+      <div className="mt-auto flex items-center gap-3">
+        <Avatar className="size-10">
+          <AvatarImage src={testimony.avatarUrl ?? undefined} alt={testimony.customerName} />
+          <AvatarFallback className="text-sm text-muted-foreground">
+            {testimony.customerName.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex min-w-0 flex-col">
+          <p className="truncate text-sm font-medium text-foreground">{testimony.customerName}</p>
+          <p className="truncate type-caption text-muted-foreground">
+            {role === "" ? "" : `${role} · `}
+            {format(testimony._creationTime, "MMM d, yyyy")}
+          </p>
         </div>
+      </div>
 
-        {/* Rating */}
-        {testimony.rating !== undefined && (
-          <div className="mb-6">
-            <RatingStars value={testimony.rating} />
-          </div>
-        )}
-
-        {/* Customer info and controls */}
-        <div className="flex flex-col items-start justify-between border-t pt-4 lg:flex-row lg:items-end">
-          <div className="flex items-center gap-3">
-            <Avatar className="size-12 ring-2 ring-background">
-              <AvatarImage src={testimony.avatarUrl ?? undefined} alt={testimony.customerName} />
-              <AvatarFallback className="bg-primary/10 font-semibold text-primary">
-                {testimony.customerName.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-
-            <div className="space-y-0.5">
-              <p className="text-sm font-semibold text-foreground">{testimony.customerName}</p>
-              {testimony.customerTitle !== undefined && (
-                <p className="text-xs text-muted-foreground">{testimony.customerTitle}</p>
-              )}
-              <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground">
-                {testimony.customerCompany !== undefined && (
-                  <span className="flex items-center gap-1">
-                    <BuildingIcon className="size-3" />
-                    {testimony.customerCompany}
-                  </span>
-                )}
-                <span className="flex items-center gap-1">
-                  <CalendarIcon className="size-3" />
-                  {format(testimony._creationTime, "MMM d, yyyy")}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Toggle controls */}
-          <div className="mt-8 flex items-center gap-6 lg:mt-0">
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor={`featured-${testimony._id}`}
-                className="cursor-pointer text-xs text-muted-foreground"
-              >
-                Featured
-              </Label>
-              <Switch
-                id={`featured-${testimony._id}`}
-                checked={testimony.isFeatured}
-                onCheckedChange={(value) => {
-                  onToggleFeatured(testimony._id, value);
-                }}
-                className="data-[state=checked]:bg-amber-500"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Label
-                htmlFor={`approved-${testimony._id}`}
-                className="cursor-pointer text-xs text-muted-foreground"
-              >
-                Approved
-              </Label>
-              <Switch
-                id={`approved-${testimony._id}`}
-                checked={testimony.isApproved}
-                onCheckedChange={(value) => {
-                  onToggleApproved(testimony._id, value);
-                }}
-                className="data-[state=checked]:bg-emerald-500"
-              />
-            </div>
-          </div>
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2">
+          <Switch
+            id={`featured-${testimony._id}`}
+            checked={testimony.isFeatured}
+            onCheckedChange={(value) => {
+              onToggleFeatured(testimony._id, value);
+            }}
+          />
+          <Label
+            htmlFor={`featured-${testimony._id}`}
+            className="cursor-pointer text-xs font-normal text-muted-foreground"
+          >
+            Featured
+          </Label>
         </div>
-      </CardContent>
-    </Card>
+        <div className="flex items-center gap-2">
+          <Switch
+            id={`approved-${testimony._id}`}
+            checked={testimony.isApproved}
+            onCheckedChange={(value) => {
+              onToggleApproved(testimony._id, value);
+            }}
+          />
+          <Label
+            htmlFor={`approved-${testimony._id}`}
+            className="cursor-pointer text-xs font-normal text-muted-foreground"
+          >
+            Approved
+          </Label>
+        </div>
+      </div>
+    </article>
   );
 }

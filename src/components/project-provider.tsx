@@ -30,7 +30,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   if (project === null) {
     return (
-      <main className="min-h-svh flex-1 bg-linear-to-br from-primary/30 via-primary/10 to-primary/5">
+      <main className="min-h-svh flex-1 bg-muted">
         <OnboardingDialog open />
       </main>
     );
