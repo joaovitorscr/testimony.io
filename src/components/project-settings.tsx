@@ -4,7 +4,7 @@ import { api } from "@convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { useProject } from "@/components/project-context";
@@ -20,29 +20,28 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FieldGroup } from "@/components/ui/field";
-import { useSlugAvailability } from "@/hooks/use-slug-availability";
 import { type ProjectNameValues, projectNameSchema } from "@/lib/project-schema";
 
 /** Rename the active project. Mount it only while open so it starts fresh. */
 export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
   const { project } = useProject();
-  const updateProject = useMutation(api.projects.update);
+  const renameProject = useMutation(api.projects.rename);
 
   const form = useForm<ProjectNameValues>({
     resolver: zodResolver(projectNameSchema),
     mode: "onChange",
     defaultValues: { name: project.name },
   });
-  const name = useWatch({ control: form.control, name: "name" });
-  const { slug, status } = useSlugAvailability(name, project._id);
 
   const onSubmit = async (values: ProjectNameValues) => {
     try {
-      await updateProject({ projectId: project._id, name: values.name, slug });
-      toast.success("Project updated");
+      await renameProject({ projectId: project._id, name: values.name });
+      toast.success("Project renamed");
       onOpenChange(false);
     } catch (error) {
-      toast.error(error instanceof ConvexError ? String(error.data) : "Failed to update project");
+      toast.error(
+        error instanceof ConvexError ? String(error.data) : "Couldn't rename the project",
+      );
     }
   };
 
@@ -52,7 +51,7 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
         <DialogHeader>
           <DialogTitle>Project settings</DialogTitle>
           <DialogDescription>
-            Rename your project. Collection links keep working after a rename.
+            Rename your project. Its URL, and so your collection link, stays the same.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -65,8 +64,8 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
             <ProjectNameFields
               control={form.control}
               idPrefix="update-project"
-              slug={slug}
-              status={status}
+              slug={project.slug}
+              status="idle"
             />
           </FieldGroup>
           <DialogFooter className="mt-6">
@@ -78,9 +77,7 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
             <Button
               type="submit"
               size="sm"
-              disabled={
-                form.formState.isSubmitting || !form.formState.isValid || status !== "available"
-              }
+              disabled={form.formState.isSubmitting || !form.formState.isValid}
             >
               {form.formState.isSubmitting ? "Saving..." : "Save"}
             </Button>

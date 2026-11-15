@@ -11,10 +11,9 @@
 import type * as auth from "../auth.js";
 import type * as collect from "../collect.js";
 import type * as lib_access from "../lib/access.js";
-import type * as lib_hosts from "../lib/hosts.js";
+import type * as lib_collect from "../lib/collect.js";
 import type * as lib_slug from "../lib/slug.js";
 import type * as projects from "../projects.js";
-import type * as requests from "../requests.js";
 import type * as testimonials from "../testimonials.js";
 import type * as users from "../users.js";
 import type * as widgets from "../widgets.js";
@@ -29,10 +28,9 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   collect: typeof collect;
   "lib/access": typeof lib_access;
-  "lib/hosts": typeof lib_hosts;
+  "lib/collect": typeof lib_collect;
   "lib/slug": typeof lib_slug;
   projects: typeof projects;
-  requests: typeof requests;
   testimonials: typeof testimonials;
   users: typeof users;
   widgets: typeof widgets;
@@ -70,4 +68,5 @@ export declare const components: {
   authGithub: import("@convex-dev/auth/components/github/_generated/component.js").ComponentApi<"authGithub">;
   authPassword: import("@convex-dev/auth/components/password/_generated/component.js").ComponentApi<"authPassword">;
   authUsername: import("@convex-dev/auth/components/username/_generated/component.js").ComponentApi<"authUsername">;
+  rateLimiter: import("@convex-dev/rate-limiter/_generated/component.js").ComponentApi<"rateLimiter">;
 };

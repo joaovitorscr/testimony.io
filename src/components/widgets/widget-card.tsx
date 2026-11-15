@@ -12,24 +12,16 @@ const visuallyHidden = {
   whiteSpace: "nowrap",
 } as const;
 
-function StarIcon({
-  filled,
-  fillColor,
-  strokeColor,
-}: {
-  filled: boolean;
-  fillColor: string;
-  strokeColor: string;
-}) {
+function StarIcon({ filled }: { filled: boolean }) {
+  const color = filled ? "var(--tm-accent)" : "var(--tm-border)";
   return (
     <svg
       width="16"
       height="16"
       viewBox="0 0 24 24"
-      fill={filled ? fillColor : "none"}
-      stroke={filled ? fillColor : strokeColor}
+      fill={color}
+      stroke={color}
       strokeWidth="2"
-      strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
     >
@@ -38,81 +30,70 @@ function StarIcon({
   );
 }
 
-/** One testimonial, styled entirely inline so it renders the same anywhere. */
+/** One testimonial, styled inline from the widget's CSS variables. */
 export function WidgetCard({
-  testimony,
-  widgetConfig,
+  testimonial,
+  settings,
 }: {
-  testimony: WidgetTestimonial;
-  widgetConfig: WidgetSettings;
+  testimonial: WidgetTestimonial;
+  settings: WidgetSettings;
 }) {
-  const { rating } = testimony;
-  const subtitle = [testimony.customerTitle, testimony.customerCompany]
+  const { rating } = testimonial;
+  const subtitle = [testimonial.customerTitle, testimonial.customerCompany]
     .filter((part) => part !== undefined && part !== "")
-    .join(" at ");
+    .join(", ");
 
   return (
-    <div
+    <figure
       style={{
-        padding: "16px",
-        backgroundColor: widgetConfig.backgroundColor,
+        position: "relative",
+        margin: 0,
+        padding: "20px",
+        backgroundColor: "var(--tm-bg)",
+        color: "var(--tm-fg)",
         borderRadius: "12px",
-        border: `1px solid color-mix(in srgb, ${widgetConfig.textColor} 10%, transparent)`,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-        height: "100%",
+        border: "1px solid var(--tm-border)",
         display: "flex",
         flexDirection: "column",
+        gap: "16px",
       }}
     >
-      {widgetConfig.showRating && rating !== undefined && (
-        <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
+      {settings.showRating && rating !== undefined && (
+        <div style={{ display: "flex", gap: "2px" }}>
           <span style={visuallyHidden}>Rated {rating} out of 5</span>
           {STARS.map((star) => (
-            <StarIcon
-              key={star}
-              filled={star <= rating}
-              fillColor={widgetConfig.primaryColor}
-              strokeColor={`color-mix(in srgb, ${widgetConfig.textColor} 30%, transparent)`}
-            />
+            <StarIcon key={star} filled={star <= rating} />
           ))}
         </div>
       )}
 
-      <p
+      <blockquote
         style={{
-          margin: "0 0 16px 0",
-          fontSize: "14px",
-          lineHeight: "1.6",
-          color: widgetConfig.textColor,
+          margin: 0,
+          fontSize: "15px",
+          lineHeight: 1.6,
+          overflowWrap: "anywhere",
+          whiteSpace: "pre-line",
         }}
       >
-        &ldquo;{testimony.text}&rdquo;
-      </p>
+        {testimonial.text}
+      </blockquote>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "auto" }}>
-        {widgetConfig.showAvatar && (
-          <WidgetAvatar
-            name={testimony.customerName}
-            url={testimony.avatarUrl}
-            color={widgetConfig.primaryColor}
-          />
+      <figcaption style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        {settings.showAvatar && (
+          <WidgetAvatar name={testimonial.customerName} url={testimonial.avatarUrl} />
         )}
-        <div>
-          <div style={{ fontWeight: 600, fontSize: "14px", color: widgetConfig.textColor }}>
-            {testimony.customerName}
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontWeight: 600, fontSize: "14px", overflowWrap: "anywhere" }}>
+            {testimonial.customerName}
           </div>
           {subtitle !== "" && (
-            <div
-              style={{
-                fontSize: "12px",
-                color: `color-mix(in srgb, ${widgetConfig.textColor} 60%, transparent)`,
-              }}
-            >
+            <div style={{ fontSize: "13px", color: "var(--tm-muted)", overflowWrap: "anywhere" }}>
               {subtitle}
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </figcaption>
+    </figure>
   );
 }

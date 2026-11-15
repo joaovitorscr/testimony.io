@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BookOpenTextIcon,
   LayoutIcon,
   LinkIcon,
   type LucideIcon,
@@ -36,26 +35,9 @@ const navMainItems: {
   url: Route;
   icon: LucideIcon;
 }[] = [
-  {
-    title: "Testimonies",
-    url: "/testimonies",
-    icon: MessageCircleIcon,
-  },
-  {
-    title: "Widget",
-    url: "/widget",
-    icon: LayoutIcon,
-  },
-  {
-    title: "Collect Link",
-    url: "/collect-link",
-    icon: LinkIcon,
-  },
-  {
-    title: "Documentation",
-    url: "/documentation",
-    icon: BookOpenTextIcon,
-  },
+  { title: "Testimonials", url: "/testimonials", icon: MessageCircleIcon },
+  { title: "Collect", url: "/collect", icon: LinkIcon },
+  { title: "Display", url: "/display", icon: LayoutIcon },
 ];
 
 export function AppSidebar(props: ComponentProps<typeof Sidebar>) {

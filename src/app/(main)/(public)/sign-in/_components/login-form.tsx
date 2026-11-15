@@ -72,7 +72,7 @@ export function LoginForm({
   // OAuth finishes on this page after the provider redirects back.
   useEffect(() => {
     if (isAuthenticated) {
-      router.replace("/testimonies");
+      router.replace("/testimonials");
     }
   }, [isAuthenticated, router]);
 

@@ -22,13 +22,12 @@
 
 ## ✨ Features
 
-- 📝 **Collect Testimonials** - Create single-use links to collect testimonials from your customers
-- 🎨 **Customizable Widget** - Embed a customizable widget on your website
-- 👥 **Multi-Project Support** - Manage testimonials for multiple projects/products
-- ✅ **Approval Workflow** - Only approved testimonials appear in your widget
-- ⭐ **Rating System** - Collect star ratings alongside text testimonials
+- 🔗 **One link per project** - Share `/c/<your-project>` anywhere; customers need no account
+- ✅ **Review before publishing** - Pending, approved, and archived, with Undo
+- 🎨 **Embeddable widget** - One snippet, any site; sizes itself, light/dark/auto themes
+- ⭐ **Optional ratings and photos** - The quote and a name are all that's required
+- 👥 **Multi-Project Support** - Manage testimonials for multiple products
 - 🔒 **One-click sign-in** - Google and GitHub via Convex Auth
-- 🌐 **Domain Allowlist** - Control which domains can embed your widget
 - ⚡ **Realtime dashboard** - New testimonials appear instantly
 
 <br />
@@ -74,22 +73,23 @@ The first `convex dev` asks you to log in and pick a project, then writes
 
 ## 📚 Documentation
 
-- [Architecture](docs/internals/architecture.md): data model, access control, collection and embed flows, code layout
+- [Architecture](docs/internals/architecture.md): data model, access control, collect/review/display flows, decisions, code layout
 - [Tooling and CI](docs/internals/tooling.md): lint policy, type checking, tests, the sharded CI pipeline
 - [Deployment](docs/internals/deployment.md): Vercel, Convex, environment variables, OAuth setup
 
 <br />
 
-## 🔌 Widget Embed Example
+## 🔌 Showing testimonials on your site
 
-Add your site under **Widget → Domains**, then embed:
+Copy the snippet from **Display** in the dashboard. It works on any site, with
+no setup:
 
 ```html
 <iframe
   src="https://testimony-io.vercel.app/embed/YOUR_WIDGET_ID"
   title="Testimonials"
-  width="100%"
-  height="600"
-  style="border: 0"
+  loading="lazy"
+  style="width:100%;height:480px;border:0"
 ></iframe>
+<script src="https://testimony-io.vercel.app/embed.js" async></script>
 ```

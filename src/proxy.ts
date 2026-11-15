@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { convexAuthNextjsProxy, nextjsProxyRedirect } from "@/lib/convex-auth";
 
 // Pages anyone can open. Everything else requires a signed-in user.
-const PUBLIC_PREFIXES = ["/sign-in", "/sign-up", "/c/", "/embed/"];
+const PUBLIC_PREFIXES = ["/sign-in", "/sign-up", "/c/"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
@@ -23,15 +23,16 @@ export default convexAuthNextjsProxy(async (request, { isAuthenticated }) => {
     return nextjsProxyRedirect(request, "/sign-in");
   }
   if (isAuthPage && authed) {
-    return nextjsProxyRedirect(request, "/testimonies");
+    return nextjsProxyRedirect(request, "/testimonials");
   }
   return NextResponse.next();
 });
 
 export const config = {
-  // Skip the /auth handlers (they set their own cookies), Next internals, and
-  // static files.
+  // Skip the /auth handlers (they set their own cookies), the public embed (it
+  // must stay cookie-free so the CDN caches it), Next internals, and static
+  // files.
   matcher: [
-    "/((?!auth(?:/|$)|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+    "/((?!auth(?:/|$)|embed/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|js)$).*)",
   ],
 };

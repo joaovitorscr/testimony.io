@@ -1,34 +1,38 @@
 import { api } from "@convex/_generated/api";
-import { fetchQuery } from "convex/nextjs";
-import { headers } from "next/headers";
+import { ConvexHttpClient } from "convex/browser";
 
 import { TestimonialWidget } from "@/components/widgets/testimonial-widget";
+import { env } from "@/env";
 
-const MESSAGES = {
-  "not-found": "Widget not found.",
-  "no-domains":
-    "This widget has no allowed domains yet. Add your site in Testimony.io → Widget → Domains.",
-  forbidden: "This widget is not authorized for this domain.",
-} as const;
+import { EmbedResize } from "./embed-resize";
+
+// Every visit to a page with the widget loads this, so it is cached and
+// refreshed in the background: approvals show up within a minute.
+export const revalidate = 60;
+
+// No widget is rendered at build time; each one is cached on its first visit.
+export function generateStaticParams() {
+  return [];
+}
+
+const convex = new ConvexHttpClient(env.NEXT_PUBLIC_CONVEX_URL, {
+  fetch: async (input, init) => fetch(input, { ...init, next: { revalidate } }),
+});
 
 export default async function EmbedPage({ params }: { params: Promise<{ widgetId: string }> }) {
   const { widgetId } = await params;
-  // Inside an iframe, the browser sends the embedding page as the Referer.
-  const requestHeaders = await headers();
-  const referer = requestHeaders.get("referer") ?? undefined;
+  const result = await convex.query(api.widgets.getPublic, { widgetId });
 
-  const result = await fetchQuery(api.widgets.getPublic, {
-    widgetId,
-    origin: referer,
-  });
-
-  if (result.status !== "ok") {
-    return <p style={{ padding: 16, fontSize: 14, color: "#6b7280" }}>{MESSAGES[result.status]}</p>;
-  }
-
-  if (result.testimonials.length === 0) {
-    return null;
-  }
-
-  return <TestimonialWidget testimonies={result.testimonials} widgetConfig={result.settings} />;
+  return (
+    <>
+      {result.status === "ok" ? (
+        <TestimonialWidget testimonials={result.testimonials} settings={result.settings} />
+      ) : (
+        <p style={{ margin: 0, padding: 16, fontFamily: "system-ui", fontSize: 14 }}>
+          Widget not found. Check the embed code in Testimony.io → Display.
+        </p>
+      )}
+      <EmbedResize />
+    </>
+  );
 }
