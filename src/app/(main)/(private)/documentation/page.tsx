@@ -1,60 +1,48 @@
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeading } from "@/components/page-heading";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { EmbedWidgetSection } from "./_components/embed-widget-section";
 
+const inlineCode = "rounded-sm bg-muted px-1.5 py-0.5 font-mono text-sm";
+
 export default function DocumentationPage() {
   return (
     <main className="flex min-h-svh flex-1 flex-col overflow-y-auto">
-      <header className="px-8 py-4">
-        <h1 className="text-3xl font-bold tracking-tight">Documentation</h1>
-        <p className="mt-1 text-muted-foreground">
-          Learn how to use the Testimony.io embed widget to display your customer testimonials on
-          your own website using an iframe.
-        </p>
-      </header>
+      <PageHeading
+        title="Documentation"
+        description="Learn how to use the Testimony.io embed widget to display your customer testimonials on your own website using an iframe."
+      />
 
-      <div className="space-y-8 px-8 py-4">
-        <section className="max-w-3xl space-y-4">
-          <h2 className="text-2xl font-bold tracking-tight">Before you embed</h2>
-          <p className="text-muted-foreground">
+      <div className="flex max-w-3xl flex-col gap-12 px-5 pb-16 md:px-8">
+        <section className="flex flex-col gap-4">
+          <h2 className="type-title text-fg-2">Before you embed</h2>
+          <p className="text-fg-2">
             Make sure you have completed these steps so the widget loads correctly on your site.
           </p>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Allow your domain</CardTitle>
-              <CardDescription>
-                For security, the widget only loads on domains you have approved. In{" "}
-                <Link
-                  href="/widget?t=domains"
-                  className="font-medium text-primary underline underline-offset-4"
-                >
-                  Widget → Domains
-                </Link>
-                , add the full URL of the site where you will embed the widget (e.g.{" "}
-                <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">
-                  https://example.com
-                </code>
-                ). If your domain is not in the list, visitors will see “Widget is not authorized
-                for this domain.”
-              </CardDescription>
-            </CardHeader>
-          </Card>
+          <h3 className="font-medium">Allow your domain</h3>
+          <p className="text-fg-2">
+            For security, the widget only loads on domains you have approved. In{" "}
+            <Link href="/widget?t=domains" className="underline underline-offset-4">
+              Widget → Domains
+            </Link>
+            , add the full URL of the site where you will embed the widget (e.g.{" "}
+            <code className={inlineCode}>https://example.com</code>). If your domain is not in the
+            list, visitors will see “Widget is not authorized for this domain.”
+          </p>
         </section>
 
-        <section className="max-w-3xl space-y-4">
-          <h2 className="text-2xl font-bold tracking-tight">Add the widget to your site</h2>
-          <p className="text-muted-foreground">
+        <section className="flex flex-col gap-4">
+          <h2 className="type-title text-fg-2">Add the widget to your site</h2>
+          <p className="text-fg-2">
             Use an iframe to embed the testimonial widget. Paste the code below into your HTML where
             you want the testimonials to appear. You can change{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">width</code> and{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">height</code> to fit
-            your layout.
+            <code className={inlineCode}>width</code> and <code className={inlineCode}>height</code>{" "}
+            to fit your layout.
           </p>
-          <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
+          <Suspense fallback={<Skeleton className="h-48 w-full rounded-lg" />}>
             <EmbedWidgetSection />
           </Suspense>
         </section>

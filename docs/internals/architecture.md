@@ -95,3 +95,8 @@ Rules worth knowing:
   it without pulling in backend code.
 - `src/env.ts` is the only place that reads `process.env`.
 - `src/components/ui/` is managed by `shadcn add`; do not edit it by hand.
+- `DESIGN.md` is the visual spec. Its tokens live in `src/styles/globals.css`
+  (shadcn variables plus `fg-2`, `fg-faint`, the footage colours and the
+  `type-*` utilities). Colour appears only inside `MediaFrame`
+  (`src/components/media-frame.tsx`); the rest of the UI stays greyscale.
+  Dashboard pages open with `PageHeading`.

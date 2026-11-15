@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 import { useProject } from "@/components/project-context";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { env } from "@/env";
 
 function buildEmbedSnippet(appUrl: string, widgetId: string) {
@@ -41,37 +40,30 @@ export function EmbedWidgetSection() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Embed code</CardTitle>
-        <CardDescription>
-          Copy this snippet and paste it into your website HTML where you want the testimonials to
-          appear. Replace{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">YOUR_WIDGET_ID</code>{" "}
-          with your Widget ID if it is not already filled.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="relative">
-          <pre className="overflow-x-auto rounded-lg border bg-muted/50 p-4 font-mono text-sm">
-            <code>{embedSnippet}</code>
-          </pre>
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute top-2 right-2"
-            onClick={() => {
-              void copyToClipboard();
-            }}
-          >
-            {copied ? (
-              <CheckIcon className="size-4 text-green-600" />
-            ) : (
-              <CopyIcon className="size-4" />
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-4">
+      <h3 className="font-medium">Embed code</h3>
+      <p className="text-fg-2">
+        Copy this snippet and paste it into your website HTML where you want the testimonials to
+        appear. Replace{" "}
+        <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-sm">YOUR_WIDGET_ID</code>{" "}
+        with your Widget ID if it is not already filled.
+      </p>
+      <div className="relative">
+        <pre className="overflow-x-auto rounded-lg bg-muted p-4 pr-14 font-mono text-sm">
+          <code>{embedSnippet}</code>
+        </pre>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="absolute top-2 right-2"
+          aria-label="Copy embed code"
+          onClick={() => {
+            void copyToClipboard();
+          }}
+        >
+          {copied ? <CheckIcon /> : <CopyIcon />}
+        </Button>
+      </div>
+    </div>
   );
 }

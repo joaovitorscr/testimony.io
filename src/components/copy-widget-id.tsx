@@ -29,11 +29,13 @@ export function CopyWidgetId() {
 
   return (
     <div className="flex flex-col items-start gap-2">
-      <Label>Widget ID</Label>
+      <Label htmlFor="widget-id" className="text-muted-foreground">
+        Widget ID
+      </Label>
       <InputGroup className="w-64">
-        <InputGroupInput value={widgetConfig._id} disabled />
+        <InputGroupInput id="widget-id" value={widgetConfig._id} disabled />
         <InputGroupAddon align="inline-end">
-          <InputGroupButton onClick={copyToClipboard}>
+          <InputGroupButton size="icon-xs" aria-label="Copy widget ID" onClick={copyToClipboard}>
             <CopyIcon />
           </InputGroupButton>
         </InputGroupAddon>

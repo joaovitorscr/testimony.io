@@ -12,8 +12,10 @@ import { ProjectNameFields } from "@/components/project-name-fields";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -48,7 +50,7 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
     <Dialog open onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Project Settings</DialogTitle>
+          <DialogTitle>Project settings</DialogTitle>
           <DialogDescription>
             Rename your project. Collection links keep working after a rename.
           </DialogDescription>
@@ -66,15 +68,23 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
               slug={slug}
               status={status}
             />
+          </FieldGroup>
+          <DialogFooter className="mt-6">
+            <DialogClose asChild>
+              <Button type="button" variant="ghost" size="sm">
+                Cancel
+              </Button>
+            </DialogClose>
             <Button
               type="submit"
+              size="sm"
               disabled={
                 form.formState.isSubmitting || !form.formState.isValid || status !== "available"
               }
             >
               {form.formState.isSubmitting ? "Saving..." : "Save"}
             </Button>
-          </FieldGroup>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

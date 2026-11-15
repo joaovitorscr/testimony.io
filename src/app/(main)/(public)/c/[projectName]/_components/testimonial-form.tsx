@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 import { AvatarPicker } from "./avatar-picker";
 
@@ -92,16 +93,16 @@ export function TestimonialForm({ token }: { token: string }) {
 
   if (submitted) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 p-8 text-center">
-        <h2 className="text-2xl font-bold">Thank You!</h2>
-        <p className="text-muted-foreground">Your testimonial has been received.</p>
+      <div className="flex flex-col gap-2">
+        <h2 className="type-lede">Thank you.</h2>
+        <p className="text-fg-2">Your testimonial has been received.</p>
       </div>
     );
   }
 
   return (
     <form
-      className="w-full space-y-6"
+      className="flex w-full flex-col gap-8"
       onSubmit={(event) => {
         void form.handleSubmit(onSubmit)(event);
       }}
@@ -109,7 +110,6 @@ export function TestimonialForm({ token }: { token: string }) {
       <FieldGroup>
         <AvatarPicker value={avatarDataUrl} onChange={setAvatarDataUrl} />
 
-        {/* Rating */}
         <Controller
           name="rating"
           control={form.control}
@@ -121,14 +121,16 @@ export function TestimonialForm({ token }: { token: string }) {
                   <button
                     key={star}
                     type="button"
+                    aria-label={`${star} out of 5`}
                     onClick={() => {
                       field.onChange(star);
                     }}
-                    className={`rounded-full p-1 transition-colors ${
-                      field.value >= star ? "text-primary" : "text-muted-foreground/30"
-                    }`}
+                    className={cn(
+                      "rounded-sm p-0.5 transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                      field.value >= star ? "text-foreground" : "text-fg-faint hover:text-fg-2",
+                    )}
                   >
-                    <StarIcon className={`h-8 w-8 ${field.value >= star ? "fill-primary" : ""}`} />
+                    <StarIcon className={cn("size-7", field.value >= star && "fill-current")} />
                   </button>
                 ))}
               </div>
@@ -142,7 +144,7 @@ export function TestimonialForm({ token }: { token: string }) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="text">Your Testimonial</FieldLabel>
+              <FieldLabel htmlFor="text">Your testimonial</FieldLabel>
               <Textarea {...field} id="text" placeholder="Share your experience..." rows={4} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -154,20 +156,20 @@ export function TestimonialForm({ token }: { token: string }) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="customerName">Your Name</FieldLabel>
+              <FieldLabel htmlFor="customerName">Your name</FieldLabel>
               <Input {...field} id="customerName" placeholder="John Doe" />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-4">
           <Controller
             name="customerTitle"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="customerTitle">Job Title (Optional)</FieldLabel>
+                <FieldLabel htmlFor="customerTitle">Job title (optional)</FieldLabel>
                 <Input {...field} id="customerTitle" placeholder="CEO" />
               </Field>
             )}
@@ -178,7 +180,7 @@ export function TestimonialForm({ token }: { token: string }) {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="customerCompany">Company (Optional)</FieldLabel>
+                <FieldLabel htmlFor="customerCompany">Company (optional)</FieldLabel>
                 <Input {...field} id="customerCompany" placeholder="Acme Inc." />
               </Field>
             )}
@@ -188,10 +190,10 @@ export function TestimonialForm({ token }: { token: string }) {
 
       <Button
         type="submit"
-        className="w-full"
+        className="self-start"
         disabled={form.formState.isSubmitting || !form.formState.isValid}
       >
-        {form.formState.isSubmitting ? "Submitting..." : "Submit Testimonial"}
+        {form.formState.isSubmitting ? "Submitting..." : "Submit testimonial"}
       </Button>
     </form>
   );

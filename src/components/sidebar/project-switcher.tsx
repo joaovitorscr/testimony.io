@@ -43,13 +43,13 @@ export function ProjectSwitcher() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <div className="flex size-8 items-center justify-center rounded-md border bg-background text-muted-foreground">
                 <Folder className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{activeProject.name}</span>
               </div>
-              <ChevronsUpDown className="ml-auto" />
+              <ChevronsUpDown className="ml-auto text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -70,7 +70,7 @@ export function ProjectSwitcher() {
                 }}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-md border">
+                <div className="flex size-6 items-center justify-center rounded-sm border">
                   <Folder className="size-3.5 shrink-0" />
                 </div>
                 {project.name}
@@ -83,10 +83,10 @@ export function ProjectSwitcher() {
                 setShowNewProjectDialog(true);
               }}
             >
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+              <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add Project</div>
+              <span className="text-muted-foreground">Add project</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

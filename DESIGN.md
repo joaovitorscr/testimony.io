@@ -105,7 +105,7 @@ Color rules: colour lives only inside media frames and the promo bar. The UI its
 - Mono: none
 - Scale: 11 / 12 / 13 / 14 / 16 / 20 / 22 / 24 / 40 / 56
 - Load: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;800&display=swap">`
-- Rules: headings 400, section titles and tabs 500 at 24px in grey; buttons are the only 600; the lowercase wordmark is the only heavy type (800, -0.055em). Footer legal line is 11px uppercase.
+- Rules: headings 400, section titles and tabs 500 at 24px in grey; buttons are the only 600; the lowercase wordmark is 500, -0.02em, like the rest of the type. Footer legal line is 11px uppercase.
 
 Inter Tight stands in for the site's commercial ABC Normal (Dinamo): both are
 narrow-set neo-grotesks with single-storey g, flat terminals and tight default
@@ -141,7 +141,7 @@ Flat paper with photographs laid on it; the footage is the only depth.
 ## Components
 
 - Buttons: `padding: 6px 10px`, 600 14px/20px, 6px radius. **Ink** (`#262626` → `#0c0c0c` hover), **pale** (`#eef1f5`), **ghost** (transparent, 4px radius, pale on hover), **white** on footage (8px 12px, 16px text, 8px radius, with a chevron), **glass outline** on footage. Rows of 2-3 buttons with 8px gaps.
-- Nav: a 48px electric-blue promo bar with a small outlined button, then a 64px sticky white bar: lowercase heavy wordmark, centred 16px/500 menu with tiny chevrons, then pale / ghost / ink buttons on the right.
+- Nav: a 48px electric-blue promo bar with a small outlined button, then a 64px sticky white bar: lowercase wordmark, centred 16px/500 menu with tiny chevrons, then pale / ghost / ink buttons on the right.
 - Platform columns: grey 24px/500 title → 16:9 still → 24px/400 black lede (≈24ch) → 14px body → button row → 12px caption.
 - Tab rail + card: three grey titles joined by hairlines; the active one is `#404040`, the others `#a8a8a8`. Under it a 16px-radius hairline card with a left list of 24px use cases (same active/faint logic) and a big 16:9 still with a centred white caption.
 - Research block: blurred field frame, small label, 24px white statement, glass button; right column is a ruled list of models (20px title, 13px 60%-white body, NE arrow).
@@ -157,7 +157,7 @@ Flat paper with photographs laid on it; the footage is the only depth.
 - Do fade inactive tabs to #a8a8a8 and join rail titles with hairlines.
 - Do put a light grain overlay on every media frame.
 
-- Don't bold headlines or use weight 700 anywhere except the wordmark.
+- Don't bold headlines or use weight 700 anywhere, the wordmark included.
 - Don't add drop shadows, gradient text or coloured icon tiles.
 - Don't frame every block in a border; only the use-case card and plans get one.
 - Don't use pure grey #808080 or pure black for body text.

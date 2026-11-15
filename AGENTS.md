@@ -40,6 +40,7 @@ Run development commands from the repository root so it can leverage vite plus
 - Conventional commit titles, plain language: fix(web): new threads no longer spike CPU.
 - Body: the problem in a sentence or two, then how you fixed it. End with the model and harness that did the work.
 - UI changes need before/after images. Motion or timing needs a short video.
+- Capture PR images and videos from a production build (`pnpm build && pnpm start`), not `pnpm dev`, so no dev overlays show up: the Next.js indicator and error toasts, Convex or TanStack devtools, or anything similar. Retake any capture that has one.
 - Upload PR evidence to GitHub. Never commit PR-only screenshots or assets such as .github/pr-assets/, and never push branches just to host them.
 - Use `--attach` on `gh pr create`, `gh pr edit`, or `gh pr comment`. Repeat it per file and add alt text after `#`: `gh pr edit 49 --attach './before.png#Go card before' --attach ./after.png`.
 - To place images in the body, reference them by relative path (`![Before](./before.png)`) and pass the same files with `--attach`. gh uploads them and rewrites the references to `github.com/user-attachments` URLs. Without a body reference, the attachment is appended to the end.

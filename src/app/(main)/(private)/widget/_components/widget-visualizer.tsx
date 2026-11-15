@@ -3,9 +3,7 @@
 import { api } from "@convex/_generated/api";
 import type { Doc } from "@convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { AlertCircleIcon } from "lucide-react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { WidgetTestimonial } from "@/components/widgets/types";
 import { WidgetCard } from "@/components/widgets/widget-card";
@@ -87,38 +85,32 @@ export function WidgetVisualizer({ widget: widgetConfig }: { widget: Doc<"widget
   const isGridLayout = widgetConfig.displayLayout === "grid";
 
   return (
-    <section className="flex h-[calc(100vh-12rem)] flex-col">
-      <Card className="flex h-full flex-col overflow-hidden">
-        <CardHeader className="shrink-0">
-          <CardTitle>Widget Visualizer</CardTitle>
-          <CardDescription>Preview how your widget will appear on your website.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1 overflow-hidden p-4">
-          {testimonies.length === 0 && (
-            <div className="inline-flex items-center gap-1 px-4 pb-4 text-yellow-400">
-              <AlertCircleIcon />
-              <p>No approved testimonies yet. Showing sample testimonials.</p>
-            </div>
-          )}
-          <ScrollArea className="h-full">
-            <div
-              className="p-4"
-              style={{
-                display: isGridLayout ? "grid" : "flex",
-                flexDirection: isGridLayout ? undefined : "column",
-                gridTemplateColumns: isGridLayout
-                  ? `repeat(${widgetConfig.gridColumns}, minmax(0, 1fr))`
-                  : undefined,
-                gap: `${widgetConfig.gridGap}px`,
-              }}
-            >
-              {displayTestimonials.map((testimony) => (
-                <WidgetCard key={testimony._id} testimony={testimony} widgetConfig={widgetConfig} />
-              ))}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
+    <section className="flex h-[calc(100svh-20rem)] min-h-96 flex-col gap-3">
+      <div className="flex flex-col gap-1">
+        <h2 className="font-medium text-fg-2">Preview</h2>
+        <p className="text-sm text-muted-foreground">
+          {testimonies.length === 0
+            ? "No approved testimonies yet, so these are samples."
+            : "How your widget will appear on your website."}
+        </p>
+      </div>
+      <ScrollArea className="min-h-0 flex-1 rounded-lg bg-muted">
+        <div
+          className="p-4"
+          style={{
+            display: isGridLayout ? "grid" : "flex",
+            flexDirection: isGridLayout ? undefined : "column",
+            gridTemplateColumns: isGridLayout
+              ? `repeat(${widgetConfig.gridColumns}, minmax(0, 1fr))`
+              : undefined,
+            gap: `${widgetConfig.gridGap}px`,
+          }}
+        >
+          {displayTestimonials.map((testimony) => (
+            <WidgetCard key={testimony._id} testimony={testimony} widgetConfig={widgetConfig} />
+          ))}
+        </div>
+      </ScrollArea>
     </section>
   );
 }

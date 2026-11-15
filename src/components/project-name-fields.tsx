@@ -27,8 +27,8 @@ export function ProjectNameFields({
         name="name"
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={`${idPrefix}-name`}>Project Name</FieldLabel>
-            <InputGroup className="h-11">
+            <FieldLabel htmlFor={`${idPrefix}-name`}>Project name</FieldLabel>
+            <InputGroup>
               <InputGroupInput
                 {...field}
                 autoComplete="off"
@@ -51,7 +51,6 @@ export function ProjectNameFields({
         <FieldLabel htmlFor={`${idPrefix}-slug`}>Project URL</FieldLabel>
         <Input
           disabled
-          className="h-11"
           id={`${idPrefix}-slug`}
           value={slug}
           placeholder="my-awesome-project"
