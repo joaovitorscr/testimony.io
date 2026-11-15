@@ -5,7 +5,7 @@ import { LoginForm } from "./_components/login-form";
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto grid min-h-svh w-full max-w-400 gap-5 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
+    <main className="grid min-h-svh w-full gap-5 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
       <MediaFrame
         still="ink"
         className="flex min-h-64 flex-col justify-end gap-10 p-6 sm:justify-between md:p-11"
