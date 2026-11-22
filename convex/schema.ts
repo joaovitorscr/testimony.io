@@ -3,25 +3,17 @@ import { v } from "convex/values";
 
 export const vRole = v.union(v.literal("owner"), v.literal("member"));
 
-export const vRequestStatus = v.union(
-  v.literal("active"),
-  v.literal("used"),
-  v.literal("cancelled"),
-);
-
-export const vWidgetLayout = v.union(v.literal("list"), v.literal("grid"));
-export const vWidgetOrder = v.union(v.literal("newest"), v.literal("oldest"));
+// Pending until a member reviews it; only approved testimonials are public.
+export const vStatus = v.union(v.literal("pending"), v.literal("approved"), v.literal("archived"));
 
 export const widgetSettingsFields = {
-  primaryColor: v.string(),
-  backgroundColor: v.string(),
-  textColor: v.string(),
-  displayLayout: vWidgetLayout,
-  displayOrder: vWidgetOrder,
+  layout: v.union(v.literal("list"), v.literal("grid")),
+  order: v.union(v.literal("newest"), v.literal("oldest")),
+  // "auto" follows the visitor's light or dark preference.
+  theme: v.union(v.literal("light"), v.literal("dark"), v.literal("auto")),
+  accentColor: v.string(),
   showRating: v.boolean(),
   showAvatar: v.boolean(),
-  gridColumns: v.number(),
-  gridGap: v.number(),
 };
 
 export default defineSchema({
@@ -35,10 +27,14 @@ export default defineSchema({
     lastSignedInAt: v.optional(v.number()),
   }).index("by_email", ["email"]),
 
+  // `slug` is fixed at creation: it is the public collection link `/c/<slug>`.
   projects: defineTable({
     name: v.string(),
     slug: v.string(),
     ownerId: v.id("users"),
+    isCollecting: v.boolean(),
+    // Question shown on the collection page, replacing the default one.
+    prompt: v.optional(v.string()),
   }).index("by_slug", ["slug"]),
 
   members: defineTable({
@@ -57,29 +53,14 @@ export default defineSchema({
     avatarStorageId: v.optional(v.id("_storage")),
     rating: v.optional(v.number()),
     text: v.string(),
-    isApproved: v.boolean(),
-    isFeatured: v.boolean(),
-    requestId: v.optional(v.id("requests")),
+    status: vStatus,
   })
-    .index("by_project", ["projectId"])
-    .index("by_project_and_approved", ["projectId", "isApproved"])
-    .index("by_project_and_featured", ["projectId", "isFeatured"]),
+    .index("by_project_and_status", ["projectId", "status"])
+    .index("by_avatar", ["avatarStorageId"]),
 
-  // Single-use collection links sent to customers (`/c/<slug>?token=...`).
-  requests: defineTable({
-    projectId: v.id("projects"),
-    token: v.string(),
-    status: vRequestStatus,
-    description: v.optional(v.string()),
-    createdBy: v.optional(v.string()),
-    expiresAt: v.optional(v.number()),
-  })
-    .index("by_token", ["token"])
-    .index("by_project", ["projectId"]),
-
+  // One per project. Its id is the public, stable key of the embed.
   widgets: defineTable({
     projectId: v.id("projects"),
     ...widgetSettingsFields,
-    allowedDomains: v.array(v.string()),
   }).index("by_project", ["projectId"]),
 });

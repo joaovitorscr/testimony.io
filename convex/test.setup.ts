@@ -2,6 +2,7 @@
 import { registerPassword } from "@convex-dev/auth/components/password/test";
 import { registerUsername } from "@convex-dev/auth/components/username/test";
 import { registerCore, sessionIdentity } from "@convex-dev/auth/test";
+import { register as registerRateLimiter } from "@convex-dev/rate-limiter/test";
 import { convexTest } from "convex-test";
 
 import { api, components } from "./_generated/api";
@@ -24,6 +25,7 @@ export function setupBackend() {
   registerCore(backend);
   registerPassword(backend);
   registerUsername(backend);
+  registerRateLimiter(backend);
   return backend;
 }
 
@@ -59,15 +61,15 @@ export function only<Item>(items: Item[]): Item {
   return item;
 }
 
-/** Creates a project owned by a new user, with one collection link. */
-export async function projectWithLink(backend: Backend) {
+/** Creates the project "Acme" (collection link `/c/acme`) owned by a new user. */
+export async function acmeProject(backend: Backend) {
   const owner = await signInAs(backend);
   const projectId = await owner.as.mutation(api.projects.create, { name: "Acme", slug: "acme" });
-  const { token } = await owner.as.mutation(api.requests.create, { projectId });
-  return { owner, projectId, token };
+  return { owner, projectId, slug: "acme" };
 }
 
 export const review = {
+  slug: "acme",
   customerName: "Grace Hopper",
   rating: 5,
   text: "It compiles my programs faster than I can type them.",

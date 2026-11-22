@@ -67,11 +67,13 @@ declares `*.css`. CI runs `next typegen` first so typed routes resolve.
 Tests live next to the code as `*.test.ts`. Convex functions run against an
 in-memory backend from `convex-test`; `convex/test.setup.ts` provides:
 
-- `setupBackend()`: a fresh backend with the Convex Auth component registered.
+- `setupBackend()`: a fresh backend with the Convex Auth and rate limiter
+  components registered.
 - `signInAs(backend)`: creates a user with a real session and returns a client
   acting as them (`as.query`, `as.mutation`), so tests go through the same
   `getAuthUserId` and membership checks as production.
-- `projectWithLink(backend)`, `review`, and `only(items)` for common setup.
+- `acmeProject(backend)` (a project at `/c/acme`), `review` (a valid
+  submission to it), and `only(items)` for common setup.
 
 Prefer testing behavior through public functions: what a member, a stranger,
 and an anonymous visitor can and cannot do.

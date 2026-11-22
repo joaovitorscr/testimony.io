@@ -12,7 +12,7 @@ const config: NextConfig = {
   images: { remotePatterns: [{ protocol: "https", hostname: "*.convex.cloud" }] },
   async redirects() {
     return [
-      { source: "/", destination: "/testimonies", permanent: false },
+      { source: "/", destination: "/testimonials", permanent: false },
       // OAuth sign-in creates the account on first use.
       { source: "/sign-up/:path*", destination: "/sign-in", permanent: false },
     ];

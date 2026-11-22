@@ -27,12 +27,6 @@ export async function requireMember(ctx: Ctx, projectId: Id<"projects">) {
   return { userId, member };
 }
 
-export function randomToken(bytes = 18) {
-  const buffer = new Uint8Array(bytes);
-  crypto.getRandomValues(buffer);
-  return Array.from(buffer, (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
 /** Trimmed `value` cut to `max` characters, or undefined when it is blank. */
 export function trimToOptional(value: string | undefined, max: number) {
   const trimmed = value?.trim() ?? "";

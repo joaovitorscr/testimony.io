@@ -73,8 +73,8 @@ export function OnboardingDialog({
                 <div className="flex flex-col gap-3">
                   <DialogTitle className="type-hero">Welcome to Testimony.io</DialogTitle>
                   <DialogDescription className="text-base text-fg-2">
-                    Testimonials live in projects, one per product or website. Create your first
-                    project to get a collection link and an embeddable widget.
+                    Create a project for your product. You get one link to collect testimonials and
+                    a widget to show the ones you approve.
                   </DialogDescription>
                 </div>
                 <Button
@@ -92,7 +92,8 @@ export function OnboardingDialog({
                 <div className="flex flex-col gap-3">
                   <DialogTitle className="type-hero">Create your project</DialogTitle>
                   <DialogDescription className="text-base text-fg-2">
-                    The name becomes part of your collection link.
+                    The project URL becomes your collection link. You can rename the project later;
+                    the link stays the same.
                   </DialogDescription>
                 </div>
                 <form

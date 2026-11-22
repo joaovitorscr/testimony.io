@@ -49,7 +49,15 @@
     "react/only-export-components": [
       "error",
       {
-        "allowExportNames": ["metadata", "generateMetadata", "viewport", "size", "contentType"]
+        "allowExportNames": [
+          "metadata",
+          "generateMetadata",
+          "viewport",
+          "size",
+          "contentType",
+          "revalidate",
+          "generateStaticParams"
+        ]
       }
     ],
     "typescript/consistent-type-definitions": ["error", "type"],
@@ -62,7 +70,7 @@
       { "allow": ["_id", "_creationTime", "_storage", "_internal_dangerous_signIn"] }
     ],
     "id-length": ["error", { "min": 2, "properties": "never", "exceptions": ["_", "q", "v", "z"] }],
-    "new-cap": ["error", { "capIsNewExceptions": ["Plus_Jakarta_Sans", "Inter_Tight"] }],
+    "new-cap": ["error", { "capIsNewExceptions": ["Inter_Tight"] }],
     "capitalized-comments": ["error", "always", { "ignoreConsecutiveComments": true }],
 
     // Complexity budgets sized for React components.
@@ -146,6 +154,18 @@
       // Next.js reads segment config statically and only accepts plain strings.
       "files": ["src/proxy.ts"],
       "rules": { "unicorn/prefer-string-raw": "off" }
+    },
+    {
+      // The embed helper is a plain browser script, not a module, so
+      // `document.currentScript` works. It has no type information; it checks
+      // every message it reads at runtime instead.
+      "files": ["public/embed.js"],
+      "rules": {
+        "import/unambiguous": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-member-access": "off"
+      }
     },
     {
       // Ambient declarations must stay scripts for wildcard modules to work.

@@ -3,6 +3,7 @@ import authGoogle from "@convex-dev/auth/components/google/convex.config.js";
 import authPassword from "@convex-dev/auth/components/password/convex.config.js";
 import authUsername from "@convex-dev/auth/components/username/convex.config.js";
 import auth from "@convex-dev/auth/convex.config.js";
+import rateLimiter from "@convex-dev/rate-limiter/convex.config.js";
 import { defineApp } from "convex/server";
 import { v } from "convex/values";
 
@@ -45,5 +46,8 @@ app.use(authGithub, {
 // Email + password for development, gated by AUTH_DEV_PASSWORD.
 app.use(authPassword);
 app.use(authUsername);
+
+// Throttles the public collection form (see convex/collect.ts).
+app.use(rateLimiter);
 
 export default app;

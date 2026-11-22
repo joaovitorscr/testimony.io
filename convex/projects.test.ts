@@ -31,26 +31,36 @@ describe("projects", () => {
     ).rejects.toThrow("already taken");
   });
 
-  test("a project keeps its own slug available when renamed", async () => {
+  test("renaming keeps the slug, so shared links keep working", async () => {
     expect.hasAssertions();
     const backend = setupBackend();
     const { as } = await signInAs(backend);
     const projectId = await as.mutation(api.projects.create, { name: "Acme", slug: "acme" });
 
-    await expect(
-      as.query(api.projects.isSlugAvailable, { slug: "acme", exceptProjectId: projectId }),
-    ).resolves.toBe(true);
+    await as.mutation(api.projects.rename, { projectId, name: "Acme Rockets" });
+    await expect(as.query(api.projects.current, {})).resolves.toMatchObject({
+      name: "Acme Rockets",
+      slug: "acme",
+      isCollecting: true,
+    });
   });
 
-  test("only members can rename or activate a project", async () => {
+  test("only members can rename, configure, or activate a project", async () => {
     expect.hasAssertions();
     const backend = setupBackend();
     const ada = await signInAs(backend);
     const bob = await signInAs(backend);
     const projectId = await ada.as.mutation(api.projects.create, { name: "Acme", slug: "acme" });
 
+    await expect(bob.as.mutation(api.projects.rename, { projectId, name: "Mine" })).rejects.toThrow(
+      "Project not found",
+    );
     await expect(
-      bob.as.mutation(api.projects.update, { projectId, name: "Mine", slug: "mine" }),
+      bob.as.mutation(api.projects.updateCollection, {
+        projectId,
+        isCollecting: false,
+        prompt: "",
+      }),
     ).rejects.toThrow("Project not found");
     await expect(bob.as.mutation(api.projects.setActive, { projectId })).rejects.toThrow(
       "Project not found",

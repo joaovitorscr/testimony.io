@@ -4,18 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 
 /** Customer photo for a widget card, falling back to initials. */
-export function WidgetAvatar({
-  name,
-  url,
-  color,
-}: {
-  name: string;
-  url: string | null;
-  color: string;
-}) {
+export function WidgetAvatar({ name, url }: { name: string; url: string | null }) {
   const [failed, setFailed] = useState(false);
   const initials = name
-    .split(" ")
+    .split(/\s+/u)
     .map((word) => word.charAt(0))
     .join("")
     .toUpperCase()
@@ -29,18 +21,20 @@ export function WidgetAvatar({
         borderRadius: "50%",
         overflow: "hidden",
         flexShrink: 0,
-        backgroundColor: color,
+        backgroundColor: "color-mix(in srgb, var(--tm-accent) 22%, var(--tm-bg))",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
       {url === null || failed ? (
-        <span style={{ color: "#fff", fontSize: "12px", fontWeight: 600 }}>{initials}</span>
+        <span aria-hidden="true" style={{ fontSize: "13px", fontWeight: 600 }}>
+          {initials}
+        </span>
       ) : (
         <Image
           src={url}
-          alt={name}
+          alt=""
           width={40}
           height={40}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
