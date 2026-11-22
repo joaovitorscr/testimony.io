@@ -25,6 +25,7 @@
 - 🔗 **One link per project** - Share `/c/<your-project>` anywhere; customers need no account
 - ✅ **Review before publishing** - Pending, approved, and archived, with Undo
 - 🎨 **Embeddable widget** - One snippet, any site; sizes itself, light/dark/auto themes
+- 🧩 **Public JSON API** - Render approved testimonials with your own components
 - ⭐ **Optional ratings and photos** - The quote and a name are all that's required
 - 👥 **Multi-Project Support** - Manage testimonials for multiple products
 - 🔒 **One-click sign-in** - Google and GitHub via Convex Auth
@@ -73,7 +74,7 @@ The first `convex dev` asks you to log in and pick a project, then writes
 
 ## 📚 Documentation
 
-- [Architecture](docs/internals/architecture.md): data model, access control, collect/review/display flows, decisions, code layout
+- [Architecture](docs/internals/architecture.md): data model, access control, collect/review/display flows, the public API, decisions, code layout
 - [Tooling and CI](docs/internals/tooling.md): lint policy, type checking, tests, the sharded CI pipeline
 - [Deployment](docs/internals/deployment.md): Vercel, Convex, environment variables, OAuth setup
 
@@ -93,3 +94,12 @@ no setup:
 ></iframe>
 <script src="https://testimony-io.vercel.app/embed.js" async></script>
 ```
+
+Or fetch them as JSON on your server and render them yourself:
+
+```ts
+const res = await fetch("https://testimony-io.vercel.app/api/v1/widgets/YOUR_WIDGET_ID");
+const { testimonials } = await res.json();
+```
+
+See [the API contract](docs/internals/architecture.md#public-api-v1).
