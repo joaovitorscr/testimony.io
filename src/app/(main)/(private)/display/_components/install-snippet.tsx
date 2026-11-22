@@ -17,8 +17,9 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
   const { copied, copy } = useCopy();
 
   return (
-    <div className="relative">
-      <pre className="overflow-x-auto rounded-lg bg-muted p-4 pr-14 font-mono text-sm">
+    <div className="relative rounded-lg bg-muted">
+      {/* Ends before the copy button, so long lines never scroll under it. */}
+      <pre className="mr-12 overflow-x-auto p-4 font-mono text-sm">
         <code>{code}</code>
       </pre>
       <Button
