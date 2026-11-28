@@ -61,6 +61,7 @@ Run development commands from the repository root so it can leverage vite plus
 - Our users are most of the time developers and people that pay attentions to little details and will notice fps drops, lying spinner, stale labels. No continuously repainting animations; they peg the GPU on high-refresh displays.
 - If a rule here fights the task in front of you, say so loudly and get a human sign-off before breaking it.
 - All the components used should be from shadcn, from shadcn registry at components.json or a custom built component we approved you to create with base-ui.
+- When working on the frontend (anything under src/ that renders UI), always read and follow DESIGN.md at the repo root. Its colors, typography, radii, and component rules are the source of truth; update DESIGN.md in the same change if the design intentionally changes.
 
 ## Additional Tips
 

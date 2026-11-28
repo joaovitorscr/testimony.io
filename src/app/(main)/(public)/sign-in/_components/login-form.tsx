@@ -10,7 +10,6 @@ import {
 } from "@convex-dev/auth/methods/google/react";
 import { api } from "@convex/_generated/api";
 import { useConvexAuth } from "convex/react";
-import { ArrowUpRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ComponentProps, type SVGProps, useEffect, useState } from "react";
 
@@ -92,9 +91,12 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-8", className)} {...props}>
-      <div className="flex flex-col gap-1.5">
-        <h1 className="font-display text-[26px] leading-[1.2] font-normal tracking-[-0.015em] text-foreground">
-          Sign in to Testimony.io
+      <div className="flex flex-col gap-3">
+        <p className="font-mono text-[11px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+          Sign in
+        </p>
+        <h1 className="font-display text-[34px] leading-[1.15] font-normal tracking-[-0.02em] text-balance text-foreground">
+          Collect the words your customers already say.
         </h1>
         <p className="text-sm text-muted-foreground">
           Continue with Google or GitHub to start collecting testimonials.
@@ -143,18 +145,9 @@ export function LoginForm({
         </>
       )}
 
-      <footer className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-4 text-xs text-muted-foreground">
-        <span>New here? Your account is created on first sign-in.</span>
-        <a
-          href="https://github.com/joaovitorscr/testimony.io"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary transition-[gap] duration-150 hover:gap-2"
-        >
-          Open source
-          <ArrowUpRightIcon className="size-3.5" aria-hidden="true" />
-        </a>
-      </footer>
+      <p className="border-t border-border pt-4 text-xs text-muted-foreground">
+        New here? Your account is created on first sign-in.
+      </p>
     </div>
   );
 }
