@@ -35,14 +35,10 @@ export default async function CollectionPage({ params }: Props) {
 
   const { name, prompt } = form.project;
   return (
-    <main className="mx-auto flex min-h-svh w-full max-w-140 flex-col gap-10 px-5 py-16 md:py-24">
-      <header className="flex flex-col gap-3">
-        <p className="text-sm text-muted-foreground">{name}</p>
-        <h1 className="type-hero text-balance">{prompt ?? DEFAULT_PROMPT}</h1>
-        <p className="text-fg-2">A few honest sentences are perfect. It takes about a minute.</p>
-      </header>
-
-      <TestimonialForm slug={slug} projectName={name} />
+    <main className="flex min-h-svh w-full justify-center bg-background px-4 py-10 md:py-20">
+      <div className="w-full max-w-lg">
+        <TestimonialForm slug={slug} projectName={name} prompt={prompt ?? DEFAULT_PROMPT} />
+      </div>
     </main>
   );
 }

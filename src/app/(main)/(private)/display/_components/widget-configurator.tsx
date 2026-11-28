@@ -13,14 +13,21 @@ import {
   SunMoonIcon,
 } from "lucide-react";
 import { useEffect } from "react";
-import type { UseFormReturn } from "react-hook-form";
+import { type UseFormReturn, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
 
-import { FieldGroup, FieldSeparator, FieldSet, FieldLegend } from "@/components/ui/field";
 import type { WidgetSettings } from "@/components/widgets/types";
 
-import { type ChoiceOption, ChoiceField, ColorField, SwitchField } from "./widget-fields";
+import {
+  type ChoiceOption,
+  ChoiceField,
+  ColorField,
+  SettingsSection,
+  SwitchField,
+  type ThemePreset,
+  ThemePresets,
+} from "./widget-fields";
 
 const layoutOptions: ChoiceOption[] = [
   { id: "grid", title: "Grid", description: "Cards wrap to fit the width.", icon: LayoutGridIcon },
@@ -45,6 +52,33 @@ const themeOptions: ChoiceOption[] = [
     title: "Auto",
     description: "Follows the visitor's light or dark setting.",
     icon: SunMoonIcon,
+  },
+];
+
+const themePresets: ThemePreset[] = [
+  {
+    name: "Paper",
+    theme: "light",
+    accentColor: "#f54e00",
+    swatches: ["#f7f7f4", "#26251e", "#f54e00"],
+  },
+  {
+    name: "Carbon",
+    theme: "dark",
+    accentColor: "#ff6a2b",
+    swatches: ["#17181a", "#ecebe6", "#ff6a2b"],
+  },
+  {
+    name: "Blueprint",
+    theme: "light",
+    accentColor: "#1f5fd0",
+    swatches: ["#eef1f4", "#1c2833", "#1f5fd0"],
+  },
+  {
+    name: "Sepia",
+    theme: "light",
+    accentColor: "#b4461a",
+    swatches: ["#f3ead9", "#2b2418", "#b4461a"],
   },
 ];
 
@@ -86,41 +120,56 @@ export function WidgetConfigurator({
   );
 
   const { control } = form;
+  const [theme, accentColor] = useWatch({ control, name: ["theme", "accentColor"] });
 
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-fg-2">Settings</h2>
-        <p className="text-sm text-muted-foreground">Changes save automatically.</p>
-      </div>
-      <form id="form-widget-configurator">
-        <FieldGroup>
-          <ChoiceField control={control} name="layout" legend="Layout" options={layoutOptions} />
-          <FieldSeparator />
-          <ChoiceField control={control} name="theme" legend="Theme" options={themeOptions} />
-          <FieldSeparator />
-          <ChoiceField control={control} name="order" legend="Order" options={orderOptions} />
-          <FieldSeparator />
-          <FieldSet>
-            <FieldLegend>Show</FieldLegend>
-            <FieldGroup>
-              <ColorField control={control} name="accentColor" label="Accent color" />
-              <SwitchField
-                control={control}
-                name="showRating"
-                label="Star rating"
-                description="When the customer gave one."
-              />
-              <SwitchField
-                control={control}
-                name="showAvatar"
-                label="Photo"
-                description="The customer's photo or initials."
-              />
-            </FieldGroup>
-          </FieldSet>
-        </FieldGroup>
-      </form>
-    </section>
+    <form id="form-widget-configurator" className="flex min-w-0 flex-col gap-4">
+      <p className="text-[13px] text-muted-foreground">Changes save automatically.</p>
+
+      <SettingsSection title="Layout" description="How cards are arranged and which come first.">
+        <ChoiceField control={control} name="layout" legend="Arrangement" options={layoutOptions} />
+        <ChoiceField control={control} name="order" legend="Order" options={orderOptions} />
+      </SettingsSection>
+
+      <SettingsSection title="Appearance" description="Match the widget to the page it sits on.">
+        <ThemePresets
+          presets={themePresets}
+          theme={theme}
+          accentColor={accentColor}
+          onSelect={(preset) => {
+            form.setValue("theme", preset.theme, { shouldDirty: true });
+            form.setValue("accentColor", preset.accentColor, { shouldDirty: true });
+          }}
+        />
+        <ChoiceField
+          control={control}
+          name="theme"
+          legend="Theme"
+          options={themeOptions}
+          columns={3}
+        />
+        <ColorField
+          control={control}
+          name="accentColor"
+          label="Accent color"
+          description="Used for stars and photo initials."
+        />
+      </SettingsSection>
+
+      <SettingsSection title="Visibility" description="Choose what each card shows.">
+        <SwitchField
+          control={control}
+          name="showRating"
+          label="Star rating"
+          description="When the customer gave one."
+        />
+        <SwitchField
+          control={control}
+          name="showAvatar"
+          label="Photo"
+          description="The customer's photo or initials."
+        />
+      </SettingsSection>
+    </form>
   );
 }

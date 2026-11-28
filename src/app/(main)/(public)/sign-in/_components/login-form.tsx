@@ -11,13 +11,11 @@ import {
 import { api } from "@convex/_generated/api";
 import { useConvexAuth } from "convex/react";
 import { ArrowUpRightIcon } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type ComponentProps, type SVGProps, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FieldError, FieldSeparator } from "@/components/ui/field";
-import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { Google } from "@/components/ui/svgs/google";
 import { cn } from "@/lib/utils";
@@ -93,77 +91,69 @@ export function LoginForm({
   const busy = pending !== null || isLoading || isAuthenticated;
 
   return (
-    <div className={cn("flex flex-col gap-12", className)} {...props}>
-      <div className="flex w-full max-w-sm flex-col gap-8 md:my-auto">
-        <div className="flex flex-col gap-5">
-          <Image src="/logo_black.svg" alt="" width={44} height={44} priority />
-          <div className="flex flex-col gap-2">
-            <h1 className="type-hero">Sign in to testimony.io</h1>
-            <p className="type-lede text-fg-faint">Pull up a chair.</p>
-          </div>
-          <p className="text-muted-foreground">
-            Continue with Google or GitHub to start collecting testimonials.
-          </p>
-        </div>
-
-        {errorMessage !== null && <FieldError>{errorMessage}</FieldError>}
-
-        <div className="flex flex-col gap-2">
-          <Button
-            disabled={busy}
-            onClick={() => {
-              void start("google");
-            }}
-          >
-            {pending === "google" ? (
-              <Spinner data-icon="inline-start" />
-            ) : (
-              <Google data-icon="inline-start" />
-            )}
-            Continue with Google
-          </Button>
-          <Button
-            variant="secondary"
-            disabled={busy}
-            onClick={() => {
-              void start("github");
-            }}
-          >
-            {pending === "github" ? (
-              <Spinner data-icon="inline-start" />
-            ) : (
-              <GithubMark data-icon="inline-start" />
-            )}
-            Continue with GitHub
-          </Button>
-        </div>
-
-        {devPassword && (
-          <>
-            <FieldSeparator>or</FieldSeparator>
-            <DevPasswordForm disabled={busy} />
-          </>
-        )}
-
-        <p className="type-caption text-muted-foreground">
-          New here? Your account is created automatically the first time you sign in.
+    <div className={cn("flex flex-col gap-8", className)} {...props}>
+      <div className="flex flex-col gap-1.5">
+        <h1 className="font-display text-[26px] leading-[1.2] font-normal tracking-[-0.015em] text-foreground">
+          Sign in to Testimony.io
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Continue with Google or GitHub to start collecting testimonials.
         </p>
       </div>
 
-      <footer className="flex flex-col gap-4">
-        <Separator />
-        <div className="flex items-center justify-between gap-4 type-legal text-muted-foreground">
-          <span>Testimony.io</span>
-          <a
-            href="https://github.com/joaovitorscr/testimony.io"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 transition-colors hover:text-foreground"
-          >
-            Open source
-            <ArrowUpRightIcon className="size-3" aria-hidden="true" />
-          </a>
-        </div>
+      {errorMessage !== null && <FieldError>{errorMessage}</FieldError>}
+
+      <div className="flex flex-col gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={() => {
+            void start("google");
+          }}
+        >
+          {pending === "google" ? (
+            <Spinner data-icon="inline-start" />
+          ) : (
+            <Google data-icon="inline-start" />
+          )}
+          Continue with Google
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={() => {
+            void start("github");
+          }}
+        >
+          {pending === "github" ? (
+            <Spinner data-icon="inline-start" />
+          ) : (
+            <GithubMark data-icon="inline-start" />
+          )}
+          Continue with GitHub
+        </Button>
+      </div>
+
+      {devPassword && (
+        <>
+          <FieldSeparator>or</FieldSeparator>
+          <DevPasswordForm disabled={busy} />
+        </>
+      )}
+
+      <footer className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-4 text-xs text-muted-foreground">
+        <span>New here? Your account is created on first sign-in.</span>
+        <a
+          href="https://github.com/joaovitorscr/testimony.io"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary transition-[gap] duration-150 hover:gap-2"
+        >
+          Open source
+          <ArrowUpRightIcon className="size-3.5" aria-hidden="true" />
+        </a>
       </footer>
     </div>
   );

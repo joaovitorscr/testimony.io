@@ -16,8 +16,8 @@ function StarIcon({ filled }: { filled: boolean }) {
   const color = filled ? "var(--tm-accent)" : "var(--tm-border)";
   return (
     <svg
-      width="16"
-      height="16"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill={color}
       stroke={color}
@@ -51,11 +51,12 @@ export function WidgetCard({
         padding: "20px",
         backgroundColor: "var(--tm-bg)",
         color: "var(--tm-fg)",
-        borderRadius: "12px",
+        borderRadius: "8px",
         border: "1px solid var(--tm-border)",
+        boxShadow: "0 1px 1px 0 rgb(15 23 42 / 0.03)",
         display: "flex",
         flexDirection: "column",
-        gap: "16px",
+        gap: "14px",
       }}
     >
       {settings.showRating && rating !== undefined && (
@@ -70,8 +71,8 @@ export function WidgetCard({
       <blockquote
         style={{
           margin: 0,
-          fontSize: "15px",
-          lineHeight: 1.6,
+          fontSize: "14px",
+          lineHeight: 1.65,
           overflowWrap: "anywhere",
           whiteSpace: "pre-line",
         }}
@@ -79,16 +80,34 @@ export function WidgetCard({
         {testimonial.text}
       </blockquote>
 
-      <figcaption style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <figcaption
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginTop: "auto",
+          paddingTop: "14px",
+          borderTop: "1px solid var(--tm-border)",
+        }}
+      >
         {settings.showAvatar && (
           <WidgetAvatar name={testimonial.customerName} url={testimonial.avatarUrl} />
         )}
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 600, fontSize: "14px", overflowWrap: "anywhere" }}>
+          <div
+            style={{ fontWeight: 600, fontSize: "13px", lineHeight: 1.4, overflowWrap: "anywhere" }}
+          >
             {testimonial.customerName}
           </div>
           {subtitle !== "" && (
-            <div style={{ fontSize: "13px", color: "var(--tm-muted)", overflowWrap: "anywhere" }}>
+            <div
+              style={{
+                fontSize: "12px",
+                lineHeight: 1.4,
+                color: "var(--tm-muted)",
+                overflowWrap: "anywhere",
+              }}
+            >
               {subtitle}
             </div>
           )}

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  LayoutIcon,
-  LinkIcon,
-  type LucideIcon,
-  MessageCircleIcon,
-  SettingsIcon,
-} from "lucide-react";
+import { LayoutIcon, LinkIcon, type LucideIcon, MessageCircleIcon } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
 import { type ComponentProps, useState } from "react";
@@ -18,17 +12,14 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 
-import { NavMain } from "./nav-main";
+import { NavMain, NavProject } from "./nav-main";
 
 const navMainItems: {
   title: string;
@@ -45,19 +36,40 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
 
   return (
     <>
-      <Sidebar collapsible="icon" {...props}>
-        <SidebarHeader className="gap-6 pt-4">
+      <Sidebar collapsible="icon" className="border-r border-border" {...props}>
+        <SidebarHeader className="gap-3 pt-3">
           <SidebarMenu>
-            <SidebarMenuItem className="flex h-8 items-center px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-              <span className="text-xl type-wordmark text-foreground group-data-[collapsible=icon]:hidden">
-                testimony.io
-              </span>
+            <SidebarMenuItem className="flex h-9 items-center px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
               <Image
-                className="hidden size-6 group-data-[collapsible=icon]:block"
+                className="h-5 w-auto group-data-[collapsible=icon]:hidden dark:hidden"
+                src="/branding_black.svg"
+                alt="Testimony.io"
+                width={118}
+                height={20}
+                priority
+              />
+              <Image
+                className="hidden h-5 w-auto dark:block dark:group-data-[collapsible=icon]:hidden"
+                src="/branding_white.svg"
+                alt="Testimony.io"
+                width={118}
+                height={20}
+                priority
+              />
+              <Image
+                className="hidden size-5 group-data-[collapsible=icon]:block dark:group-data-[collapsible=icon]:hidden"
                 src="/logo_black.svg"
                 alt="Testimony.io"
-                width={24}
-                height={24}
+                width={20}
+                height={20}
+                priority
+              />
+              <Image
+                className="hidden size-5 dark:group-data-[collapsible=icon]:block"
+                src="/logo_white.svg"
+                alt="Testimony.io"
+                width={20}
+                height={20}
                 priority
               />
             </SidebarMenuItem>
@@ -65,28 +77,16 @@ export function AppSidebar(props: ComponentProps<typeof Sidebar>) {
 
           <ProjectSwitcher />
         </SidebarHeader>
-        <SidebarSeparator />
-        <SidebarContent>
+        <SidebarSeparator className="mx-0" />
+        <SidebarContent className="gap-0 py-1">
           <NavMain items={navMainItems} />
-          <SidebarGroup>
-            <SidebarGroupLabel>Project Management</SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  tooltip="Settings"
-                  className="text-muted-foreground transition-[width,height,padding,color,background-color]"
-                  onClick={() => {
-                    setProjectSettingsOpen(true);
-                  }}
-                >
-                  <SettingsIcon />
-                  <span>Settings</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
+          <NavProject
+            onOpenSettings={() => {
+              setProjectSettingsOpen(true);
+            }}
+          />
         </SidebarContent>
-        <SidebarSeparator />
+        <SidebarSeparator className="mx-0" />
         <SidebarFooter>
           <NavUser />
         </SidebarFooter>

@@ -20,9 +20,9 @@ export function DisplayEditor() {
 
   if (widget === undefined) {
     return (
-      <div className="grid gap-8 px-5 pb-16 md:px-8 lg:grid-cols-[20rem_1fr]">
-        <Skeleton className="h-96 w-full" />
-        <Skeleton className="h-96 w-full rounded-xl" />
+      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+        <Skeleton className="h-96 w-full rounded-lg" />
+        <Skeleton className="h-96 w-full rounded-lg" />
       </div>
     );
   }
@@ -54,8 +54,8 @@ function Editor({ widget }: { widget: Doc<"widgets"> }) {
   };
 
   return (
-    <div className="flex flex-col gap-16 px-5 pb-16 md:px-8">
-      <div className="grid items-start gap-8 lg:grid-cols-[20rem_minmax(0,1fr)]">
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
         <WidgetConfigurator widgetId={widget._id} form={form} />
         <WidgetPreview projectId={widget.projectId} settings={settings} />
       </div>

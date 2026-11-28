@@ -70,7 +70,7 @@
       { "allow": ["_id", "_creationTime", "_storage", "_internal_dangerous_signIn"] }
     ],
     "id-length": ["error", { "min": 2, "properties": "never", "exceptions": ["_", "q", "v", "z"] }],
-    "new-cap": ["error", { "capIsNewExceptions": ["Inter_Tight"] }],
+    "new-cap": ["error", { "capIsNewExceptions": ["Geist", "IBM_Plex_Mono", "EB_Garamond"] }],
     "capitalized-comments": ["error", "always", { "ignoreConsecutiveComments": true }],
 
     // Complexity budgets sized for React components.

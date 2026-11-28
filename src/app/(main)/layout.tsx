@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter_Tight } from "next/font/google";
+import { EB_Garamond, Geist, IBM_Plex_Mono } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import "@/styles/globals.css";
@@ -11,10 +11,23 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { env } from "@/env";
 import { ConvexAuthNextjsServerProvider } from "@/lib/convex-auth";
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600"],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+const ebGaramond = EB_Garamond({
+  variable: "--font-eb-garamond",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
 const siteUrl = env.NEXT_PUBLIC_APP_URL;
@@ -90,7 +103,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${interTight.variable} antialiased`}>
+      <body
+        className={`${geist.variable} ${ibmPlexMono.variable} ${ebGaramond.variable} antialiased`}
+      >
         <Suspense>
           <ConvexAuthNextjsServerProvider>
             <NuqsAdapter>

@@ -12,7 +12,7 @@ import { OnboardingCover } from "@/components/onboarding-cover";
 import { ProjectNameFields } from "@/components/project-name-fields";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import { useSlugAvailability } from "@/hooks/use-slug-availability";
 import { type ProjectNameValues, projectNameSchema } from "@/lib/project-schema";
 
@@ -63,23 +63,27 @@ export function OnboardingDialog({
         onOpenChange?.(next);
       }}
     >
-      <DialogContent className="rounded-xl p-2 sm:max-w-2xl lg:max-w-5xl">
-        <div className="grid w-full grid-cols-1 md:grid-cols-[1fr_1.2fr] lg:h-[600px]">
+      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl lg:max-w-4xl">
+        <div className="grid w-full grid-cols-1 md:grid-cols-[1fr_1.25fr] lg:min-h-[520px]">
           <OnboardingCover />
 
-          <div className="flex flex-col justify-center p-8 md:p-12">
-            {step === "welcome" ? (
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-3">
-                  <DialogTitle className="type-hero">Welcome to Testimony.io</DialogTitle>
-                  <DialogDescription className="text-base text-fg-2">
-                    Create a project for your product. You get one link to collect testimonials and
-                    a widget to show the ones you approve.
-                  </DialogDescription>
-                </div>
+          {step === "welcome" ? (
+            <div className="flex flex-col">
+              <div className="flex flex-1 flex-col justify-center gap-2 p-8 md:p-10">
+                <p className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground/80 uppercase">
+                  Get started
+                </p>
+                <DialogTitle className="text-2xl font-semibold tracking-tight">
+                  Welcome to Testimony.io
+                </DialogTitle>
+                <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
+                  Create a project for your product. You get one link to collect testimonials and a
+                  widget to show the ones you approve.
+                </DialogDescription>
+              </div>
+              <div className="flex justify-end border-t border-border bg-muted/30 px-8 py-4 md:px-10">
                 <Button
-                  size="sm"
-                  className="self-start"
+                  type="button"
                   onClick={() => {
                     setStep("create-project");
                   }}
@@ -87,56 +91,58 @@ export function OnboardingDialog({
                   Create a project
                 </Button>
               </div>
-            ) : (
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-3">
-                  <DialogTitle className="type-hero">Create your project</DialogTitle>
-                  <DialogDescription className="text-base text-fg-2">
+            </div>
+          ) : (
+            <form
+              id="create-project-form"
+              className="flex flex-col"
+              onSubmit={(event) => {
+                void form.handleSubmit(onSubmit)(event);
+              }}
+            >
+              <div className="flex flex-1 flex-col justify-center gap-6 p-8 md:p-10">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground/80 uppercase">
+                    New project
+                  </p>
+                  <DialogTitle className="text-2xl font-semibold tracking-tight">
+                    Create your project
+                  </DialogTitle>
+                  <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
                     The project URL becomes your collection link. You can rename the project later;
                     the link stays the same.
                   </DialogDescription>
                 </div>
-                <form
-                  id="create-project-form"
-                  onSubmit={(event) => {
-                    void form.handleSubmit(onSubmit)(event);
+                <FieldGroup>
+                  <ProjectNameFields
+                    control={form.control}
+                    idPrefix="create-project"
+                    slug={slug}
+                    status={status}
+                  />
+                </FieldGroup>
+              </div>
+              <div className="flex justify-end gap-2 border-t border-border bg-muted/30 px-8 py-4 md:px-10">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setStep("welcome");
                   }}
                 >
-                  <FieldGroup>
-                    <ProjectNameFields
-                      control={form.control}
-                      idPrefix="create-project"
-                      slug={slug}
-                      status={status}
-                    />
-                    <Field orientation="horizontal" className="justify-end">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setStep("welcome");
-                        }}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        type="submit"
-                        size="sm"
-                        disabled={
-                          form.formState.isSubmitting ||
-                          !form.formState.isValid ||
-                          status !== "available"
-                        }
-                      >
-                        {form.formState.isSubmitting ? "Creating..." : "Create project"}
-                      </Button>
-                    </Field>
-                  </FieldGroup>
-                </form>
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={
+                    form.formState.isSubmitting || !form.formState.isValid || status !== "available"
+                  }
+                >
+                  {form.formState.isSubmitting ? "Creating..." : "Create project"}
+                </Button>
               </div>
-            )}
-          </div>
+            </form>
+          )}
         </div>
       </DialogContent>
     </Dialog>

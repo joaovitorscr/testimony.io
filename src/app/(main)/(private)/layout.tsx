@@ -12,7 +12,7 @@ export default function PrivateLayout({
     <ProjectProvider>
       <SidebarProvider className="h-screen">
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="min-h-0 min-w-0">
           <PageHeader />
           {children}
         </SidebarInset>

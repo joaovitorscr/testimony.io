@@ -9,13 +9,17 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { CollectionLink } from "@/components/collection-link";
 import { useProject } from "@/components/project-context";
+import { Badge } from "@/components/ui/badge";
 import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldContent, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -43,52 +47,85 @@ function CollectForm() {
   }, 600);
 
   return (
-    <FieldGroup className="max-w-xl">
-      <Field>
-        <FieldLabel htmlFor="collection-link">Your collection link</FieldLabel>
-        <CollectionLink />
-        <FieldDescription>
-          Anyone with the link can send a testimonial. Nothing is public until you approve it.
-        </FieldDescription>
-      </Field>
+    <div className="flex flex-col gap-5">
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-display text-[17px] font-normal tracking-[-0.01em]">
+            Collection link
+          </CardTitle>
+          <CardDescription className="text-[13px]">
+            Anyone with the link can send a testimonial. Nothing is public until you approve it.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CollectionLink />
+        </CardContent>
+      </Card>
 
-      <Field orientation="horizontal">
-        <FieldContent>
-          <FieldLabel htmlFor="is-collecting">Accept new testimonials</FieldLabel>
-          <FieldDescription>
-            Turn this off to pause the form. Your widget keeps showing approved testimonials.
-          </FieldDescription>
-        </FieldContent>
-        <Switch
-          id="is-collecting"
-          checked={project.isCollecting}
-          onCheckedChange={(isCollecting) => {
-            void save({ isCollecting });
-          }}
-        />
-      </Field>
+      <Card>
+        <CardContent>
+          <Field orientation="horizontal" className="items-center gap-6">
+            <FieldContent>
+              <div className="flex items-center gap-2">
+                <FieldLabel htmlFor="is-collecting" className="text-[15px] font-medium">
+                  Accept new testimonials
+                </FieldLabel>
+                {project.isCollecting ? (
+                  <Badge variant="mint">Active</Badge>
+                ) : (
+                  <Badge variant="secondary">Paused</Badge>
+                )}
+              </div>
+              <FieldDescription className="text-[13px]">
+                Turn this off to pause the form. Your widget keeps showing approved testimonials.
+              </FieldDescription>
+            </FieldContent>
+            <Switch
+              id="is-collecting"
+              checked={project.isCollecting}
+              onCheckedChange={(isCollecting) => {
+                void save({ isCollecting });
+              }}
+            />
+          </Field>
+        </CardContent>
+      </Card>
 
-      <Field>
-        <FieldLabel htmlFor="collect-prompt">Question</FieldLabel>
-        <Textarea
-          id="collect-prompt"
-          rows={2}
-          value={prompt}
-          maxLength={COLLECT_LIMITS.prompt.max}
-          placeholder={DEFAULT_PROMPT}
-          onChange={(event) => {
-            setPrompt(event.target.value);
-            savePrompt(event.target.value);
-          }}
-          onBlur={() => {
-            savePrompt.flush();
-          }}
-        />
-        <FieldDescription>
-          The headline of your collection page. A specific question gets better answers, like
-          &ldquo;What changed after you started using {project.name}?&rdquo; Saves as you type.
-        </FieldDescription>
-      </Field>
-    </FieldGroup>
+      <Card className="gap-0 overflow-hidden pb-0">
+        <CardHeader className="pb-4">
+          <CardTitle className="font-display text-[17px] font-normal tracking-[-0.01em]">
+            <label htmlFor="collect-prompt">Question</label>
+          </CardTitle>
+          <CardDescription className="text-[13px]">
+            The headline of your collection page. A specific question gets better answers, like
+            &ldquo;What changed after you started using {project.name}?&rdquo;
+          </CardDescription>
+          <CardAction>
+            <span className="font-mono text-xs text-muted-foreground tabular-nums">
+              {prompt.length}/{COLLECT_LIMITS.prompt.max}
+            </span>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="pb-5">
+          <Textarea
+            id="collect-prompt"
+            rows={2}
+            value={prompt}
+            maxLength={COLLECT_LIMITS.prompt.max}
+            placeholder={DEFAULT_PROMPT}
+            onChange={(event) => {
+              setPrompt(event.target.value);
+              savePrompt(event.target.value);
+            }}
+            onBlur={() => {
+              savePrompt.flush();
+            }}
+          />
+        </CardContent>
+        <CardFooter className="border-t border-border bg-muted/30 py-3 text-[13px] text-muted-foreground [.border-t]:pt-3">
+          Saves as you type. Leave it empty to ask the default question.
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

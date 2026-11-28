@@ -1,61 +1,111 @@
+import { CheckIcon, CodeIcon, LinkIcon } from "lucide-react";
 import Image from "next/image";
 
-import { MediaFrame } from "@/components/media-frame";
-import { RatingStars } from "@/components/rating-stars";
 import { env } from "@/env";
 
 import { LoginForm } from "./_components/login-form";
 
+const STEPS = [
+  {
+    Icon: LinkIcon,
+    title: "Share one link",
+    description: "Send it in an email or drop it in your app. Customers answer in about a minute.",
+  },
+  {
+    Icon: CheckIcon,
+    title: "Approve what you like",
+    description: "Every testimonial waits in a review queue. Nothing goes public until you say so.",
+  },
+  {
+    Icon: CodeIcon,
+    title: "Embed anywhere",
+    description: "Paste one snippet on your site, or read approved testimonials from the API.",
+  },
+];
+
 export default function LoginPage() {
   return (
-    <main className="grid min-h-svh w-full gap-5 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
-      <MediaFrame className="relative flex min-h-80 flex-col justify-end p-6 pb-10 md:p-11">
+    <main className="flex min-h-svh w-full flex-col items-center justify-center bg-background px-4 py-10">
+      <div className="flex w-full max-w-5xl flex-col gap-6">
         <Image
-          src="/sign-in/paris-cafe.jpg"
-          alt="Two people deep in conversation at a café table, seen through the window at night"
-          fill
+          src="/branding_black.svg"
+          alt="Testimony.io"
+          width={148}
+          height={24}
           priority
-          sizes="(min-width: 768px) 70vw, 100vw"
-          className="-z-20 object-cover object-[50%_70%]"
+          className="h-6 w-auto dark:hidden"
         />
-        {/* Quiets the shop sign up top and gives the headline darkness to sit on. */}
-        <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/75 via-black/30 via-35% to-transparent to-55%" />
-        <div className="absolute inset-0 -z-10 bg-linear-to-t from-black/90 via-black/40 via-40% to-transparent to-70%" />
+        <Image
+          src="/branding_white.svg"
+          alt="Testimony.io"
+          width={148}
+          height={24}
+          priority
+          className="hidden h-6 w-auto dark:block"
+        />
 
-        {/* The example sits beside the man who is talking, like what is being said. */}
-        <figure className="absolute right-[5%] bottom-[52%] hidden max-w-80 flex-col gap-3 rounded-lg bg-black/45 p-5 outline outline-1 -outline-offset-1 outline-white/20 backdrop-blur-md lg:flex">
-          <RatingStars value={5} />
-          <blockquote className="text-lg/snug text-pretty text-white">
-            &ldquo;Sent the link on Monday, had three testimonials on our pricing page by
-            Friday.&rdquo;
-          </blockquote>
-          <figcaption className="type-caption text-white/60">
-            Example of a collected testimonial
-          </figcaption>
-        </figure>
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="flex flex-col rounded-[var(--radius)] border border-border/80 bg-card">
+            <LoginForm devPassword={env.NODE_ENV === "development"} className="flex-1 p-6 sm:p-9" />
+          </div>
 
-        <div className="flex max-w-145 flex-col gap-4">
-          <p className="type-display text-white">
-            Collect the words your customers already say about you.
-          </p>
-          <p className="hidden text-lg text-white/80 sm:block">
-            Send a link, get a testimonial back, and show it on your site with a single embed.
-          </p>
-        </div>
-
-        <p className="absolute right-4 bottom-3 type-caption text-white/50">
-          Photo:{" "}
-          <a
-            href="https://unsplash.com/photos/two-people-talking-at-a-table-inside-a-cafe-iviG404TVG4"
-            className="underline-offset-2 transition-colors hover:text-white/80 hover:underline"
-            target="_blank"
-            rel="noreferrer"
+          <section
+            aria-labelledby="how-it-works"
+            className="flex flex-col justify-center rounded-[var(--radius)] cursory-wash p-5 sm:p-8"
           >
-            Thomas Leblanc / Unsplash
-          </a>
-        </p>
-      </MediaFrame>
-      <LoginForm devPassword={env.NODE_ENV === "development"} className="md:px-6 md:py-2" />
+            <div className="overflow-hidden rounded-[10px] bg-chrome shadow-window">
+              <div className="flex h-[34px] items-center justify-between border-b border-border px-3">
+                <span aria-hidden="true" className="flex items-center gap-1.5">
+                  <span className="size-[9px] rounded-full bg-foreground/20" />
+                  <span className="size-[9px] rounded-full bg-foreground/20" />
+                  <span className="size-[9px] rounded-full bg-foreground/20" />
+                </span>
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  testimony.io — workflow
+                </span>
+                <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
+              </div>
+
+              <div className="flex flex-col gap-5 bg-panel p-5 sm:p-6">
+                <div className="flex flex-col gap-1.5">
+                  <h2
+                    id="how-it-works"
+                    className="font-mono text-[11px] font-medium tracking-[0.12em] text-muted-foreground uppercase"
+                  >
+                    How it works
+                  </h2>
+                  <p className="font-display text-[20px] leading-[1.3] font-normal tracking-[-0.01em] text-balance text-foreground">
+                    Collect the words your customers already say about you.
+                  </p>
+                </div>
+
+                <ol className="flex flex-col border-t border-border">
+                  {STEPS.map(({ Icon, title, description }, index) => (
+                    <li
+                      key={title}
+                      className="flex items-start gap-3 border-b border-border py-3.5 last:border-b-0 last:pb-0"
+                    >
+                      <span className="mt-0.5 w-6 shrink-0 font-mono text-[11px] font-medium text-muted-foreground tabular-nums">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <p className="flex items-center gap-1.5 text-[13.5px] font-medium text-foreground">
+                          <Icon
+                            className="size-3.5 shrink-0 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                          {title}
+                        </p>
+                        <p className="text-[12.5px]/relaxed text-muted-foreground">{description}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </main>
   );
 }

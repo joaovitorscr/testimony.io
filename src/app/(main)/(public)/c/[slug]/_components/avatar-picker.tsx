@@ -46,22 +46,27 @@ export function AvatarPicker({
 
   return (
     <Field>
-      <FieldLabel htmlFor="avatar">Picture (optional)</FieldLabel>
-      <div className="flex items-center gap-4">
-        <Avatar className="size-16">
+      <div className="flex items-center gap-3">
+        <Avatar className="size-10 border border-border">
           <AvatarImage src={value} alt="Your picture" />
-          <AvatarFallback>
-            <UserIcon className="size-6 text-fg-faint" />
+          <AvatarFallback className="bg-muted">
+            <UserIcon className="size-4 text-muted-foreground" />
           </AvatarFallback>
         </Avatar>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <FieldLabel htmlFor="avatar">
+            Picture <span className="font-normal text-muted-foreground">(optional)</span>
+          </FieldLabel>
+          <p className="text-xs text-muted-foreground">Shown next to your words.</p>
+        </div>
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           size="sm"
           onClick={() => fileInputRef.current?.click()}
         >
           <Camera data-icon="inline-start" />
-          {value === "" ? "Choose a picture" : "Change picture"}
+          {value === "" ? "Upload" : "Change"}
         </Button>
       </div>
 

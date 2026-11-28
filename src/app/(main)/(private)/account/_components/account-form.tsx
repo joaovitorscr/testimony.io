@@ -10,7 +10,15 @@ import { z } from "zod";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -49,46 +57,74 @@ function ProfileSection({ user }: { user: User }) {
 
   return (
     <form
-      className="flex flex-col gap-6"
       onSubmit={(event) => {
         void form.handleSubmit(onSubmit)(event);
       }}
     >
-      <div className="flex flex-col gap-2">
-        <h2 className="type-title text-fg-2">Profile</h2>
-        <p className="text-sm text-muted-foreground">
-          Update your display name. Your email and avatar come from your Google or GitHub account.
-        </p>
-      </div>
-      <FieldGroup>
-        <Field orientation="horizontal" className="items-center gap-6">
-          <Avatar className="size-16">
-            <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
-            <AvatarFallback className="text-xl">
-              {(user.name ?? "U").charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+      <Card className="gap-0 overflow-hidden pb-0">
+        <CardHeader className="border-b border-border pb-5 [.border-b]:pb-5">
+          <CardTitle className="font-display text-[17px] font-normal tracking-[-0.01em]">
+            Profile
+          </CardTitle>
+          <CardDescription className="text-[13px]">
+            Your display name is yours to change. Your email and avatar come from your sign-in
+            provider.
+          </CardDescription>
+        </CardHeader>
 
-          <Controller
-            control={form.control}
-            name="name"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="name">Name</FieldLabel>
+        <CardContent className="flex flex-col gap-6 py-6">
+          <div className="flex items-center gap-4">
+            <Avatar className="size-12">
+              <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
+              <AvatarFallback className="text-base">
+                {(user.name ?? "U").charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-medium">{user.name ?? "Unnamed"}</span>
+              {user.email !== null && (
+                <span className="truncate text-[13px] text-muted-foreground">{user.email}</span>
+              )}
+            </div>
+          </div>
+
+          <FieldGroup className="gap-5">
+            <Controller
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="name">Name</FieldLabel>
+                  <Input
+                    {...field}
+                    id="name"
+                    type="text"
+                    placeholder="Your name"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            {user.email !== null && (
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
-                  {...field}
-                  id="name"
-                  type="text"
-                  placeholder="Your name"
-                  aria-invalid={fieldState.invalid}
+                  id="email"
+                  type="email"
+                  value={user.email}
+                  readOnly
+                  className="bg-muted/40 text-muted-foreground"
                 />
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                <FieldDescription className="text-[13px]">
+                  Managed by your sign-in provider.
+                </FieldDescription>
               </Field>
             )}
-          />
-        </Field>
-        <FieldSeparator />
-        <Field orientation="horizontal">
+          </FieldGroup>
+        </CardContent>
+
+        <CardFooter className="justify-end border-t border-border bg-muted/30 py-3 [.border-t]:pt-3">
           <Button
             type="submit"
             size="sm"
@@ -97,8 +133,8 @@ function ProfileSection({ user }: { user: User }) {
             {form.formState.isSubmitting && <Spinner data-icon="inline-start" />}
             {form.formState.isSubmitting ? "Saving..." : "Save changes"}
           </Button>
-        </Field>
-      </FieldGroup>
+        </CardFooter>
+      </Card>
     </form>
   );
 }

@@ -54,6 +54,7 @@ export function ProjectNameFields({
           id={`${idPrefix}-slug`}
           value={slug}
           placeholder="my-awesome-project"
+          className="bg-muted/40 font-mono text-[13px]"
           aria-invalid={status === "taken"}
         />
         {status === "taken" && <FieldError>This project URL is already taken</FieldError>}

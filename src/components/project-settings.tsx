@@ -47,10 +47,12 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Project settings</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="gap-0 overflow-hidden p-0">
+        <DialogHeader className="gap-1.5 p-6 pb-5">
+          <DialogTitle className="text-[15px] font-semibold tracking-[-0.01em]">
+            Project settings
+          </DialogTitle>
+          <DialogDescription className="text-[13px]">
             Rename your project. Its URL, and so your collection link, stays the same.
           </DialogDescription>
         </DialogHeader>
@@ -60,7 +62,7 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
             void form.handleSubmit(onSubmit)(event);
           }}
         >
-          <FieldGroup>
+          <FieldGroup className="px-6 pb-6">
             <ProjectNameFields
               control={form.control}
               idPrefix="update-project"
@@ -68,17 +70,13 @@ export function ProjectSettings({ onOpenChange }: { onOpenChange: (open: boolean
               status="idle"
             />
           </FieldGroup>
-          <DialogFooter className="mt-6">
+          <DialogFooter className="border-t border-border bg-muted/30 px-6 py-4">
             <DialogClose asChild>
-              <Button type="button" variant="ghost" size="sm">
+              <Button type="button" variant="ghost">
                 Cancel
               </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              size="sm"
-              disabled={form.formState.isSubmitting || !form.formState.isValid}
-            >
+            <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
               {form.formState.isSubmitting ? "Saving..." : "Save"}
             </Button>
           </DialogFooter>

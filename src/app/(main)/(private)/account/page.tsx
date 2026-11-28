@@ -12,13 +12,11 @@ export default function AccountPage() {
   const user = useQuery(api.users.me);
 
   return (
-    <main className="flex flex-col">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-6 lg:px-10">
       <PageHeading title="Account" description="Manage your account settings and preferences." />
 
-      <section className="flex max-w-2xl flex-col px-5 pb-16 md:px-8">
-        {user === undefined && <Skeleton className="h-48 w-full rounded-lg" />}
-        {user !== undefined && user !== null && <AccountForm user={user} />}
-      </section>
+      {user === undefined && <Skeleton className="h-56 w-full rounded-lg" />}
+      {user !== undefined && user !== null && <AccountForm user={user} />}
     </main>
   );
 }

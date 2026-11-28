@@ -47,9 +47,9 @@ function DeleteButton({ testimonial }: { testimonial: Testimonial }) {
   return (
     <>
       <Button
-        variant="ghost"
+        type="button"
+        variant="destructive-ghost"
         size="sm"
-        className="text-muted-foreground"
         onClick={() => {
           setOpen(true);
         }}
@@ -67,11 +67,12 @@ function DeleteButton({ testimonial }: { testimonial: Testimonial }) {
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="ghost" size="sm">
+              <Button type="button" variant="ghost" size="sm">
                 Cancel
               </Button>
             </DialogClose>
             <Button
+              type="button"
               variant="destructive"
               size="sm"
               disabled={isDeleting}
@@ -121,6 +122,7 @@ export function TestimonialActions({ testimonial }: { testimonial: Testimonial }
     return (
       <Button
         key={status}
+        type="button"
         variant={primary ? "default" : "ghost"}
         size="sm"
         className={primary ? undefined : "text-muted-foreground"}

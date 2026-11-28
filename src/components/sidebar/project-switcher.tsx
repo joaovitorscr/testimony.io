@@ -41,15 +41,18 @@ export function ProjectSwitcher() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="h-11 border border-border bg-background shadow-2xs group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:shadow-none hover:bg-muted/70 data-[state=open]:bg-muted/70"
             >
-              <div className="flex size-8 items-center justify-center rounded-md border bg-background text-muted-foreground">
-                <Folder className="size-4" />
+              <div className="flex size-7 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                <Folder className="size-3.5" />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeProject.name}</span>
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate text-[13px] font-medium">{activeProject.name}</span>
+                <span className="truncate font-mono text-[11px] text-muted-foreground">
+                  {activeProject.slug}
+                </span>
               </div>
-              <ChevronsUpDown className="ml-auto text-muted-foreground" />
+              <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -58,7 +61,7 @@ export function ProjectSwitcher() {
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
+            <DropdownMenuLabel className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground/80 uppercase">
               Projects
             </DropdownMenuLabel>
             {projects.map((project) => (
@@ -68,9 +71,9 @@ export function ProjectSwitcher() {
                 onClick={() => {
                   void handleSetActiveProject(project._id);
                 }}
-                className="gap-2 p-2"
+                className="gap-2 p-2 text-[13px]"
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
+                <div className="flex size-6 items-center justify-center rounded-md border border-border bg-background">
                   <Folder className="size-3.5 shrink-0" />
                 </div>
                 {project.name}
@@ -78,13 +81,13 @@ export function ProjectSwitcher() {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="gap-2 p-2"
+              className="gap-2 p-2 text-[13px]"
               onClick={() => {
                 setShowNewProjectDialog(true);
               }}
             >
-              <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
-                <Plus className="size-4" />
+              <div className="flex size-6 items-center justify-center rounded-md border border-border bg-background">
+                <Plus className="size-3.5" />
               </div>
               <span className="text-muted-foreground">Add project</span>
             </DropdownMenuItem>

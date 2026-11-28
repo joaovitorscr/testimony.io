@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/input-group";
 import { env } from "@/env";
 import { useCopy } from "@/hooks/use-copy";
+import { cn } from "@/lib/utils";
 
 /** The active project's public collection URL. */
 function useCollectionUrl() {
@@ -24,21 +25,22 @@ export function CollectionLink({ id = "collection-link" }: { id?: string }) {
   const { copied, copy } = useCopy();
 
   return (
-    <InputGroup className="max-w-xl">
+    <InputGroup className="max-w-xl bg-muted/40">
       <InputGroupInput
         id={id}
         aria-label="Collection link"
         value={url}
         readOnly
-        className="font-mono text-sm"
+        className="font-mono text-[13px]"
         onFocus={(event) => {
           event.target.select();
         }}
       />
-      <InputGroupAddon align="inline-end">
+      <InputGroupAddon align="inline-end" className="gap-1">
         <InputGroupButton
           size="icon-xs"
-          aria-label="Copy collection link"
+          aria-label={copied ? "Collection link copied" : "Copy collection link"}
+          className={cn(copied && "bg-success-surface text-success hover:bg-success-surface")}
           onClick={() => {
             void copy(url, "Collection link copied");
           }}

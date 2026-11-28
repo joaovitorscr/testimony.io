@@ -2,8 +2,8 @@ import type { WidgetSettings, WidgetTestimonial } from "./types";
 import { WidgetCard } from "./widget-card";
 
 const PALETTES = {
-  light: { bg: "#ffffff", fg: "#18181b", muted: "#71717a", border: "rgba(24, 24, 27, 0.1)" },
-  dark: { bg: "#18181b", fg: "#fafafa", muted: "#a1a1aa", border: "rgba(250, 250, 250, 0.12)" },
+  light: { bg: "#ffffff", fg: "#181a22", muted: "#626778", border: "#e6e8f0" },
+  dark: { bg: "#181a22", fg: "#eef0f6", muted: "#969cb0", border: "#262936" },
 };
 
 function palette(name: keyof typeof PALETTES) {
@@ -13,11 +13,12 @@ function palette(name: keyof typeof PALETTES) {
 
 // Scoped to `.tm-root`, so the same markup works in the embed and inside the
 // dashboard preview. Cards fill the width and wrap; there is no column knob.
+// A host can set `--tm-font` to swap the type; the embed falls back to Inter.
 const STYLES = `
-.tm-root{${palette("light")}font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:2px;}
+.tm-root{${palette("light")}font-family:var(--tm-font,Inter),ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:-0.011em;padding:2px;}
 .tm-root[data-theme="dark"]{${palette("dark")}}
 @media (prefers-color-scheme: dark){.tm-root[data-theme="auto"]{${palette("dark")}}}
-.tm-root[data-layout="grid"]{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr));gap:16px;align-items:start;}
+.tm-root[data-layout="grid"]{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr));gap:12px;align-items:start;}
 .tm-root[data-layout="list"]{display:flex;flex-direction:column;gap:12px;}
 `;
 
@@ -33,7 +34,7 @@ export function TestimonialWidget({
 }) {
   return (
     <>
-      <style>{`${STYLES}.tm-root{--tm-accent:${HEX.test(settings.accentColor) ? settings.accentColor : "#71717a"};}`}</style>
+      <style>{`${STYLES}.tm-root{--tm-accent:${HEX.test(settings.accentColor) ? settings.accentColor : "#626778"};}`}</style>
       <div className="tm-root" data-theme={settings.theme} data-layout={settings.layout}>
         {testimonials.map((testimonial) => (
           <WidgetCard key={testimonial._id} testimonial={testimonial} settings={settings} />
